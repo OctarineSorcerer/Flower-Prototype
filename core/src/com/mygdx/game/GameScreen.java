@@ -48,7 +48,7 @@ public class GameScreen implements Screen{
         // blue and alpha component in the range [0,1]
         // of the color to be used to clear the screen.
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //Clear dat screen
 
         // tell the camera to update its matrices.
         camera.update();
@@ -59,8 +59,9 @@ public class GameScreen implements Screen{
 
         //Begin a batch and draw stuff
         game.batch.begin();
-        /*game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
+        /*game.font.draw(game.batch, "Drops Colslected: " + dropsGathered, 0, 480);
         game.batch.draw(bucketImage, bucket.x, bucket.y);*/
+        game.font.draw(game.batch, "Game screen test text!", testRect.x, testRect.y + testTex.getHeight() + 40);
         game.batch.draw(testTex, testRect.x, testRect.y);
         game.batch.end();
 
