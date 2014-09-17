@@ -23,9 +23,9 @@ public class MainMenuScreen implements Screen {
 
     private TextButton buttonPlay = new TextButton("Play", skin),
             buttonExit = new TextButton("Exit", skin);
-    private Label titleLabel = new Label("Flower Prototype!", skin);
+    private Label titleLabel = new Label("Flower Prototype!", skin, "MotorStyle");
 
-    final FlowerPrototype game; //This is used in the rendering loop here, I believe
+    final FlowerPrototype game; //Pass along!
 
     OrthographicCamera camera;
 
@@ -33,12 +33,12 @@ public class MainMenuScreen implements Screen {
         game = gam;
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480); //Ah, orthographic views. All hail 2d.
+        camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //Ah, orthographic views. All hail 2d.
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(0.1059f, 0.1059f, 0.1059f, 1); //kinda a dark grey color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
@@ -72,6 +72,7 @@ public class MainMenuScreen implements Screen {
                 Gdx.app.exit();
             }
         });
+
         //For table: The elements are displayed in the order added.
         //The first appear on top, the last at the bottom.
         table.add(titleLabel).padBottom(40).row();

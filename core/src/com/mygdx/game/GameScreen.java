@@ -32,22 +32,18 @@ public class GameScreen implements Screen{
 
         //Camera and spritebatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480); //Note that 800x480 is the target res for the tutorial
+        camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
 
         //any other creation stuff
         testRect = new Rectangle();
-        testRect.x = 800/2 - (testTex.getWidth())/2;
+        testRect.x = FlowerPrototype.WIDTH/2 - (testTex.getWidth())/2;
         testRect.y = 20;
     }
 
     @Override
     public void render (float delta)
     {
-        // clear the screen with a dark blue color. The
-        // arguments to glClearColor are the red, green
-        // blue and alpha component in the range [0,1]
-        // of the color to be used to clear the screen.
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(0.1059f, 0.1059f, 0.1059f, 1); //kinda a dark grey color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //Clear dat screen
 
         // tell the camera to update its matrices.
@@ -59,8 +55,6 @@ public class GameScreen implements Screen{
 
         //Begin a batch and draw stuff
         game.batch.begin();
-        /*game.font.draw(game.batch, "Drops Colslected: " + dropsGathered, 0, 480);
-        game.batch.draw(bucketImage, bucket.x, bucket.y);*/
         game.font.draw(game.batch, "Game screen test text!", testRect.x, testRect.y + testTex.getHeight() + 40);
         game.batch.draw(testTex, testRect.x, testRect.y);
         game.batch.end();

@@ -8,8 +8,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "Flower Test";
-        config.width = 800;
-        config.height = 480;
+        config.width = FlowerPrototype.WIDTH;
+        config.height = FlowerPrototype.HEIGHT;
 		new LwjglApplication(new FlowerPrototype(), config);
 	}
 }

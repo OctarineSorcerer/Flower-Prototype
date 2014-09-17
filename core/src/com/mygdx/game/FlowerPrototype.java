@@ -14,13 +14,14 @@ public class FlowerPrototype extends Game {
 	Texture img;
 
     public BitmapFont font;
-	
+
+    public static final int WIDTH=480,HEIGHT=800;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
         font = new BitmapFont();
-        this.setScreen(new MainMenuScreen(this));
-		//img = new Texture("badlogic.jpg");
+        this.setScreen(new SplashScreen(this));
 	}
 
 	@Override
