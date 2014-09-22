@@ -3,9 +3,11 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
@@ -18,6 +20,7 @@ public class GameScreen implements Screen{
     OrthographicCamera camera;
     Texture testTex;
     Rectangle testRect;
+    Flower.Petal testPetal;
     //Textures, sounds, rectangles etc go here, and game logic stuff
 
     public GameScreen(final FlowerPrototype gam)
@@ -38,6 +41,11 @@ public class GameScreen implements Screen{
         testRect = new Rectangle();
         testRect.x = FlowerPrototype.WIDTH/2 - (testTex.getWidth())/2;
         testRect.y = 20;
+
+        Color testColor = new Color(0,0,1,1);
+        Flower testFlower = new Flower();
+        testPetal = testFlower.new Petal(0, testColor);
+        testPetal.sprite.setCenter(testRect.x, testRect.y + testTex.getHeight() + 100);
     }
 
     @Override
@@ -55,7 +63,8 @@ public class GameScreen implements Screen{
 
         //Begin a batch and draw stuff
         game.batch.begin();
-        game.font.draw(game.batch, "Game screen test text!", testRect.x, testRect.y + testTex.getHeight() + 40);
+        //game.font.draw(game.batch, "Game screen test text!", testRect.x, testRect.y + testTex.getHeight() + 40);
+        testPetal.sprite.draw(game.batch);
         game.batch.draw(testTex, testRect.x, testRect.y);
         game.batch.end();
 
