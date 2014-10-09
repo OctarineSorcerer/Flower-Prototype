@@ -43,8 +43,8 @@ public class GameScreen implements Screen{
         testRect.y = 20;
 
         Color testColor = new Color(0,0,1,1);
-        Flower testFlower = new Flower();
-        testPetal = testFlower.new Petal(0, testColor);
+        //Flower testFlower = new Flower();
+        testPetal = new Flower.Petal(0, testColor);
         testPetal.sprite.setCenter(testRect.x, testRect.y + testTex.getHeight() + 100);
     }
 
