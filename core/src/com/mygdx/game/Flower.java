@@ -20,11 +20,29 @@ public class Flower { //These are their own classes as they may need unique func
 
     Flower(Petal mainPetal, Head flowerHead, Stem flowerStem, int petalCount, PetalStyle petalArrangement)
     {
+        head = flowerHead;
         petals = new ArrayList<PetalFlyweight>();
+        petals.add(new PetalFlyweight(new Petal(0, Color.CYAN)));
+        ArrangePetals(petalArrangement, petalCount, 0);
     }
-    void ArrangePetals(PetalStyle arrangement)
+    void ArrangePetals(PetalStyle arrangement, int count, int petalIndex)
     {
-
+        float sepAngle = 360/count;
+        switch (arrangement)
+        {
+            case Touching:
+                PetalFlyweight thisFlyweight = petals.get(petalIndex);
+                float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, (float) 1, head.radius);
+                Petal relevantPetal = thisFlyweight.petal;
+                relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
+                for(int i = 0; i < sepAngle*count; i+= sepAngle)
+                {
+                    Point location = FlowerMaths.AddPoints(new Point((int) head.sprite.getX(), (int) head.sprite.getY())
+                            , FlowerMaths.GetPetalPos(head.radius, i));
+                    thisFlyweight.AddPetal(location, i);
+                }
+                break;
+        }
     }
 
     public static class Petal extends TintableElement {
@@ -35,11 +53,16 @@ public class Flower { //These are their own classes as they may need unique func
          */
         Petal(int monochromeIndex, Color tintColour) {
             super("textures/petals/monochrome/", monochromeIndex, tintColour);
+            sprite.setOrigin(sprite.getWidth()/2, 0);
         }
     }
     public static class Head extends TintableElement {
-        Head(int monochromeIndex, Color tintColour) {
+        float radius;
+        Head(int monochromeIndex, Color tintColour, Point loc) {
             super("textures/heads/monochrome/", monochromeIndex, tintColour);
+            sprite.setX(loc.x);
+            sprite.setY(loc.y);
+            radius = sprite.getWidth()/2;
         }
     }
     public static class Stem extends TintableElement {
@@ -61,15 +84,21 @@ public class Flower { //These are their own classes as they may need unique func
     static class PetalFlyweight {
         Petal petal;
         List<Point> locations;
-        PetalFlyweight(Petal petal, Point location)
-        {
+        List<Float> rotations;
+        PetalFlyweight(Petal petal) {
             this.petal = petal;
             locations = new ArrayList<Point>();
-            AddPetal(location);
+            rotations = new ArrayList<Float>();
         }
-        void AddPetal(Point location)
-        {
+        PetalFlyweight(Petal petal, Point location) {
+            this.petal = petal;
+            locations = new ArrayList<Point>();
+            rotations = new ArrayList<Float>();
+            AddPetal(location, 0);
+        }
+        void AddPetal(Point location, float rotation) {
             locations.add(location);
+            rotations.add(rotation);
         }
         public int Amount()
         {

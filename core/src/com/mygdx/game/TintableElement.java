@@ -13,6 +13,8 @@ public abstract class TintableElement {
     public Sprite sprite;
     public Color color;
     int monoIndex;
+    public float scale = 1;
+    public float rotation;
     String monochromePath;
     /**
      * Constructor
@@ -38,6 +40,18 @@ public abstract class TintableElement {
         color = tintColour;
     }
 
+    public void Scale(float sizeMultiply)
+    {
+        sprite.scale(sizeMultiply);
+        scale = sizeMultiply;
+        sprite.setCenter(sprite.getWidth()/2, 0);
+    }
+
+    public void Rotate(float degreesClockwise)
+    {
+        sprite.rotate(degreesClockwise);
+    }
+
     /**
      * Gets the monochrome image for this specific TintableElement
      * @return A monochrome texture specified in fields
@@ -46,6 +60,7 @@ public abstract class TintableElement {
     {
         FileHandle[] files = Gdx.files.internal(monochromePath).list();
         FileHandle target = files[monoIndex];
-        return new Texture(target);
+        Texture output = new Texture(target);
+        return output;
     }
 }
