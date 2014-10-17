@@ -5,6 +5,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.sun.javafx.geom.Point2D;
 
 import java.awt.*;
 import java.util.*;
@@ -14,6 +16,7 @@ import java.util.List;
  * Not an interface - the flower should be procedural
  */
 public class Flower { //These are their own classes as they may need unique functionality later
+    static DebugUtils.DebugCross debugCross = new DebugUtils.DebugCross(0, Color.GREEN);
     public List<PetalFlyweight> petals;
     public Head head;
     public Stem stem;
@@ -34,11 +37,14 @@ public class Flower { //These are their own classes as they may need unique func
                 PetalFlyweight thisFlyweight = petals.get(petalIndex);
                 float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, (float) 1, head.radius);
                 Petal relevantPetal = thisFlyweight.petal;
-                relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
+                //relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
+                //relevantPetal.sprite.setOrigin(relevantPetal.sprite.getWidth()/2, 0); //origin at bottom thingy
                 for(int i = 0; i < sepAngle*count; i+= sepAngle)
                 {
-                    Point location = FlowerMaths.AddPoints(new Point((int) head.sprite.getX(), (int) head.sprite.getY())
+                    Point2D location = FlowerMaths.AddPoints(new Point2D((int) head.sprite.getX(), (int) head.sprite.getY())
                             , FlowerMaths.GetPetalPos(head.radius, i));
+                    location.y += relevantPetal.sprite.getHeight();
+                    //location.x += relevantPetal.sprite.getWidth();
                     thisFlyweight.AddPetal(location, i);
                 }
                 break;
@@ -53,15 +59,16 @@ public class Flower { //These are their own classes as they may need unique func
          */
         Petal(int monochromeIndex, Color tintColour) {
             super("textures/petals/monochrome/", monochromeIndex, tintColour);
-            sprite.setOrigin(sprite.getWidth()/2, 0);
+            sprite.setOriginCenter();
+            //sprite.translateX(sprite.getWidth()/2);
         }
     }
     public static class Head extends TintableElement {
         float radius;
-        Head(int monochromeIndex, Color tintColour, Point loc) {
+        Head(int monochromeIndex, Color tintColour, Point2D loc) {
             super("textures/heads/monochrome/", monochromeIndex, tintColour);
-            sprite.setX(loc.x);
-            sprite.setY(loc.y);
+            sprite.setOriginCenter();
+            sprite.setCenter(loc.x, loc.y);
             radius = sprite.getWidth()/2;
         }
     }
@@ -83,26 +90,43 @@ public class Flower { //These are their own classes as they may need unique func
 
     static class PetalFlyweight {
         Petal petal;
-        List<Point> locations;
+        List<Point2D> locations;
         List<Float> rotations;
         PetalFlyweight(Petal petal) {
             this.petal = petal;
-            locations = new ArrayList<Point>();
+            locations = new ArrayList<Point2D>();
             rotations = new ArrayList<Float>();
         }
-        PetalFlyweight(Petal petal, Point location) {
+        PetalFlyweight(Petal petal, Point2D location) {
             this.petal = petal;
-            locations = new ArrayList<Point>();
+            locations = new ArrayList<Point2D>();
             rotations = new ArrayList<Float>();
             AddPetal(location, 0);
         }
-        void AddPetal(Point location, float rotation) {
+
+        /**
+         *
+         * @param location
+         * @param rotation
+         */
+        void AddPetal(Point2D location, float rotation) {
             locations.add(location);
             rotations.add(rotation);
         }
         public int Amount()
         {
             return locations.size();
+        }
+        public void DrawCentered(SpriteBatch batch) {
+            for (int i = 0; i < locations.size(); i++) {
+                float xPos = locations.get(i).x;
+                float yPos = locations.get(i).y;
+                petal.sprite.setCenter(xPos, yPos);
+                petal.sprite.setRotation(rotations.get(i));
+                petal.sprite.draw(batch);
+
+                GameScreen.crossManager.AddCross(new Point2D(xPos, yPos), Color.MAGENTA);
+            }
         }
     }
 }

@@ -5,6 +5,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.awt.*;
 
 /**
  * Uses a monochrome image to allow for images that are tinted a specific colour
@@ -44,13 +47,15 @@ public abstract class TintableElement {
     {
         sprite.scale(sizeMultiply);
         scale = sizeMultiply;
-        sprite.setCenter(sprite.getWidth()/2, 0);
+        //sprite.setCenter(sprite.getWidth()/2, 0);
     }
 
     public void Rotate(float degreesClockwise)
     {
         sprite.rotate(degreesClockwise);
     }
+
+
 
     /**
      * Gets the monochrome image for this specific TintableElement

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.sun.javafx.geom.Point2D;
 
 import java.awt.*;
 
@@ -24,6 +25,7 @@ public class GameScreen implements Screen{
     Rectangle testRect;
     Flower.Petal testPetal;
     Flower testFlower;
+    public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
     //Textures, sounds, rectangles etc go here, and game logic stuff
 
     public GameScreen(final FlowerPrototype gam)
@@ -48,10 +50,10 @@ public class GameScreen implements Screen{
         Color testColor = new Color(0,0,1,1);
 
         testPetal = new Flower.Petal(0, testColor);
-        Flower.Head testHead = new Flower.Head(0, Color.RED, new Point(200, 200));
-        testFlower = new Flower(testPetal, testHead, null, 2, Flower.PetalStyle.Touching);
-
         testPetal.sprite.setCenter(testRect.x, testRect.y + testTex.getHeight() + 100);
+
+        Flower.Head testHead = new Flower.Head(0, Color.RED, new Point2D(200, 200));
+        testFlower = new Flower(testPetal, testHead, null, 3, Flower.PetalStyle.Touching);
     }
 
     @Override
@@ -70,20 +72,17 @@ public class GameScreen implements Screen{
         //Begin a batch and draw stuff
         game.batch.begin();
         //game.font.draw(game.batch, "Game screen test text!", testRect.x, testRect.y + testTex.getHeight() + 40);
-        //testPetal.sprite.draw(game.batch);
-        game.batch.draw(testTex, testRect.x, testRect.y);
+        testPetal.sprite.draw(game.batch);
+        //game.batch.draw(testTex, testRect.x, testRect.y);
+        crossManager.AddCross(new Point2D(testFlower.head.sprite.getX() + testFlower.head.sprite.getWidth()/2
+                , testFlower.head.sprite.getY() + testFlower.head.sprite.getHeight()/2), Color.ORANGE);
+        testFlower.head.sprite.draw(game.batch);
 
         for(Flower.PetalFlyweight petalType : testFlower.petals)
         {
-            Sprite original = new Sprite(petalType.petal.sprite);
-            for (int i = 0; i < petalType.locations.size(); i++) {
-                original.setRotation(petalType.rotations.get(i));
-                original.setX(petalType.locations.get(i).x);
-                original.setY(petalType.locations.get(i).y);
-                original.draw(game.batch);
-            }
+            petalType.DrawCentered(game.batch);
         }
-        testFlower.head.sprite.draw(game.batch);
+        crossManager.DrawCrosses(game.batch);
 
         game.batch.end();
 

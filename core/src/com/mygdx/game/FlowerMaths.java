@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.sun.javafx.geom.Point2D;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 
 import java.awt.*;
@@ -59,27 +60,39 @@ public class FlowerMaths {
      * @param angle Angle around the circle that the petal will reside at
      * @return
      */
-    public static Point GetPetalPos(float radius, float angle)
+    public static Point2D GetPetalPos(float radius, float angle)
     {
         if(angle == 360) angle = 0;
         float closestAxial = GetClosestQuarterAngle(angle);
-        float sepFromAxial = Math.abs(closestAxial - angle);
+        float sepFromAxial = Math.abs(angle - closestAxial);
         float vertical = (float)0;
         float horizontal = (float)0;
         if(angle == 0)
-                vertical = radius;
+                return new Point2D(0, (int)radius);
         else if (angle == 90)
-                horizontal = radius;
+                return new Point2D((int)radius, 0);
         else if (angle == 180)
-                vertical = -radius;
+                return new Point2D(0, (int)(-radius));
         else if(angle == 270)
-                horizontal = -radius;
-        else
-        {
-                vertical = radius*(MathUtils.sinDeg(sepFromAxial));
-                horizontal = radius*(MathUtils.sinDeg(closestAxial - sepFromAxial));
+                return new Point2D((int)(-radius), 0);
+        else { //firstly operate under assumption of near horizontal - we can then switch if not
+            vertical = Math.abs(radius * (MathUtils.sinDeg(sepFromAxial)));
+            horizontal = Math.abs(radius * (MathUtils.sinDeg(90 - sepFromAxial)));
+
+            if(closestAxial == 0 || closestAxial == 180) { //closest to a vertical axis. Switch vertical and horizontal
+                float vBuffer = vertical;
+                vertical = horizontal;
+                horizontal = vBuffer; //preserve signs
+            }
+            if (angle > 180 && angle < 360) //negative horizontal
+            {
+                horizontal = Math.abs(horizontal) * -1;
+            }
+            if(angle > 90 && angle < 270) { //downwards vertical (negative)
+                vertical = Math.abs(vertical) * -1;
+            }
+            return new Point2D((int)horizontal, (int)vertical);
         }
-        return new Point((int)horizontal, (int)vertical);
     }
 
     /**
@@ -88,9 +101,9 @@ public class FlowerMaths {
      * @param relative Travel instructions? point
      * @return
      */
-    public static Point AddPoints(Point initial, Point relative)
+    public static Point2D AddPoints(Point2D initial, Point2D relative)
     {
-        Point output = new Point(initial.x + relative.x, initial.y + relative.y);
+        Point2D output = new Point2D(initial.x + relative.x, initial.y + relative.y);
         return output;
     }
 }
