@@ -7,6 +7,7 @@ import com.sun.javafx.geom.Point2D;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by Dan on 17/10/2014.
@@ -14,19 +15,20 @@ import java.util.*;
 public class DebugUtils {
     public static class CrossManager
     {
-        java.util.List<Point2D> locations = new ArrayList<Point2D>();
-        java.util.List<Color> colors = new ArrayList<Color>();
+        List<Point2D> locations = new ArrayList<Point2D>();
+        List<Color> colors = new ArrayList<Color>();
+        List<String> labels = new ArrayList<String>();
         BitmapFont font = new BitmapFont();
-        public boolean ShowCoOrds;
+        public boolean ShowLabels;
 
-        public CrossManager(boolean showCoOrds)
-        {
-            ShowCoOrds = showCoOrds;
+        public CrossManager(boolean showLabels) {
+            ShowLabels = showLabels;
             font.setColor(Color.WHITE);
         }
 
-        public void AddCross(Point2D center, Color color) {
+        public void AddCross(Point2D center, String label, Color color) {
             locations.add(center);
+            labels.add(label);
             colors.add(color);
         }
         public void DrawCrosses(SpriteBatch batch) {
@@ -40,8 +42,8 @@ public class DebugUtils {
                     template.Tint(colors.get(i));
                 }
                 template.sprite.draw(batch);
-                if(ShowCoOrds) {
-                    font.draw(batch, Float.toString(loc.x) + ", " + Float.toString(loc.y), loc.x + 10, loc.y);
+                if(ShowLabels) {
+                    font.draw(batch, labels.get(i), loc.x + 10, loc.y);
                 }
             }
         }

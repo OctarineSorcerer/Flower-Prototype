@@ -37,7 +37,7 @@ public class FlowerMaths {
         {
             return 270;
         }
-        else return 360;
+        else return 0;
     }
 
     /**
@@ -50,8 +50,8 @@ public class FlowerMaths {
     public static float GetPetalWidth(float petalSepAngle, float sectorPortion, float radius) {
         float theta = petalSepAngle * MathUtils.degreesToRadians;
         float arcLength = radius * theta;
-        float chordLength = 2*radius*(MathUtils.sin(arcLength/2*radius));
-        return chordLength;
+        float chordLength = 2f*radius*(MathUtils.sin(arcLength/2f*radius));
+        return Math.abs(chordLength*sectorPortion);
     }
 
     /**

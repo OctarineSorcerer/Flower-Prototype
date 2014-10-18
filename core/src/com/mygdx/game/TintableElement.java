@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.sun.javafx.geom.Point2D;
 
 import java.awt.*;
 
@@ -55,17 +56,38 @@ public abstract class TintableElement {
         sprite.rotate(degreesClockwise);
     }
 
+    /**
+     * Sets the position of the sprite, given a translational origin
+     * @param destination Destination you want the origin to rest at
+     * @param translationOrigin Origin of the translation
+     */
+    public void SetPosWithOrigin(Point2D destination, Point2D translationOrigin) {
+        sprite.setPosition(destination.x, destination.y);
+        sprite.translate(-(translationOrigin.x), -(translationOrigin.y));
+    }
 
-
+    /**
+     * Sets pos of sprite, using scale/rot origin as translational origin
+     * @param destination Destination of sprite
+     */
+    public void SetPosWithRotationalOrigin(Point2D destination) {
+        sprite.setPosition(destination.x, destination.y);
+        float yShift = -(sprite.getOriginY());
+        float xShift = -(sprite.getOriginX());
+        sprite.translate(xShift, yShift);
+    }
     /**
      * Gets the monochrome image for this specific TintableElement
      * @return A monochrome texture specified in fields
      */
-    Texture GetMonochromeImage()
-    {
+    Texture GetMonochromeImage() {
         FileHandle[] files = Gdx.files.internal(monochromePath).list();
         FileHandle target = files[monoIndex];
         Texture output = new Texture(target);
         return output;
     }
+    Point2D GetCenter(){
+        return new Point2D(sprite.getX() + (sprite.getWidth()/2), sprite.getY() + (sprite.getHeight()/2));
+    }
+
 }

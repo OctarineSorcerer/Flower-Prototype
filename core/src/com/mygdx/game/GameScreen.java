@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.sun.javafx.geom.Point2D;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 
 /**
  * Yay, game screen! Where it all goes DOWN
@@ -53,7 +54,18 @@ public class GameScreen implements Screen{
         testPetal.sprite.setCenter(testRect.x, testRect.y + testTex.getHeight() + 100);
 
         Flower.Head testHead = new Flower.Head(0, Color.RED, new Point2D(200, 200));
-        testFlower = new Flower(testPetal, testHead, null, 3, Flower.PetalStyle.Touching);
+        testFlower = new Flower(testPetal, testHead, null, 13, Flower.PetalStyle.Touching);
+
+        Point2D headCenter = testFlower.head.GetCenter();
+        crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
+        DecimalFormat dF = new DecimalFormat(); dF.setMaximumFractionDigits(2);
+        for(Flower.PetalFlyweight petalType : testFlower.petals)
+        {
+            for(int i = 0; i < petalType.locations.size(); i++)
+            {
+                crossManager.AddCross(petalType.locations.get(i), dF.format(petalType.rotations.get(i)), Color.MAGENTA);
+            }
+        }
     }
 
     @Override
@@ -74,14 +86,12 @@ public class GameScreen implements Screen{
         //game.font.draw(game.batch, "Game screen test text!", testRect.x, testRect.y + testTex.getHeight() + 40);
         testPetal.sprite.draw(game.batch);
         //game.batch.draw(testTex, testRect.x, testRect.y);
-        crossManager.AddCross(new Point2D(testFlower.head.sprite.getX() + testFlower.head.sprite.getWidth()/2
-                , testFlower.head.sprite.getY() + testFlower.head.sprite.getHeight()/2), Color.ORANGE);
-        testFlower.head.sprite.draw(game.batch);
 
         for(Flower.PetalFlyweight petalType : testFlower.petals)
         {
             petalType.DrawCentered(game.batch);
         }
+        testFlower.head.sprite.draw(game.batch);
         crossManager.DrawCrosses(game.batch);
 
         game.batch.end();

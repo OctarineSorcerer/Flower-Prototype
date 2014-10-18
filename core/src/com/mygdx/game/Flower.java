@@ -30,20 +30,20 @@ public class Flower { //These are their own classes as they may need unique func
     }
     void ArrangePetals(PetalStyle arrangement, int count, int petalIndex)
     {
-        float sepAngle = 360/count;
+        float sepAngle = 360f/(float)count;
         switch (arrangement)
         {
             case Touching:
                 PetalFlyweight thisFlyweight = petals.get(petalIndex);
-                float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, (float) 1, head.radius);
+                float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 0.5f, head.radius);
                 Petal relevantPetal = thisFlyweight.petal;
-                //relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
-                //relevantPetal.sprite.setOrigin(relevantPetal.sprite.getWidth()/2, 0); //origin at bottom thingy
-                for(int i = 0; i < sepAngle*count; i+= sepAngle)
+                relevantPetal.sprite.setOrigin(relevantPetal.sprite.getWidth()/2, 0); //origin at bottom thingy
+                relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
+                for(float i = 0; i < sepAngle*count; i+= sepAngle)
                 {
-                    Point2D location = FlowerMaths.AddPoints(new Point2D((int) head.sprite.getX(), (int) head.sprite.getY())
+                    Point2D location = FlowerMaths.AddPoints(head.GetCenter()
                             , FlowerMaths.GetPetalPos(head.radius, i));
-                    location.y += relevantPetal.sprite.getHeight();
+                    //location.y += relevantPetal.sprite.getHeight();
                     //location.x += relevantPetal.sprite.getWidth();
                     thisFlyweight.AddPetal(location, i);
                 }
@@ -69,6 +69,7 @@ public class Flower { //These are their own classes as they may need unique func
             super("textures/heads/monochrome/", monochromeIndex, tintColour);
             sprite.setOriginCenter();
             sprite.setCenter(loc.x, loc.y);
+            //sprite.scale(1.5f);
             radius = sprite.getWidth()/2;
         }
     }
@@ -94,11 +95,13 @@ public class Flower { //These are their own classes as they may need unique func
         List<Float> rotations;
         PetalFlyweight(Petal petal) {
             this.petal = petal;
+            this.petal.sprite.setOrigin(petal.sprite.getWidth()/2, 0);
             locations = new ArrayList<Point2D>();
             rotations = new ArrayList<Float>();
         }
         PetalFlyweight(Petal petal, Point2D location) {
             this.petal = petal;
+            this.petal.sprite.setOrigin(petal.sprite.getWidth()/2, 0);
             locations = new ArrayList<Point2D>();
             rotations = new ArrayList<Float>();
             AddPetal(location, 0);
@@ -119,13 +122,10 @@ public class Flower { //These are their own classes as they may need unique func
         }
         public void DrawCentered(SpriteBatch batch) {
             for (int i = 0; i < locations.size(); i++) {
-                float xPos = locations.get(i).x;
-                float yPos = locations.get(i).y;
-                petal.sprite.setCenter(xPos, yPos);
-                petal.sprite.setRotation(rotations.get(i));
+                Point2D loc = locations.get(i);
+                petal.SetPosWithRotationalOrigin(loc);
+                petal.sprite.setRotation(-(rotations.get(i)));
                 petal.sprite.draw(batch);
-
-                GameScreen.crossManager.AddCross(new Point2D(xPos, yPos), Color.MAGENTA);
             }
         }
     }
