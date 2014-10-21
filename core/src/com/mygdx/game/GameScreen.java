@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -9,7 +10,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.sun.javafx.geom.Point2D;
 
@@ -21,7 +24,7 @@ import java.util.Map;
 /**
  * Yay, game screen! Where it all goes DOWN
  */
-public class GameScreen implements Screen, InputProcessor{
+public class GameScreen implements Screen, GestureDetector.GestureListener {
     final FlowerPrototype game;
 
     OrthographicCamera camera;
@@ -31,16 +34,9 @@ public class GameScreen implements Screen, InputProcessor{
     Flower testFlower;
     public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
 
-    class TouchInfo {
-        public float touchX = 0;
-        public float touchY = 0;
-        public boolean touched = false;
-    }
-    private Map<Integer,TouchInfo> touches = new HashMap<Integer,TouchInfo>();
-
     public GameScreen(final FlowerPrototype gam) {
         this.game = gam; //This is for rendering, right?
-        Gdx.input.setInputProcessor(this);
+        //Gdx.input.setInputProcessor(this);
         //Load images
         testTex = new Texture(Gdx.files.internal("dorf.jpg"));
 
@@ -70,9 +66,9 @@ public class GameScreen implements Screen, InputProcessor{
             }
         } //Crosses for debug purposes
 
-        for(int i = 0; i < 5; i++){
+        /*for(int i = 0; i < 5; i++){
             touches.put(i, new TouchInfo());
-        }
+        }*/
     }
 
     @Override
@@ -93,8 +89,7 @@ public class GameScreen implements Screen, InputProcessor{
         //testPetal.sprite.draw(game.batch);
         //game.batch.draw(testTex, testRect.x, testRect.y);
 
-        for(Flower.PetalFlyweight petalType : testFlower.petals)
-        {
+        for (Flower.PetalFlyweight petalType : testFlower.petals) {
             petalType.DrawCentered(game.batch);
         }
         testFlower.head.sprite.draw(game.batch);
@@ -109,13 +104,19 @@ public class GameScreen implements Screen, InputProcessor{
             camera.unproject(touchPos); //Translates from screen co-ord to world co-ord
             //Do with touchPos as you will
         }
-        //if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            //bucket.x -= 200 * Gdx.graphics.getDeltaTime(); //timespan between last and this frame in deltaseconds
-        //if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            //bucket.x += 200 * Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Input.Keys.A))
+            camera.translate(-200 * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
+            camera.update();
+        if (Gdx.input.isKeyPressed(Input.Keys.D))
+            camera.translate(200 * Gdx.graphics.getDeltaTime(), 0);
+            camera.update();
+        if (Gdx.input.isKeyPressed(Keys.W))
+            camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
+            camera.update();
+        if (Gdx.input.isKeyPressed(Keys.S))
+            camera.translate(0, -200 * Gdx.graphics.getDeltaTime());
+            camera.update();
     }
-
-    @Override
     public void dispose() { //dispose of all textures and such here
 
     }
@@ -141,71 +142,45 @@ public class GameScreen implements Screen, InputProcessor{
         camera.viewportHeight = height;
     }
 
-    //region Inputs (touch, keys, etc)
     @Override
-    public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Keys.RIGHT:
-                camera.translate(1, 0);
-                break;
-            case Keys.LEFT:
-                camera.translate(-1, 0);
-                break;
-            default:
-                break;
-        }
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    //region Input Events
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
         return false;
     }
 
     @Override
-    public boolean keyUp(int keycode) {
-        // TODO Auto-generated method stub
+    public boolean longPress(float x, float y) {
         return false;
     }
 
     @Override
-    public boolean keyTyped(char character) {
-        // TODO Auto-generated method stub
+    public boolean fling(float velocityX, float velocityY, int button) {
         return false;
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(pointer < 5){
-            touches.get(pointer).touchX = screenX;
-            touches.get(pointer).touchY = screenX;
-            touches.get(pointer).touched = true;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if(pointer < 5){
-            touches.get(pointer).touchX = 0;
-            touches.get(pointer).touchY = 0;
-            touches.get(pointer).touched = false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        // TODO Auto-generated method stub
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
         return false;
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        // TODO Auto-generated method stub
+    public boolean panStop(float x, float y, int pointer, int button) {
         return false;
     }
 
     @Override
-    public boolean scrolled(int amount) {
-        // TODO Auto-generated method stub
+    public boolean zoom(float initialDistance, float distance) {
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         return false;
     }
     //endregion
-
 }
