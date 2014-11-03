@@ -2,24 +2,22 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.FlowerItems.Flower;
 import com.sun.javafx.geom.Point2D;
 
-import java.awt.*;
+import com.mygdx.game.FlowerItems.*;
+
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Yay, game screen! Where it all goes DOWN
@@ -28,9 +26,9 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     final FlowerPrototype game;
 
     OrthographicCamera camera;
-    Texture testTex;
-    Rectangle testRect;
-    Flower.Petal testPetal;
+    Texture groundTex;
+    Ground ground;
+    Petal testPetal;
     Flower testFlower;
     public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
 
@@ -38,7 +36,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         this.game = gam; //This is for rendering, right?
         //Gdx.input.setInputProcessor(this);
         //Load images
-        testTex = new Texture(Gdx.files.internal("dorf.jpg"));
+        groundTex = new Texture(Gdx.files.internal("textures/Ground.png"));
 
         //Load sounds
 
@@ -47,11 +45,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
 
         //any other creation stuff
-        testRect = new Rectangle();
-        testRect.x = FlowerPrototype.WIDTH/2 - (testTex.getWidth())/2;
-        testRect.y = 20;
+        ground = new Ground(groundTex);
 
-        Flower.Head testHead = new Flower.Head(0, Color.RED, new Point2D(200, 200));
+        Head testHead = new Head(0, Color.RED, new Point2D(200, 200));
+        testPetal = new Petal(0, Color.ORANGE);
         testFlower = new Flower(testPetal, testHead, null, 13, Flower.PetalStyle.Touching);
 
         Point2D headCenter = testFlower.head.GetCenter();
@@ -73,7 +70,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public void render (float delta) {
-        Gdx.gl.glClearColor(0.1059f, 0.1059f, 0.1059f, 1); //kinda a dark grey color
+        //Gdx.gl.glClearColor(0.1059f, 0.1059f, 0.1059f, 1); //kinda a dark grey color
+        Gdx.gl.glClearColor(Color.CYAN.r, Color.CYAN.g, Color.CYAN.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //Clear dat screen
 
         // tell the camera to update its matrices.
@@ -85,14 +83,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
         //Begin a batch and draw stuff
         game.batch.begin();
-        //game.font.draw(game.batch, "Game screen test text!", testRect.x, testRect.y + testTex.getHeight() + 40);
+        //game.font.draw(game.batch, "Game screen test text!", groundRect.x, groundRect.y + groundTex.getHeight() + 40);
         //testPetal.sprite.draw(game.batch);
-        //game.batch.draw(testTex, testRect.x, testRect.y);
-
-        for (Flower.PetalFlyweight petalType : testFlower.petals) {
-            petalType.DrawCentered(game.batch);
-        }
-        testFlower.head.sprite.draw(game.batch);
+        //game.batch.draw(groundTex, groundRect.x, groundRect.y);
+        ground.Draw(game.batch);
+        testFlower.Draw(game.batch);
         crossManager.DrawCrosses(game.batch);
 
         game.batch.end();
@@ -165,6 +160,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
+        camera.translate(-deltaX, -deltaY);
+        camera.update();
         return false;
     }
 

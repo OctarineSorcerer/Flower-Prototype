@@ -65,8 +65,6 @@ public class FlowerMaths {
         if(angle == 360) angle = 0;
         float closestAxial = GetClosestQuarterAngle(angle);
         float sepFromAxial = Math.abs(angle - closestAxial);
-        float vertical = (float)0;
-        float horizontal = (float)0;
         if(angle == 0)
                 return new Point2D(0, (int)radius);
         else if (angle == 90)
@@ -76,8 +74,8 @@ public class FlowerMaths {
         else if(angle == 270)
                 return new Point2D((int)(-radius), 0);
         else { //firstly operate under assumption of near horizontal - we can then switch if not
-            vertical = Math.abs(radius * (MathUtils.sinDeg(sepFromAxial)));
-            horizontal = Math.abs(radius * (MathUtils.sinDeg(90 - sepFromAxial)));
+            float vertical = Math.abs(radius * (MathUtils.sinDeg(sepFromAxial)));
+            float horizontal = Math.abs(radius * (MathUtils.sinDeg(90 - sepFromAxial)));
 
             if(closestAxial == 0 || closestAxial == 180) { //closest to a vertical axis. Switch vertical and horizontal
                 float vBuffer = vertical;

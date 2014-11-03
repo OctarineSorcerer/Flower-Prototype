@@ -26,7 +26,7 @@ public abstract class TintableElement {
      * @param monochromeIndex Index of the monochrome image
      * @param tintColour Colour you wish to tint the image
      */
-    TintableElement(String textureFolder, int monochromeIndex, Color tintColour)
+    public TintableElement(String textureFolder, int monochromeIndex, Color tintColour)
     {
         this.monochromePath = textureFolder;
         Tint(tintColour);
@@ -86,7 +86,7 @@ public abstract class TintableElement {
         Texture output = new Texture(target);
         return output;
     }
-    Point2D GetCenter(){
+    public Point2D GetCenter(){
         return new Point2D(sprite.getX() + (sprite.getWidth()/2), sprite.getY() + (sprite.getHeight()/2));
     }
 

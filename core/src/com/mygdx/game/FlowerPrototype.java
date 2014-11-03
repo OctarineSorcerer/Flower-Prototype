@@ -15,7 +15,7 @@ public class FlowerPrototype extends Game {
 
     public BitmapFont font;
 
-    public static final int WIDTH=480,HEIGHT=800;
+    public static final int WIDTH=480,HEIGHT=600;
 
 	@Override
 	public void create () {
