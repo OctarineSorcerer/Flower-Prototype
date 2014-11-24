@@ -23,5 +23,6 @@ public class Ground {
             sprite.draw(batch);
             sprite.translateX(sprite.getWidth());
         }
+        sprite.setX(0);
     }
 }

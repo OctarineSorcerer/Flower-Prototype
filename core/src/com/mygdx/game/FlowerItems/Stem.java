@@ -11,4 +11,8 @@ public class Stem extends TintableElement {
         public Stem(int monochromeIndex, Color tintColour) {
             super("textures/stems/monochrome/", monochromeIndex, tintColour);
         }
+        public void CreateStemTexture() {
+            //What is needed: forces, at what times, and for what duration
+
+        }
     }
