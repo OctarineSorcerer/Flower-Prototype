@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.sun.javafx.geom.Point2D;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 
 import java.awt.*;
 
