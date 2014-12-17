@@ -17,12 +17,25 @@ import java.util.Comparator;
 public class BrushInstructions {
     ArrayList<BrushForce> forces;
 
-    private class BrushForce {
+    public class BrushForce {
         Vector2 magnitude;
         int start;
         int duration;
-        int activeTime;
+        int activeTime; //time the force has been active for
         boolean active;
+
+        /**
+         * Constructor for a brushForce
+         * @param magnitude The magnitude of this force in vector form
+         * @param start The time at which this force should start. Integer.
+         * @param duration Duration for which this force will last
+         */
+        public BrushForce(Vector2 magnitude, int start, int duration) {
+            this.magnitude = magnitude;
+            this.start = start;
+            this.duration = duration;
+            this.active = false;
+        }
     }
     private class Brush {
         Point2D position;
@@ -61,18 +74,37 @@ public class BrushInstructions {
             }
             for (BrushForce force : forces) { //DAMMIT I WANNA USE STREAMS BUT NO LAMBDA
                 if(force.active) {
-                    brush.velocity.add(force.magnitude);
+                    brush.velocity = brush.velocity.add(force.magnitude);
+
+                    if(brush.velocity.x > brush.radius) //For NOW limit the velocity.
+                    {
+                        brush.velocity.x = brush.radius;
+                    }
+                    if(brush.velocity.y > brush.radius)
+                    {
+                        brush.velocity.y = brush.radius;
+                    }
+
                     force.activeTime += 1;
                     if(force.activeTime > force.duration) {
                         force.active = false;
                     }
                 }
             }
-            brush.position.add(brush.velocity.x, brush.velocity.y);
+            brush.position = brush.position.add(brush.velocity.x, brush.velocity.y);
+            time += 1;
         }
         Texture output = new Texture(canvas);
         canvas.dispose();
         return output;
+    }
+
+    public ArrayList<BrushForce> GenerateForces() {
+        ArrayList<BrushForce> forces = new ArrayList<BrushForce>();
+        forces.add(new BrushForce(new Vector2(0, 2), 0, 2));
+        forces.add(new BrushForce(new Vector2(8, 0), 2, 1));
+        forces.add(new BrushForce(new Vector2(-8, 0), 6, 1));
+        return forces;
     }
 
     /**

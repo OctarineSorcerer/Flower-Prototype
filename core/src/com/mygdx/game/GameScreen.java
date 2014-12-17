@@ -18,6 +18,7 @@ import com.sun.javafx.geom.Point2D;
 import com.mygdx.game.FlowerItems.*;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 /**
  * Yay, game screen! Where it all goes DOWN
@@ -30,6 +31,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     Ground ground;
     Petal testPetal;
     Flower testFlower;
+    Texture testTex;
     public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
 
     public GameScreen(final FlowerPrototype gam) {
@@ -50,6 +52,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         Head testHead = new Head(0, Color.RED, new Point2D(200, 200));
         testPetal = new Petal(0, Color.ORANGE);
         testFlower = new Flower(testPetal, testHead, null, 13, Flower.PetalStyle.Touching);
+
+        BrushInstructions testInstr = new BrushInstructions();
+        testInstr.SetForces(testInstr.GenerateForces());
+        testTex = testInstr.Execute(100, 300);
 
         Point2D headCenter = testFlower.head.GetCenter();
         crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
@@ -83,13 +89,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
         //Begin a batch and draw stuff
         game.batch.begin();
-        //game.font.draw(game.batch, "Game screen test text!", groundRect.x, groundRect.y + groundTex.getHeight() + 40);
-        //testPetal.sprite.draw(game.batch);
-        //game.batch.draw(groundTex, groundRect.x, groundRect.y);
         ground.Draw(game.batch);
         testFlower.Draw(game.batch);
         crossManager.DrawCrosses(game.batch);
-
+        //game.batch.draw(testTex, 0, 0);
         game.batch.end();
 
         //Process user input
