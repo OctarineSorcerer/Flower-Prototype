@@ -50,7 +50,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         ground = new Ground(groundTex);
 
         Head testHead = new Head(0, Color.RED, new Point2D(200, 200));
-        testPetal = new Petal(0, Color.ORANGE);
+        testPetal = new Petal(0, Color.BLUE);
         testFlower = new Flower(testPetal, testHead, null, 13, Flower.PetalStyle.Touching);
 
         BrushInstructions testInstr = new BrushInstructions();
@@ -92,7 +92,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         ground.Draw(game.batch);
         testFlower.Draw(game.batch);
         crossManager.DrawCrosses(game.batch);
-        //game.batch.draw(testTex, 0, 0);
+        game.batch.draw(testTex, 0, 0);
         game.batch.end();
 
         //Process user input
