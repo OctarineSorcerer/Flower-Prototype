@@ -4,12 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.FlowerItems.Flower;
@@ -27,18 +24,15 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     final FlowerPrototype game;
 
     OrthographicCamera camera;
-    Texture groundTex;
     Ground ground;
     Petal testPetal;
     Flower testFlower;
-    Texture testTex;
     public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
 
     public GameScreen(final FlowerPrototype gam) {
         this.game = gam; //This is for rendering, right?
         //Gdx.input.setInputProcessor(this);
         //Load images
-        groundTex = new Texture(Gdx.files.internal("textures/Ground.png"));
 
         //Load sounds
 
@@ -47,15 +41,12 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
 
         //any other creation stuff
-        ground = new Ground(groundTex);
+        ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
 
-        Head testHead = new Head(0, Color.RED, new Point2D(200, 200));
-        testPetal = new Petal(0, Color.ORANGE);
-        testFlower = new Flower(testPetal, testHead, null, 13, Flower.PetalStyle.Touching);
-
-        BrushInstructions testInstr = new BrushInstructions();
-        testInstr.SetForces(testInstr.GenerateForces());
-        testTex = testInstr.Execute(100, 300);
+        Head testHead = new Head(0, Color.BLUE, new Point2D(200, 200));
+        testPetal = new Petal(0, Color.YELLOW);
+        testFlower = new Flower(testPetal, testHead, new Stem(), 13, Flower.PetalStyle.Touching,
+                new Point2D(FlowerPrototype.WIDTH/2, 20)); //20 for funsies
 
         Point2D headCenter = testFlower.head.GetCenter();
         crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
@@ -91,8 +82,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         game.batch.begin();
         ground.Draw(game.batch);
         testFlower.Draw(game.batch);
-        crossManager.DrawCrosses(game.batch);
-        //game.batch.draw(testTex, 0, 0);
+        //crossManager.DrawCrosses(game.batch);
         game.batch.end();
 
         //Process user input
@@ -102,18 +92,32 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             camera.unproject(touchPos); //Translates from screen co-ord to world co-ord
             //Do with touchPos as you will
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A))
-            camera.translate(-200 * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            if (camera.position.x > FlowerPrototype.WIDTH / 2) {
+                camera.translate(-200 * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
+                ground.DecrementStart(200 * Gdx.graphics.getDeltaTime());
+            }
+            else {
+                camera.position.x = FlowerPrototype.WIDTH / 2;
+            }
             camera.update();
-        if (Gdx.input.isKeyPressed(Input.Keys.D))
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             camera.translate(200 * Gdx.graphics.getDeltaTime(), 0);
+            ground.IncrementStart(200 * Gdx.graphics.getDeltaTime());
             camera.update();
-        if (Gdx.input.isKeyPressed(Keys.W))
+        }
+        if (Gdx.input.isKeyPressed(Keys.W)) {
             camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
             camera.update();
-        if (Gdx.input.isKeyPressed(Keys.S))
-            camera.translate(0, -200 * Gdx.graphics.getDeltaTime());
+        }
+        if (Gdx.input.isKeyPressed(Keys.S)) {
+            if (camera.position.y > FlowerPrototype.HEIGHT / 2) {
+                camera.translate(0, -200 * Gdx.graphics.getDeltaTime());
+            }
+            else camera.position.y = FlowerPrototype.HEIGHT / 2;
             camera.update();
+        }
     }
     public void dispose() { //dispose of all textures and such here
 

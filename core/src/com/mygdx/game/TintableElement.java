@@ -33,6 +33,11 @@ public abstract class TintableElement {
         this.monoIndex = monochromeIndex;
     }
 
+    public TintableElement(Sprite sprite)
+    {
+        this.sprite = sprite;
+    }
+
     public void Tint(Color tintColour)
     {
         if(sprite == null)

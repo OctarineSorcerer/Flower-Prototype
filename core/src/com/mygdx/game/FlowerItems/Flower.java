@@ -14,15 +14,24 @@ public class Flower { //These are their own classes as they may need unique func
     public List<PetalFlyweight> petals;
     public Head head;
     public Stem stem;
+    public Point2D rootLoc;
 
-    public Flower(Petal mainPetal, Head flowerHead, Stem flowerStem, int petalCount, PetalStyle petalArrangement) {
+    public Flower(Petal mainPetal, Head flowerHead, Stem flowerStem, int petalCount, PetalStyle petalArrangement, Point2D root) {
+        rootLoc = root;
         head = flowerHead;
-        stem = flowerStem;
+        stem = flowerStem; //We're gonna be nice and say all ends of the stems are middle-top, middle-bottom
+
+        stem.SetPosWithOrigin(rootLoc, new Point2D(stem.sprite.getWidth()/2, 0));
+        head.SetPosWithOrigin(
+                new Point2D(stem.sprite.getX() + stem.sprite.getWidth()/2, stem.sprite.getY() + stem.sprite.getHeight()),
+                new Point2D(head.sprite.getWidth()/2, head.sprite.getHeight()/2));
+
         petals = new ArrayList<PetalFlyweight>();
         petals.add(new PetalFlyweight(mainPetal));
         ArrangePetals(petalArrangement, petalCount, 0);
     }
     public void Draw(SpriteBatch batch) {
+        stem.sprite.draw(batch);
         head.sprite.draw(batch);
         for (Flower.PetalFlyweight petalType : petals) {
             petalType.DrawCentered(batch);
@@ -40,8 +49,6 @@ public class Flower { //These are their own classes as they may need unique func
                 for (float i = 0; i < sepAngle * count; i += sepAngle) {
                     Point2D location = FlowerMaths.AddPoints(head.GetCenter()
                             , FlowerMaths.GetPetalPos(head.radius, i));
-                    //location.y += relevantPetal.sprite.getHeight();
-                    //location.x += relevantPetal.sprite.getWidth();
                     thisFlyweight.AddPetal(location, i);
                 }
                 break;

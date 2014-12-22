@@ -55,7 +55,7 @@ public class DebugUtils {
 
     static class DebugCross extends TintableElement {
         DebugCross(int monochromeIndex, Color tintColour) {
-            super("textures", monochromeIndex, tintColour);
+            super("textures/Debug", monochromeIndex, tintColour);
             //sprite.setOriginCenter();
             //sprite.setCenter(loc.x, loc.y);
         }
