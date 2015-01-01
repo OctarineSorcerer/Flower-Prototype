@@ -24,6 +24,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     final FlowerPrototype game;
 
     OrthographicCamera camera;
+    int hCameraSpeed = 200, vCameraSpeed = 200;
     Ground ground;
     Petal testPetal;
     Flower testFlower;
@@ -43,7 +44,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         //any other creation stuff
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
 
-        Head testHead = new Head(0, Color.BLUE, new Point2D(200, 200));
+        Head testHead = new Head(1, Color.BLUE);
         testPetal = new Petal(0, Color.YELLOW);
         testFlower = new Flower(testPetal, testHead, new Stem(), 13, Flower.PetalStyle.Touching,
                 new Point2D(FlowerPrototype.WIDTH/2, 20)); //20 for funsies
@@ -94,8 +95,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             if (camera.position.x > FlowerPrototype.WIDTH / 2) {
-                camera.translate(-200 * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
-                ground.DecrementStart(200 * Gdx.graphics.getDeltaTime());
+                camera.translate(-hCameraSpeed * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
+                ground.DecrementStart(hCameraSpeed * Gdx.graphics.getDeltaTime());
             }
             else {
                 camera.position.x = FlowerPrototype.WIDTH / 2;
@@ -103,17 +104,17 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             camera.update();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            camera.translate(200 * Gdx.graphics.getDeltaTime(), 0);
-            ground.IncrementStart(200 * Gdx.graphics.getDeltaTime());
+            camera.translate(hCameraSpeed * Gdx.graphics.getDeltaTime(), 0);
+            ground.IncrementStart(hCameraSpeed * Gdx.graphics.getDeltaTime());
             camera.update();
         }
         if (Gdx.input.isKeyPressed(Keys.W)) {
-            camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
+            camera.translate(0, hCameraSpeed * Gdx.graphics.getDeltaTime());
             camera.update();
         }
         if (Gdx.input.isKeyPressed(Keys.S)) {
             if (camera.position.y > FlowerPrototype.HEIGHT / 2) {
-                camera.translate(0, -200 * Gdx.graphics.getDeltaTime());
+                camera.translate(0, -hCameraSpeed * Gdx.graphics.getDeltaTime());
             }
             else camera.position.y = FlowerPrototype.HEIGHT / 2;
             camera.update();

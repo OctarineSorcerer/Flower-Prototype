@@ -32,10 +32,10 @@ public class Flower { //These are their own classes as they may need unique func
     }
     public void Draw(SpriteBatch batch) {
         stem.sprite.draw(batch);
-        head.sprite.draw(batch);
         for (Flower.PetalFlyweight petalType : petals) {
             petalType.DrawCentered(batch);
         }
+        head.sprite.draw(batch);
     }
     void ArrangePetals(PetalStyle arrangement, int count, int petalIndex) {
         float sepAngle = 360f / (float) count;
@@ -45,10 +45,13 @@ public class Flower { //These are their own classes as they may need unique func
                 float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 0.5f, head.radius);
                 Petal relevantPetal = thisFlyweight.petal;
                 relevantPetal.sprite.setOrigin(relevantPetal.sprite.getWidth() / 2, 0); //origin at bottom thingy
-                //relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
+                relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
+                float sagitta = (float)(head.radius - Math.sqrt(Math.pow(head.radius, 2)
+                        - Math.pow(0.5*relevantPetal.sprite.getWidth()*relevantPetal.sprite.getScaleX(), 2)));
+                //^That bit is the height of the arc. Yeah. Go maths. http://www.mathopenref.com/sagitta.html
                 for (float i = 0; i < sepAngle * count; i += sepAngle) {
                     Point2D location = FlowerMaths.AddPoints(head.GetCenter()
-                            , FlowerMaths.GetPetalPos(head.radius, i));
+                            , FlowerMaths.GetPetalPos(head.radius - sagitta, i));
                     thisFlyweight.AddPetal(location, i);
                 }
                 break;

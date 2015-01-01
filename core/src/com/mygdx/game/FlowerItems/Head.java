@@ -10,11 +10,8 @@ import com.sun.javafx.geom.Point2D;
 public class Head extends TintableElement {
     float radius;
 
-    public Head(int monochromeIndex, Color tintColour, Point2D loc) {
+    public Head(int monochromeIndex, Color tintColour) {
         super("textures/heads/monochrome/", monochromeIndex, tintColour);
-        sprite.setOriginCenter();
-        sprite.setCenter(loc.x, loc.y);
-        //sprite.scale(1.5f);
         radius = sprite.getWidth() / 2;
     }
 }
