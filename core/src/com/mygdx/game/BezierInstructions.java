@@ -6,64 +6,96 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Created by Dan on 21/12/2014.
  */
 public class BezierInstructions {
 
-    /***
-     * Woo, binomial expansion! This using a cubic bezier curve, the equation for a point at a time is as follows:
-     * (1-t)^3 * P0 + 3(1-t)^2 * t * P1 + 3(1-t) * t^2 * P2 + t^3 * P3
-     * @param t Elapsed time. Between 0 and 1, 0 being start of curve, 1 being end
-     * @param p0 I believe... first control point?
-     * @param p1 Second control point
-     * @param p2 Third control point
-     * @param p3 End control point I think
-     * @return A vector containing the point on a bezier curve at the specified time
+    public int tipX, tipY;
+    public Vector2[] points;
+
+    /**
+     *
+     * @param points Control points, try for 4 of these right now
      */
-    static Vector2 CalculateBezierPoint(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3) {
-        float u = 1 - t;
-
-        Vector2 p = p0.cpy().scl(((float) Math.pow(u, 3)));
-        p.add(p1.cpy().scl(3 * u * u * t));
-        p.add(p2.cpy().scl(3 * u * t * t));
-        p.add(p3.cpy().scl(t * t * t));
-
-        return p;
+    public BezierInstructions(Vector2[] points) {
+        this.points = points;
     }
 
-    /***
+    /**
      * Draws a cubic bezier curve
-     * @param points The control points. CONTROL POINTS. 4 of these please.
      * @param pixmap Pixmap for use of drawing
      * @return A texture containing drawn bezier curve
      */
-    public static Texture DrawBezier(Vector2[] points, Pixmap pixmap)
-    {
-        int radius = 20; //hypothetical for now, we'll pass in an actual radius later
+    public Texture Draw(Pixmap pixmap, int radius) {
         int height = pixmap.getHeight();
         pixmap.setColor(Color.GREEN);
         int segments = height; //might be enough
+
+        int greatestX = 0, smallestYFromTop = 0, topX = 0;
+
         float t = 0;
 
         Bezier<Vector2> bezier = new Bezier<Vector2>(points);
         Vector2 pixel = new Vector2(); //Thing we will use to draw
 
-        bezier.valueAt(pixel, t).add(pixmap.getWidth()/2, 0);
-        pixmap.fillCircle((int)pixel.x, (int)pixel.y, radius);
+        bezier.valueAt(pixel, t); //.add(pixmap.getWidth()/2, 0); For centering
+        pixmap.fillCircle((int)pixel.x, height - (int)pixel.y, radius);
 
         //As the intended use for this is creating sprites and saving them for later use, optimisation should be the
         //last worry here. Therefore, ALL THE RESOLUTION
         for(int i = 1; i <= segments; i++) {
             t = i / (float) segments;
-            bezier.valueAt(pixel, t).add(pixmap.getWidth()/2, 0);
-            pixmap.fillCircle(((int) pixel.x), ((int) pixel.y), radius);
-            System.out.println(pixel.x + ", " + pixel.y);
+            bezier.valueAt(pixel, t); //.add(pixmap.getWidth()/2, 0);
+            if(i == segments) { //Last one
+
+                tipX = Math.round(pixel.x);
+                tipY = Math.round(pixel.y);
+            }
+            pixmap.fillCircle((int)pixel.x, height - (int)pixel.y, radius);
+            if(pixel.y + radius < smallestYFromTop) {
+                smallestYFromTop = Math.round(pixel.y + radius);
+            }
+            if(pixel.x + radius > greatestX) {
+                greatestX = Math.round(pixel.x + radius);
+            }
         }
-        Texture output = new Texture(pixmap);
+        Pixmap alteredMap = new Pixmap(greatestX, height - smallestYFromTop, Pixmap.Format.RGBA4444);
+        alteredMap.drawPixmap(pixmap, 0, 0, 0, 0, greatestX, height - smallestYFromTop);
         pixmap.dispose();
+        Texture output = new Texture(alteredMap);
+        alteredMap.dispose();
         return output;
     }
 
-
+    /***
+     *
+     * @param seed just some random seed thing
+     * @param pointCount amount of points in the curve! seeing as we only have a 4-point drawing thing so far use 4
+     * @param width width of the stem's sprite
+     * @return
+     */
+    public static Vector2[] GeneratePoints(long seed, int pointCount, int width) {
+        List<Vector2> points = new ArrayList<Vector2>();
+        Random rand = new Random(seed);
+        double yLast = 0;
+        int yRangeMin = 60, yRangeMax = 100;
+        points.add(new Vector2(width/2, 0));
+        for(int i = 1; i < pointCount; i++)
+        {
+            double x = rand.nextDouble() * width;
+            double yAddition = rand.nextInt(yRangeMax - yRangeMin) + yRangeMin;
+            double y = yLast + yAddition;
+            points.add(new Vector2((float) x, (float) y));
+            //System.out.println(x + ", " + y + ". yAddition = " + yAddition);
+            yLast = y;
+        }
+        //Collections.reverse(points);
+        return points.toArray(new Vector2[points.size()]);
+    }
 }

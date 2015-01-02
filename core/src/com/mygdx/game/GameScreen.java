@@ -16,13 +16,14 @@ import com.mygdx.game.FlowerItems.*;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Yay, game screen! Where it all goes DOWN
  */
 public class GameScreen implements Screen, GestureDetector.GestureListener {
     final FlowerPrototype game;
-
+    Random rand = new Random();
     OrthographicCamera camera;
     int hCameraSpeed = 200, vCameraSpeed = 200;
     Ground ground;
@@ -32,7 +33,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     public GameScreen(final FlowerPrototype gam) {
         this.game = gam; //This is for rendering, right?
-        //Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(new GestureDetector(this));
         //Load images
 
         //Load sounds
@@ -53,6 +54,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
 
         DecimalFormat dF = new DecimalFormat(); dF.setMaximumFractionDigits(2);
+        rand.nextLong();
         for(Flower.PetalFlyweight petalType : testFlower.petals)
         {
             for(int i = 0; i < petalType.locations.size(); i++)
@@ -147,6 +149,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
+        testFlower.DebugChangeStem(rand.nextLong());
         return false;
     }
 
@@ -168,7 +171,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        camera.translate(-deltaX, -deltaY);
+        camera.translate(-deltaX, deltaY);
         camera.update();
         return false;
     }

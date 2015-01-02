@@ -11,29 +11,27 @@ import com.mygdx.game.TintableElement;
 import com.sun.javafx.geom.Point2D;
 
 import java.util.List;
+import java.util.Random;
 
 public class Stem extends TintableElement {
-        int thickness;
-        Point2D spriteTip;
-        int snake; //Amount the stem can wibble
+        int thickness = 20;
+        Point2D stemTip = new Point2D();
 
         public Stem(int monochromeIndex, Color tintColour) {
             super("textures/stems/monochrome/", monochromeIndex, tintColour);
         }
 
         public Stem() {
-            super(CreateStemSprite());
+            super();
+            sprite = CreateStemSprite(new Random().nextLong());
         }
 
-        public static Sprite CreateStemSprite() {
-            Vector2[] vectors = new Vector2[]
-                    {
-                            new Vector2(0,0),
-                            new Vector2(60, 150),
-                            new Vector2(-60, 300),
-                            new Vector2(0, 400),
-                    };
-            Texture stemTex = BezierInstructions.DrawBezier(vectors, new Pixmap(200, 400, Pixmap.Format.RGBA4444));
+        public Sprite CreateStemSprite(long seed) {
+            int width = 200;
+            BezierInstructions bez = new BezierInstructions(BezierInstructions.GeneratePoints(seed, 4, width));
+            Vector2 endVector = bez.points[bez.points.length - 1];
+            Texture stemTex = bez.Draw(new Pixmap((int) (width * 1.5), (int) (endVector.y * 1.5), Pixmap.Format.RGBA4444), thickness);
+            stemTip.x = bez.tipX; stemTip.y = bez.tipY;
             Sprite output = new Sprite(stemTex);
             return output;
             //Shift that later

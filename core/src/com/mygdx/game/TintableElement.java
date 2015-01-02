@@ -38,6 +38,11 @@ public abstract class TintableElement {
         this.sprite = sprite;
     }
 
+    /***
+     * Just please supply a sprite later
+     */
+    public TintableElement() {};
+
     public void Tint(Color tintColour)
     {
         if(sprite == null)
