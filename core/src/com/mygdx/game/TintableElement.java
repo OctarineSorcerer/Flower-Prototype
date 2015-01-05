@@ -29,9 +29,19 @@ public abstract class TintableElement {
     public TintableElement(String textureFolder, int monochromeIndex, Color tintColour)
     {
         this.monochromePath = textureFolder;
-        Tint(tintColour);
         this.monoIndex = monochromeIndex;
+        Tint(tintColour);
     }
+
+    public TintableElement(Sprite sprite)
+    {
+        this.sprite = sprite;
+    }
+
+    /***
+     * Just please supply a sprite later
+     */
+    public TintableElement() {};
 
     public void Tint(Color tintColour)
     {
