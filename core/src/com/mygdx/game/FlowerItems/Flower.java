@@ -48,9 +48,9 @@ public class Flower { //These are their own classes as they may need unique func
     }
     public void Draw(SpriteBatch batch) {
         stem.sprite.draw(batch);
-        for (Flower.PetalFlyweight petalType : petals) {
+        /*for (Flower.PetalFlyweight petalType : petals) {
             petalType.DrawCentered(batch);
-        }
+        }*/
         head.sprite.draw(batch);
     }
     void ArrangePetals(PetalStyle arrangement, int count, int petalIndex) {

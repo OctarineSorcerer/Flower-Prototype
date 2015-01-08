@@ -29,15 +29,15 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     public GameScreen(final FlowerPrototype gam) {
         this.game = gam; //This is for rendering, right?
         Gdx.input.setInputProcessor(new GestureDetector(this));
-        //Load images
-        //Load sounds
-        //Camera and spritebatch
+//Load images
+//Load sounds
+//Camera and spritebatch
         camera = new OrthographicCamera();
         camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
-        //any other creation stuff
+//any other creation stuff
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
-        Head testHead = new Head(1, Color.BLUE);
-        testPetal = new Petal(0, Color.YELLOW);
+        Head testHead = new Head(0, Color.BLUE);
+        testPetal = new Petal(0, Color.RED);
         testFlower = new Flower(testPetal, testHead, new Stem(), 13, Flower.PetalStyle.Touching,
                 new Point2D(FlowerPrototype.WIDTH/2, 20)); //20 for funsies
         Point2D headCenter = testFlower.head.GetCenter();
@@ -51,19 +51,19 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 crossManager.AddCross(petalType.locations.get(i), dF.format(petalType.rotations.get(i)), Color.MAGENTA);
             }
         } //Crosses for debug purposes
-        /*for(int i = 0; i < 5; i++){
-        touches.put(i, new TouchInfo());
-        }*/
+/*for(int i = 0; i < 5; i++){
+touches.put(i, new TouchInfo());
+}*/
     }
     @Override
     public void render (float delta) {
 //Gdx.gl.glClearColor(0.1059f, 0.1059f, 0.1059f, 1); //kinda a dark grey color
         Gdx.gl.glClearColor(Color.CYAN.r, Color.CYAN.g, Color.CYAN.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //Clear dat screen
-        // tell the camera to update its matrices.
+// tell the camera to update its matrices.
         camera.update();
-        // tell the SpriteBatch to render in the
-        // coordinate system specified by the camera.
+// tell the SpriteBatch to render in the
+// coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 //Begin a batch and draw stuff
         game.batch.begin();

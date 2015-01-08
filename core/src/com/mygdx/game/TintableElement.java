@@ -41,7 +41,7 @@ public abstract class TintableElement {
     /***
      * Just please supply a sprite later
      */
-    public TintableElement() {};
+    public TintableElement() {}
 
     public void Tint(Color tintColour)
     {
