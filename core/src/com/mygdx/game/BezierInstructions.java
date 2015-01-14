@@ -3,12 +3,14 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
+import com.sun.javafx.geom.Point2D;
 
-import javax.xml.bind.ValidationException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -18,7 +20,12 @@ import java.util.Random;
 public class BezierInstructions {
 
     public int tipX, tipY;
-    public Vector2[] points;
+    public Vector2[] points; //Format should be E, p, p, E, p, p, E, p, p, E etc
+    ArrayList<Bezier<Vector2>> curvesOnScreen;
+
+    Vector2 point0 = new Vector2(), point1 = new Vector2();
+    int segments;
+    float t = 0;
 
     /**
      *
@@ -33,7 +40,7 @@ public class BezierInstructions {
      * @param pixmap Pixmap for use of drawing
      * @return A texture containing drawn bezier curve
      */
-    public Texture Draw(Pixmap pixmap, int radius) {
+    public Texture DrawToTexture(Pixmap pixmap, int radius) {
         int height = pixmap.getHeight();
         pixmap.setColor(Color.GREEN);
         int segments = height; //might be enough
@@ -51,7 +58,7 @@ public class BezierInstructions {
                 bezPoints.add(points[i]);
             }
             beziers.add(new Bezier<Vector2>(bezPoints.toArray(new Vector2[bezPoints.size()])));
-            beginning += 2; end += 2;
+            beginning += 3; end += 3;
         }
 
         Vector2 pixel = new Vector2(); //Thing we will use to draw
@@ -81,9 +88,17 @@ public class BezierInstructions {
         }
 
         pixmap.setColor(Color.RED); //cross dem debug points
-        for(Vector2 point : points) {
-            pixmap.drawLine((int)point.x + 5, (int)point.y + 5, (int)point. x - 5, (int)point.y - 5);
-            pixmap.drawLine((int)point.x - 5, (int)point.y + 5, (int)point.x + 5, (int)point.y - 5);
+        Vector2 point = new Vector2();
+        for(int i = 0; i < points.length; i++) {
+            point.set(points[i].x, points[i].y);
+            pixmap.drawLine((int)point.x + 5, height - (int)point.y + 5, (int)point. x - 5, height - (int)point.y - 5);
+            pixmap.drawLine((int)point.x - 5, height - (int)point.y + 5, (int)point.x + 5, height - (int)point.y - 5);
+            if(i % 3 == 0 && i != 0) { //endpoint
+                pixmap.drawLine((int)points[i-1].x, height - (int)points[i-1].y, (int)points[i].x, height - (int)points[i].y);
+                if(i < points.length - 1) { //not the last
+                    pixmap.drawLine((int)points[i+1].x, height - (int)points[i+1].y, (int)points[i].x, height - (int)points[i].y);
+                }
+            }
         }
 
         Pixmap alteredMap = new Pixmap(greatestX, height - smallestYFromTop, Pixmap.Format.RGBA4444);
@@ -92,16 +107,55 @@ public class BezierInstructions {
         Texture output = new Texture(alteredMap);
         alteredMap.dispose();
         return output;
+    } //Frickin' maximums :(
+
+    /**
+     * Draw without using a texture. Perhaps more CPU-intensive, but by gods will save on memory and other problems
+     * @param shapeRenderer
+     * @param rootOrigin NOT where the root is. Where the bottom-left of the 'sprite' should be ie RootLoc - width/2
+     */
+    public void Draw(ShapeRenderer shapeRenderer, Vector2 rootOrigin) {
+        //No maximums needed here... just... need to find the curves being used here
+        //First, get all curves that may be on screen
+        //For each, do the segment-draw thing
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.GREEN);
+
+        for(Bezier<Vector2> curve : curvesOnScreen) {
+            curve.valueAt(point0, 0f);
+            for(int i = 1; i <= segments; i++) {
+                t = i/(float)segments;
+                curve.valueAt(point1, t);
+                shapeRenderer.rectLine(point0.add(rootOrigin), point1.cpy().add(rootOrigin), 15); //default WIDTH OF 15
+                point0 = point1;
+            }
+        }
+    }
+
+    public void GetCurvesOnScreen(int yPos, int xPos) {
+        curvesOnScreen = new ArrayList<Bezier<Vector2>>();
+        int curve = 0;
+        for(int i = 0; i < points.length; i++) {
+            if((points[i].y > yPos && points[i].y < yPos + FlowerPrototype.HEIGHT) && //if point is within limits of the screen I guess
+                    points[i].x > xPos && points[i].x < xPos + FlowerPrototype.WIDTH ) {
+                ArrayList<Vector2> tempCurve = new ArrayList<Vector2>();
+                for(int i2 = curve * 3; i2 <= curve*3 + 3; i2++) {
+                    tempCurve.add(points[i2]);
+                }
+                curvesOnScreen.add(new Bezier<Vector2>(tempCurve.toArray(new Vector2[tempCurve.size()])));
+                i += 3 - (i % 3); //jump to next curve I think
+            }
+        }
     }
 
     /***
-     *
+     *IT'S A FEATURE NOT A BUG! HONEST!
      * @param seed just some random seed thing
      * @param cubicCount amount of cubic curves to generate as a path
      * @param width width of the stem's sprite
      * @return
      */
-    public static Vector2[] GeneratePoints(long seed, int cubicCount, int width) {
+    public static Vector2[] GenerateCrazyPoints(long seed, int cubicCount, int width) {
         List<Vector2> points = new ArrayList<Vector2>();
         Vector2 lastEndPoint, lastHandle;
         Random rand = new Random(seed);
@@ -109,7 +163,7 @@ public class BezierInstructions {
         int yRangeMin = 60, yRangeMax = 100;
         for(int i = 0; i < cubicCount; i++)
         {
-            for(int i2 = 0; i2 < 4; i2++) {
+            for(int i2 = 0; i2 < 3; i2++) {
                 if(i == 0 && i2 == 0) { //First point
                     points.add(new Vector2(width/2, 0)); //control point
                 }
@@ -125,7 +179,7 @@ public class BezierInstructions {
                     //System.out.println(x + ", " + y + ". yAddition = " + yAddition);
                     yLast = y;
                 }
-                else if(i > 0 && i2 == 1) //maybe just "Else". This ensures that the new first handle of the line is tangential
+                else //if(i > 0 && i2 == 1) //maybe just "Else". This ensures that the new first handle of the line is tangential
                 {
                     lastEndPoint = points.get(points.size() - 1);
                     lastHandle = points.get(points.size() - 2);

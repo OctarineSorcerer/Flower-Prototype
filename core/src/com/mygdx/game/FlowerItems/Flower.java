@@ -1,6 +1,8 @@
 package com.mygdx.game.FlowerItems;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.*;
 import com.sun.javafx.geom.Point2D;
 
@@ -46,8 +48,9 @@ public class Flower { //These are their own classes as they may need unique func
                     head.GetCenter().y - headCenterOld.y);
         }
     }
-    public void Draw(SpriteBatch batch) {
-        stem.sprite.draw(batch);
+    public void Draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+        //stem.sprite.draw(batch);
+        stem.bezTest.Draw(shapeRenderer, new Vector2(rootLoc.x - stem.sprite.getWidth()/2, rootLoc.y));
         /*for (Flower.PetalFlyweight petalType : petals) {
             petalType.DrawCentered(batch);
         }*/
