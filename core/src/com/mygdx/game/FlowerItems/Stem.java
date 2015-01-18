@@ -1,42 +1,26 @@
 package com.mygdx.game.FlowerItems;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.BezierInstructions;
-import com.mygdx.game.TintableElement;
 import com.sun.javafx.geom.Point2D;
 
 import java.util.Random;
 
-public class Stem extends TintableElement {
+public class Stem {
         int thickness = 20;
+        int width = 200; //default 200, same as in BezierInstructions
         Point2D stemTip = new Point2D();
 
-        public BezierInstructions bezTest;
-
-        public Stem(int monochromeIndex, Color tintColour) {
-            super("textures/stems/monochrome/", monochromeIndex, tintColour);
-        }
+        public BezierInstructions curveInfo;
 
         public Stem() {
-            super();
-            sprite = CreateStemSprite(new Random().nextLong());
+            CreateStemCurve();
         }
 
-        public Sprite CreateStemSprite(long seed) {
-            int width = 200;
-            BezierInstructions bez = new BezierInstructions(BezierInstructions.GenerateCrazyPoints(seed, 4, width));
-            Vector2 endVector = bez.points[bez.points.length - 1];
-            Texture stemTex = bez.DrawToTexture(new Pixmap((int) (width * 1.5), (int) (endVector.y * 1.5), Pixmap.Format.RGBA4444), thickness);
+        public void CreateStemCurve() {
+            BezierInstructions bez = new BezierInstructions();
             stemTip.x = bez.tipX; stemTip.y = bez.tipY;
-            Sprite output = new Sprite(stemTex);
-
-            bezTest = bez;
-
-            return output;
-            //Shift that later
+            curveInfo = bez;
         }
     }

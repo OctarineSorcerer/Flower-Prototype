@@ -16,46 +16,47 @@ public class Flower { //These are their own classes as they may need unique func
     public List<PetalFlyweight> petals;
     public Head head;
     public Stem stem;
-    public Point2D rootLoc;
+    public Vector2 rootLoc;
 
     int count;
     PetalStyle style;
 
     public Flower(Petal mainPetal, Head flowerHead, Stem flowerStem, int petalCount, PetalStyle petalArrangement, Point2D root) {
-        rootLoc = root;
+        rootLoc = new Vector2(root.x, root.y);
         head = flowerHead;
-        stem = flowerStem; //We're gonna be nice and say all ends of the stems are middle-top, middle-bottom
+        stem = flowerStem;
 
-        stem.SetPosWithOrigin(rootLoc, new Point2D(stem.sprite.getWidth()/2, 0));
         petals = new ArrayList<PetalFlyweight>();
         petals.add(new PetalFlyweight(mainPetal));
         count = petalCount;
         style = petalArrangement;
         head.SetPosWithOrigin(
-                new Point2D(stem.stemTip.x + stem.sprite.getX(), stem.stemTip.y + stem.sprite.getY()),
+                new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y),
                 new Point2D(head.sprite.getWidth()/2, head.sprite.getHeight()/2));
         ArrangePetals(style, count, 0);
     }
 
-    public void DebugChangeStem(long seed) {
-        stem.sprite = stem.CreateStemSprite(seed);
+    public void DebugChangeStem() {
+        stem = new Stem();
         Point2D headCenterOld = head.GetCenter();
         head.SetPosWithOrigin(
-                new Point2D(stem.stemTip.x + stem.sprite.getX(), stem.stemTip.y + stem.sprite.getY()),
+                new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y),
                 new Point2D(head.sprite.getWidth() / 2, head.sprite.getHeight() / 2));
         for(PetalFlyweight fly : petals) {
             fly.ShiftLocs(head.GetCenter().x - headCenterOld.x,
                     head.GetCenter().y - headCenterOld.y);
         }
     }
-    public void Draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-        //stem.sprite.draw(batch);
-        stem.bezTest.Draw(shapeRenderer, new Vector2(rootLoc.x - stem.sprite.getWidth()/2, rootLoc.y));
+    public void DrawSprites(SpriteBatch batch) {
         /*for (Flower.PetalFlyweight petalType : petals) {
             petalType.DrawCentered(batch);
         }*/
         head.sprite.draw(batch);
     }
+    public void DrawShapes(ShapeRenderer shapeRenderer) {
+        stem.curveInfo.Draw(shapeRenderer, new Vector2(rootLoc.x - stem.width/2, rootLoc.y));
+    }
+
     void ArrangePetals(PetalStyle arrangement, int count, int petalIndex) {
         float sepAngle = 360f / (float) count;
         switch (arrangement) {

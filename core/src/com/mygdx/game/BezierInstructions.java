@@ -27,12 +27,18 @@ public class BezierInstructions {
     int segments;
     float t = 0;
 
+    public BezierInstructions() {
+        LoadPoints(GenerateCrazyPoints(new Random().nextLong(), 4, 200));
+    }
+
     /**
      *
      * @param points Control points, try for 4 of these right now
      */
-    public BezierInstructions(Vector2[] points) {
+    public void LoadPoints(Vector2[] points) {
         this.points = points;
+        tipX = (int)(points[points.length - 1].x);
+        tipY = (int)(points[points.length - 1].y);
     }
 
     /**
@@ -126,30 +132,44 @@ public class BezierInstructions {
             for(int i = 1; i <= segments; i++) {
                 t = i/(float)segments;
                 curve.valueAt(point1, t);
-                shapeRenderer.rectLine(point0.add(rootOrigin), point1.cpy().add(rootOrigin), 15); //default WIDTH OF 15
-                point0 = point1;
+                Vector2 firstDrawPoint = point0.cpy().add(rootOrigin);
+                Vector2 secondDrawPoint = point1.cpy().add(rootOrigin);
+                shapeRenderer.rectLine(firstDrawPoint, secondDrawPoint, 15); //default WIDTH OF 15
+                point0 = point1.cpy();
             }
         }
+        shapeRenderer.end();
     }
 
-    public void GetCurvesOnScreen(int yPos, int xPos) {
+    public void GetCurvesOnScreen(int cameraYPos, int cameraXPos, Vector2 root) {
+        int yPos = cameraYPos - FlowerPrototype.HEIGHT/2;
+        int xPos = cameraXPos - FlowerPrototype.WIDTH/2;
         curvesOnScreen = new ArrayList<Bezier<Vector2>>();
         int curve = 0;
         for(int i = 0; i < points.length; i++) {
-            if((points[i].y > yPos && points[i].y < yPos + FlowerPrototype.HEIGHT) && //if point is within limits of the screen I guess
-                    points[i].x > xPos && points[i].x < xPos + FlowerPrototype.WIDTH ) {
+            if(i != points.length - 1) curve = i/3; //save it from going above hopefully?
+            float pointY = points[i].y + root.y;
+            float pointX = points[i].x + root.x;
+            if((pointX > yPos && pointY < yPos + FlowerPrototype.HEIGHT) && //if point is within limits of the screen I guess
+                    pointX > xPos && pointX < xPos + FlowerPrototype.WIDTH ) {
                 ArrayList<Vector2> tempCurve = new ArrayList<Vector2>();
-                for(int i2 = curve * 3; i2 <= curve*3 + 3; i2++) {
-                    tempCurve.add(points[i2]);
+                for(int i2 = curve * 3; i2 <= curve*3 + 3; i2++) { //go through that curve's points
+                    if(i2 < points.length) {
+                        tempCurve.add(points[i2]);
+                    }
+                    else {
+                        System.out.println("A thing, a thing is breaking!");
+                    }
                 }
                 curvesOnScreen.add(new Bezier<Vector2>(tempCurve.toArray(new Vector2[tempCurve.size()])));
                 i += 3 - (i % 3); //jump to next curve I think
             }
         }
+        segments = curvesOnScreen.size() * 40;
     }
 
     /***
-     *IT'S A FEATURE NOT A BUG! HONEST!
+     *
      * @param seed just some random seed thing
      * @param cubicCount amount of cubic curves to generate as a path
      * @param width width of the stem's sprite
@@ -163,23 +183,15 @@ public class BezierInstructions {
         int yRangeMin = 60, yRangeMax = 100;
         for(int i = 0; i < cubicCount; i++)
         {
-            for(int i2 = 0; i2 < 3; i2++) {
+            for(int i2 = 0; i2 <= 3; i2++) {
                 if(i == 0 && i2 == 0) { //First point
-                    points.add(new Vector2(width/2, 0)); //control point
+                    points.add(new Vector2(0, 0)); //control point
+                    continue;
                 }
-                if(i > 1 && i2 == 0) { //past first curve, on first point
+                if(i > 0 && i2 == 0) { //past first curve, on first point
                     continue; //skippy, it's already there
                 }
-                else if(i == 0 || i2 > 1) //First curve or past first handle
-                {
-                    double x = rand.nextDouble() * width;
-                    double yAddition = rand.nextInt(yRangeMax - yRangeMin) + yRangeMin;
-                    double y = yLast + yAddition;
-                    points.add(new Vector2((float) x, (float) y));
-                    //System.out.println(x + ", " + y + ". yAddition = " + yAddition);
-                    yLast = y;
-                }
-                else //if(i > 0 && i2 == 1) //maybe just "Else". This ensures that the new first handle of the line is tangential
+                else if(i2 == 1 && i != 0) //first handle of new curve
                 {
                     lastEndPoint = points.get(points.size() - 1);
                     lastHandle = points.get(points.size() - 2);
@@ -188,10 +200,24 @@ public class BezierInstructions {
                     newPoint.y = lastEndPoint.y + (lastEndPoint.y - lastHandle.y);
                     //Temporary scale of 1, if needed it can probably be calculated
                     points.add(newPoint);
+                    continue;
+                }
+                else if(i2 > 1 || i == 0) //First curve or past first handle (no tangents to worry about)
+                {   //Basically just a random point in range
+                    boolean isNegative = rand.nextBoolean();
+                    double x = rand.nextDouble() * width;
+
+                    if(isNegative) { x = -x; }
+
+                    double yAddition = rand.nextInt(yRangeMax - yRangeMin) + yRangeMin;
+                    double y = yLast + yAddition;
+                    points.add(new Vector2((float) x, (float) y));
+                    yLast = y;
+                    continue;
                 }
             }
         }
-        //Collections.reverse(points);
+
         return points.toArray(new Vector2[points.size()]);
     }
 }

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
@@ -15,7 +14,6 @@ import com.sun.javafx.geom.Point2D;
 import com.mygdx.game.FlowerItems.*;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -47,7 +45,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         testFlower = new Flower(testPetal, testHead, new Stem(), 13, Flower.PetalStyle.Touching,
                 new Point2D(FlowerPrototype.WIDTH / 2, 20)); //20 for funsies
         Point2D headCenter = testFlower.head.GetCenter();
-        testFlower.stem.bezTest.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2);
+        testFlower.stem.curveInfo.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2, testFlower.rootLoc);
 
         crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
         DecimalFormat dF = new DecimalFormat();
@@ -65,22 +63,23 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public void render(float delta) {
-        //Gdx.gl.glClearColor(0.1059f, 0.1059f, 0.1059f, 1); //kinda a dark grey color
         Gdx.gl.glClearColor(Color.CYAN.r, Color.CYAN.g, Color.CYAN.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //Clear dat screen
         // tell the camera to update its matrices.
         camera.update();
-        shapeRenderer.setProjectionMatrix(camera.combined);
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
+        shapeRenderer.setProjectionMatrix(camera.combined);
         //Begin a batch and draw stuff
         game.batch.begin();
         ground.Draw(game.batch);
-        testFlower.Draw(game.batch, shapeRenderer);
-        shapeRenderer.end();
+        testFlower.DrawSprites(game.batch);
         //crossManager.DrawCrosses(game.batch);
         game.batch.end();
+
+        testFlower.DrawShapes(shapeRenderer);
+
         //Process user input
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
@@ -141,7 +140,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        testFlower.DebugChangeStem(rand.nextLong());
+        testFlower.DebugChangeStem();
+        testFlower.stem.curveInfo.GetCurvesOnScreen((int)camera.position.y, (int)camera.position.x, testFlower.rootLoc);
         return false;
     }
 
