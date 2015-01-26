@@ -141,6 +141,12 @@ public class BezierInstructions {
         shapeRenderer.end();
     }
 
+    /**
+     * For now just sorts out all the curves. commented-out condition didn't work 100% of time
+     * @param cameraYPos Y position of camera object being used
+     * @param cameraXPos X position of camera object being used
+     * @param root Root (ie origin) of the stem
+     */
     public void GetCurvesOnScreen(int cameraYPos, int cameraXPos, Vector2 root) {
         int yPos = cameraYPos - FlowerPrototype.HEIGHT/2;
         int xPos = cameraXPos - FlowerPrototype.WIDTH/2;
@@ -150,8 +156,8 @@ public class BezierInstructions {
             if(i != points.length - 1) curve = i/3; //save it from going above hopefully?
             float pointY = points[i].y + root.y;
             float pointX = points[i].x + root.x;
-            if((pointX > yPos && pointY < yPos + FlowerPrototype.HEIGHT) && //if point is within limits of the screen I guess
-                    pointX > xPos && pointX < xPos + FlowerPrototype.WIDTH ) {
+            //if((pointX > yPos && pointY < yPos + FlowerPrototype.HEIGHT) && //if point is within limits of the screen I guess
+                    //pointX > xPos && pointX < xPos + FlowerPrototype.WIDTH ) {
                 ArrayList<Vector2> tempCurve = new ArrayList<Vector2>();
                 for(int i2 = curve * 3; i2 <= curve*3 + 3; i2++) { //go through that curve's points
                     if(i2 < points.length) {
@@ -163,7 +169,7 @@ public class BezierInstructions {
                 }
                 curvesOnScreen.add(new Bezier<Vector2>(tempCurve.toArray(new Vector2[tempCurve.size()])));
                 i += 3 - (i % 3); //jump to next curve I think
-            }
+            //}
         }
         segments = curvesOnScreen.size() * 40;
     }

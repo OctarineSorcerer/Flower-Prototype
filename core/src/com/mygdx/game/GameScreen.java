@@ -72,13 +72,13 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         game.batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
         //Begin a batch and draw stuff
+        testFlower.DrawShapes(shapeRenderer);
+
         game.batch.begin();
         ground.Draw(game.batch);
         testFlower.DrawSprites(game.batch);
         //crossManager.DrawCrosses(game.batch);
         game.batch.end();
-
-        testFlower.DrawShapes(shapeRenderer);
 
         //Process user input
         if (Gdx.input.isTouched()) {

@@ -48,13 +48,13 @@ public class Flower { //These are their own classes as they may need unique func
         }
     }
     public void DrawSprites(SpriteBatch batch) {
-        /*for (Flower.PetalFlyweight petalType : petals) {
+        for (Flower.PetalFlyweight petalType : petals) {
             petalType.DrawCentered(batch);
-        }*/
+        }
         head.sprite.draw(batch);
     }
     public void DrawShapes(ShapeRenderer shapeRenderer) {
-        stem.curveInfo.Draw(shapeRenderer, new Vector2(rootLoc.x - stem.width/2, rootLoc.y));
+        stem.curveInfo.Draw(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y));
     }
 
     void ArrangePetals(PetalStyle arrangement, int count, int petalIndex) {
