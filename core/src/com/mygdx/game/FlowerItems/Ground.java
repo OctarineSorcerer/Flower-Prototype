@@ -7,40 +7,35 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.FlowerPrototype;
 
 /**
- * Created by Dan on 03/11/2014.
+ * Class to represent the ground and to simplify its use as a tiled sprite
  */
 public class Ground {
-    public Sprite sprite;
-    float groundStart = 0, progress = 0;
-    int iterations;
+    private Sprite sprite;
+    private float groundStart = 0, progress = 0;
+    private int iterations, paddingSprites = 2; //Higher amount of padding sprites for more vicious scrollers
 
     public Ground(Texture groundTexture) {
         sprite = new Sprite(groundTexture);
         sprite.setPosition(0, 0);
-        iterations = (int)(FlowerPrototype.WIDTH/sprite.getWidth() + 2); //one extra for each side of screen
+        iterations = (int)(FlowerPrototype.WIDTH/sprite.getWidth()); //1 extra for each side of screen?
     }
     public void Draw(SpriteBatch batch) {
-        for (int i = 0; i < iterations; i++) {
+        sprite.setX(groundStart - (paddingSprites * sprite.getWidth()));
+        for (int i = 0; i < iterations + paddingSprites*2; i++) {
             sprite.draw(batch);
             sprite.translateX(sprite.getWidth());
         }
-        sprite.setX(groundStart);
     }
     public void IncrementStart(float amount) {
-        if(progress + amount >= sprite.getWidth())
+        float resultant = progress + amount;
+        if(resultant >= sprite.getWidth() || resultant <= 0)
         {
-            groundStart += sprite.getWidth()* Math.floor((amount + progress)/sprite.getWidth());
-            progress = (progress + amount) - sprite.getWidth();
-            //This will only work correctly if this is incremented less than 1 sprite width at a time
-            //However, this is not likely to happen, and so the modulo technique will not be used
+            int wholeSpritesCovered = (int)Math.floor(resultant/sprite.getWidth());
+            if (resultant <= 0) wholeSpritesCovered -= 1; //As this can easily go below 0 (ie onto previous sprite) yet not be above sprite width
+            groundStart += wholeSpritesCovered * sprite.getWidth();
+
+            progress = resultant - (sprite.getWidth() * wholeSpritesCovered);
         }
         else progress += amount;
-    }
-    public void DecrementStart(float amount) {
-        if(progress - amount < 0)
-        {
-            progress = (sprite.getWidth() - (amount - progress));
-            groundStart -= sprite.getWidth() * Math.floor((amount + progress)/sprite.getWidth());
-        } else progress -= amount;
     }
 }

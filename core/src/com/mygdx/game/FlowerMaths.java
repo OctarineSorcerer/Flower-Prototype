@@ -6,7 +6,7 @@ import com.sun.javafx.geom.Point2D;
 import java.awt.*;
 
 /**
- * Created by Dan on 09/10/2014.
+ * My gods, so much maths. This stuff is to do with the flower - ie for finding petal positions, etc.
  */
 public class FlowerMaths {
 
@@ -54,10 +54,10 @@ public class FlowerMaths {
     }
 
     /**
-     * Take my own word for this, the maths is in one or two of your books. Position of petal relative to circle center
-     * @param radius Radius of the flowerhead/circle
+     * Get the position a petal should be at a given angle on a circle of given radius
+     * @param radius Radius of the flower head/circle
      * @param angle Angle around the circle that the petal will reside at
-     * @return
+     * @return The point on the circumference at that angle relative to the center
      */
     public static Point2D GetPetalPos(float radius, float angle)
     {
@@ -96,11 +96,10 @@ public class FlowerMaths {
      * Adds two points together (ie where you'd end up)
      * @param initial Initial point
      * @param relative Travel instructions? point
-     * @return
+     * @return The sum of the two points being added together
      */
     public static Point2D AddPoints(Point2D initial, Point2D relative)
     {
-        Point2D output = new Point2D(initial.x + relative.x, initial.y + relative.y);
-        return output;
+        return new Point2D(initial.x + relative.x, initial.y + relative.y);
     }
 }

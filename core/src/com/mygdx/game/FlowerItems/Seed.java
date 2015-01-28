@@ -6,7 +6,7 @@ import com.sun.javafx.geom.Point2D;
 import java.util.ArrayList;
 
 /**
- * Created by Dan on 26/01/2015.
+ * Not entirely sure about this class yet
  */
 public class Seed {
     Sprite halfSeed; //So you can split like a boss and have symmetry and stuff

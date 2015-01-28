@@ -93,8 +93,7 @@ public abstract class TintableElement {
     Texture GetMonochromeImage() {
         FileHandle[] files = Gdx.files.internal(monochromePath).list();
         FileHandle target = files[monoIndex];
-        Texture output = new Texture(target);
-        return output;
+        return new Texture(target);
     }
     public Point2D GetCenter(){
         return new Point2D(sprite.getX() + (sprite.getWidth()/2), sprite.getY() + (sprite.getHeight()/2));

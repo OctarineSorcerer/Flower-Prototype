@@ -163,6 +163,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
+        /*if(deltaX <= 0) {
+            ground.IncrementStart(deltaX);
+        } else ground.DecrementStart(Math.abs(deltaX));*/
+        ground.IncrementStart(-deltaX);
         camera.translate(-deltaX, deltaY);
         camera.update();
         return false;

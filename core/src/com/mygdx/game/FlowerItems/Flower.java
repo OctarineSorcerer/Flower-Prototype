@@ -18,8 +18,10 @@ public class Flower { //These are their own classes as they may need unique func
     public Stem stem;
     public Vector2 rootLoc;
 
-    int count;
-    PetalStyle style;
+    public GrowthHandling growth;
+
+    private int count;
+    private PetalStyle style;
 
     public Flower(Petal mainPetal, Head flowerHead, Stem flowerStem, int petalCount, PetalStyle petalArrangement, Point2D root) {
         rootLoc = new Vector2(root.x, root.y);
@@ -34,27 +36,6 @@ public class Flower { //These are their own classes as they may need unique func
                 new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y),
                 new Point2D(head.sprite.getWidth()/2, head.sprite.getHeight()/2));
         ArrangePetals(style, count, 0);
-    }
-
-    public void DebugChangeStem() {
-        stem = new Stem();
-        Point2D headCenterOld = head.GetCenter();
-        head.SetPosWithOrigin(
-                new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y),
-                new Point2D(head.sprite.getWidth() / 2, head.sprite.getHeight() / 2));
-        for(PetalFlyweight fly : petals) {
-            fly.ShiftLocs(head.GetCenter().x - headCenterOld.x,
-                    head.GetCenter().y - headCenterOld.y);
-        }
-    }
-    public void DrawSprites(SpriteBatch batch) {
-        for (Flower.PetalFlyweight petalType : petals) {
-            petalType.DrawCentered(batch);
-        }
-        head.sprite.draw(batch);
-    }
-    public void DrawShapes(ShapeRenderer shapeRenderer) {
-        stem.curveInfo.Draw(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y));
     }
 
     void ArrangePetals(PetalStyle arrangement, int count, int petalIndex) {
@@ -77,6 +58,33 @@ public class Flower { //These are their own classes as they may need unique func
                 }
                 break;
         }
+    }
+    void ApplyGrowth() {
+        growth.CheckTime();
+        if(growth.Blooming) {
+
+        }
+    }
+
+    public void DebugChangeStem() {
+        stem = new Stem();
+        Point2D headCenterOld = head.GetCenter();
+        head.SetPosWithOrigin(
+                new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y),
+                new Point2D(head.sprite.getWidth() / 2, head.sprite.getHeight() / 2));
+        for(PetalFlyweight fly : petals) {
+            fly.ShiftLocs(head.GetCenter().x - headCenterOld.x,
+                    head.GetCenter().y - headCenterOld.y);
+        }
+    }
+    public void DrawSprites(SpriteBatch batch) {
+        for (Flower.PetalFlyweight petalType : petals) {
+            petalType.DrawCentered(batch);
+        }
+        head.sprite.draw(batch);
+    }
+    public void DrawShapes(ShapeRenderer shapeRenderer) {
+        stem.curveInfo.DrawAll(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y));
     }
 
     public enum PetalStyle {
@@ -105,8 +113,8 @@ public class Flower { //These are their own classes as they may need unique func
         }
 
         /**
-         * @param location
-         * @param rotation
+         * @param location Location of the new petal to add
+         * @param rotation Rotation of the new petal to add
          */
         void AddPetal(Point2D location, float rotation) {
             locations.add(location);

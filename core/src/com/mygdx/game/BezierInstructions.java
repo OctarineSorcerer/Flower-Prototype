@@ -11,21 +11,22 @@ import com.sun.javafx.geom.Point2D;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Dan on 21/12/2014.
+ * Represents a series of bezier curves, contains methods to use and manipulate them
  */
 public class BezierInstructions {
 
     public int tipX, tipY;
-    public Vector2[] points; //Format should be E, p, p, E, p, p, E, p, p, E etc
-    ArrayList<Bezier<Vector2>> curvesOnScreen;
+    private Vector2[] points; //Format should be E, p, p, E, p, p, E, p, p, E etc
+    private ArrayList<Bezier<Vector2>> curvesOnScreen;
 
-    Vector2 point0 = new Vector2(), point1 = new Vector2();
-    int segments;
-    float t = 0;
+    private Vector2 point0 = new Vector2(), point1 = new Vector2();
+    private int segments;
+    private float t = 0;
 
     public BezierInstructions() {
         LoadPoints(GenerateCrazyPoints(new Random().nextLong(), 4, 200));
@@ -35,97 +36,20 @@ public class BezierInstructions {
      *
      * @param points Control points, try for 4 of these right now
      */
-    public void LoadPoints(Vector2[] points) {
+    void LoadPoints(Vector2[] points) {
         this.points = points;
         tipX = (int)(points[points.length - 1].x);
         tipY = (int)(points[points.length - 1].y);
     }
 
     /**
-     * Draws a cubic bezier curve
-     * @param pixmap Pixmap for use of drawing
-     * @return A texture containing drawn bezier curve
-     */
-    public Texture DrawToTexture(Pixmap pixmap, int radius) {
-        int height = pixmap.getHeight();
-        pixmap.setColor(Color.GREEN);
-        int segments = height; //might be enough
-
-        int greatestX = 0, smallestYFromTop = 0, topX = 0;
-
-        float t = 0;
-
-        ArrayList<Bezier<Vector2>> beziers = new ArrayList<Bezier<Vector2>>();
-        int beginning = 0, end = 3;
-        while(end <= points.length)
-        {
-            ArrayList<Vector2> bezPoints = new ArrayList<Vector2>();
-            for(int i = beginning; i <= end; i++) {
-                bezPoints.add(points[i]);
-            }
-            beziers.add(new Bezier<Vector2>(bezPoints.toArray(new Vector2[bezPoints.size()])));
-            beginning += 3; end += 3;
-        }
-
-        Vector2 pixel = new Vector2(); //Thing we will use to draw
-
-        beziers.get(0).valueAt(pixel, t); //.add(pixmap.getWidth()/2, 0); For centering
-        pixmap.fillCircle((int)pixel.x, height - (int)pixel.y, radius);
-
-        //As the intended use for this is creating sprites and saving them for later use, optimisation should be the
-        //last worry here. Therefore, ALL THE RESOLUTION
-        for(Bezier<Vector2> bezier : beziers) {
-            for (int i = 1; i <= segments; i++) {
-                t = i / (float) segments;
-                bezier.valueAt(pixel, t); //.add(pixmap.getWidth()/2, 0);
-                if (i == segments) { //Last one
-
-                    tipX = Math.round(pixel.x);
-                    tipY = Math.round(pixel.y);
-                }
-                pixmap.fillCircle((int) pixel.x, height - (int) pixel.y, radius);
-                if (pixel.y + radius < smallestYFromTop) {
-                    smallestYFromTop = Math.round(pixel.y + radius);
-                }
-                if (pixel.x + radius > greatestX) {
-                    greatestX = Math.round(pixel.x + radius);
-                }
-            }
-        }
-
-        pixmap.setColor(Color.RED); //cross dem debug points
-        Vector2 point = new Vector2();
-        for(int i = 0; i < points.length; i++) {
-            point.set(points[i].x, points[i].y);
-            pixmap.drawLine((int)point.x + 5, height - (int)point.y + 5, (int)point. x - 5, height - (int)point.y - 5);
-            pixmap.drawLine((int)point.x - 5, height - (int)point.y + 5, (int)point.x + 5, height - (int)point.y - 5);
-            if(i % 3 == 0 && i != 0) { //endpoint
-                pixmap.drawLine((int)points[i-1].x, height - (int)points[i-1].y, (int)points[i].x, height - (int)points[i].y);
-                if(i < points.length - 1) { //not the last
-                    pixmap.drawLine((int)points[i+1].x, height - (int)points[i+1].y, (int)points[i].x, height - (int)points[i].y);
-                }
-            }
-        }
-
-        Pixmap alteredMap = new Pixmap(greatestX, height - smallestYFromTop, Pixmap.Format.RGBA4444);
-        alteredMap.drawPixmap(pixmap, 0, 0, 0, 0, greatestX, height - smallestYFromTop);
-        pixmap.dispose();
-        Texture output = new Texture(alteredMap);
-        alteredMap.dispose();
-        return output;
-    } //Frickin' maximums :(
-
-    /**
-     * Draw without using a texture. Perhaps more CPU-intensive, but by gods will save on memory and other problems
-     * @param shapeRenderer
+     * DrawAll without using a texture. Perhaps more CPU-intensive, but by gods will save on memory and other problems
+     * @param shapeRenderer The shape renderer to render the lines with
      * @param rootOrigin NOT where the root is. Where the bottom-left of the 'sprite' should be ie RootLoc - width/2
      */
-    public void Draw(ShapeRenderer shapeRenderer, Vector2 rootOrigin) {
-        //No maximums needed here... just... need to find the curves being used here
-        //First, get all curves that may be on screen
-        //For each, do the segment-draw thing
+    public void DrawAll(ShapeRenderer shapeRenderer, Vector2 rootOrigin) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.setColor(Color.GREEN); //Yes. Green stem for now
 
         for(Bezier<Vector2> curve : curvesOnScreen) {
             curve.valueAt(point0, 0f);
@@ -175,11 +99,11 @@ public class BezierInstructions {
     }
 
     /***
-     *
+     * Generates a bunch of points to create a pretty ridiculous bezier path
      * @param seed just some random seed thing
      * @param cubicCount amount of cubic curves to generate as a path
      * @param width width of the stem's sprite
-     * @return
+     * @return An array of vectors representing the points, in format (End, control, control, End, control, etc..)
      */
     public static Vector2[] GenerateCrazyPoints(long seed, int cubicCount, int width) {
         List<Vector2> points = new ArrayList<Vector2>();
@@ -195,7 +119,7 @@ public class BezierInstructions {
                     continue;
                 }
                 if(i > 0 && i2 == 0) { //past first curve, on first point
-                    continue; //skippy, it's already there
+                    //skip it, it's already there
                 }
                 else if(i2 == 1 && i != 0) //first handle of new curve
                 {
@@ -206,7 +130,6 @@ public class BezierInstructions {
                     newPoint.y = lastEndPoint.y + (lastEndPoint.y - lastHandle.y);
                     //Temporary scale of 1, if needed it can probably be calculated
                     points.add(newPoint);
-                    continue;
                 }
                 else if(i2 > 1 || i == 0) //First curve or past first handle (no tangents to worry about)
                 {   //Basically just a random point in range
@@ -219,7 +142,6 @@ public class BezierInstructions {
                     double y = yLast + yAddition;
                     points.add(new Vector2((float) x, (float) y));
                     yLast = y;
-                    continue;
                 }
             }
         }
