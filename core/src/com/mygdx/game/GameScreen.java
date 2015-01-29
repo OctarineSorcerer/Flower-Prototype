@@ -23,7 +23,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     final FlowerPrototype game;
     ShapeRenderer shapeRenderer = new ShapeRenderer();
     Random rand = new Random();
-    OrthographicCamera camera;
+    ExtendedCamera camera;
     int hCameraSpeed = 200, vCameraSpeed = 200;
     Ground ground;
     Petal testPetal;
@@ -36,7 +36,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         //Load images
         //Load sounds
         //Camera and spritebatch
-        camera = new OrthographicCamera();
+        camera = new ExtendedCamera(FlowerPrototype.WIDTH/2, FlowerPrototype.HEIGHT/2, null, null);
         camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
         //any other creation stuff
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
@@ -88,13 +88,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         //Do with touchPos as you will
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if (camera.position.x > FlowerPrototype.WIDTH / 2) {
-                camera.translate(-hCameraSpeed * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
-                ground.DecrementStart(hCameraSpeed * Gdx.graphics.getDeltaTime());
-            } else {
-                camera.position.x = FlowerPrototype.WIDTH / 2;
-            }
-            camera.update();
+            ground.IncrementStart(-hCameraSpeed * Gdx.graphics.getDeltaTime());
+            camera.SafeTranslate(-hCameraSpeed * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             camera.translate(hCameraSpeed * Gdx.graphics.getDeltaTime(), 0);
@@ -106,10 +101,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             camera.update();
         }
         if (Gdx.input.isKeyPressed(Keys.S)) {
-            if (camera.position.y > FlowerPrototype.HEIGHT / 2) {
-                camera.translate(0, -hCameraSpeed * Gdx.graphics.getDeltaTime());
-            } else camera.position.y = FlowerPrototype.HEIGHT / 2;
-            camera.update();
+            camera.SafeTranslate(0, -hCameraSpeed * Gdx.graphics.getDeltaTime()); //timespan between last and this frame in deltaseconds
         }
     }
 
