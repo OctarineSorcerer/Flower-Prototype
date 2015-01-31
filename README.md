@@ -1,5 +1,5 @@
 Flower-Prototype
 ================
 
-Prototype of a project I've been given to work on as the COMP4 project. In essence, an android game for children about growing
-flowers in realtime.
+COMP4 project - an android game about growing flowers, for children
+By the end of it, you should be able to create a flower, and watch it grow in realtime over long or short periods of time
