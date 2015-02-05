@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.mygdx.game.TintableElement;
 
 public class Petal extends TintableElement {
+    float endScale = 2; //Scale of fully mature petal
+
     /**
      * Constructor for a petal
      *

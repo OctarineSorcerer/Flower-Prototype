@@ -34,6 +34,6 @@ public class GrowthHandling {
 
         Growth += GrowthRate*difference;
 
-        Blooming = (Growth >= BloomStart && Growth <= BloomStart + BloomLength);
+        Blooming = (Growth >= BloomStart && Growth <= BloomStart + BloomLength); //Ascertains whether it is blooming
     }
 }

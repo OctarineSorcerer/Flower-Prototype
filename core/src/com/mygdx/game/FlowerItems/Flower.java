@@ -47,6 +47,7 @@ public class Flower { //These are their own classes as they may need unique func
                 Petal relevantPetal = thisFlyweight.petal;
                 relevantPetal.sprite.setOrigin(relevantPetal.sprite.getWidth() / 2, 0); //origin at bottom thingy
                 //relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
+                //relevantPetal.Scale(-relevantPetal.sprite.getHeight()/head.radius); //Sets top of petal to the middle of the head
                 float sagitta = (float)(head.radius - Math.sqrt(Math.pow(head.radius, 2)
                         - Math.pow(0.5*relevantPetal.sprite.getWidth()*relevantPetal.sprite.getScaleX(), 2)));
                 //^That bit is the height of the arc. Yeah. Go maths. http://www.mathopenref.com/sagitta.html
@@ -78,11 +79,15 @@ public class Flower { //These are their own classes as they may need unique func
         }
     }
     public void DrawSprites(SpriteBatch batch) {
+        /*for (Flower.PetalFlyweight petalType : petals) {
+            petalType.DrawCentered(batch);
+        }*/
+        head.sprite.draw(batch);
         for (Flower.PetalFlyweight petalType : petals) {
             petalType.DrawCentered(batch);
         }
-        head.sprite.draw(batch);
     }
+
     public void DrawShapes(ShapeRenderer shapeRenderer) {
         stem.curveInfo.DrawAll(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y));
     }
