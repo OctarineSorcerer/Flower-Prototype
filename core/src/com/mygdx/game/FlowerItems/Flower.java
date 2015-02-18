@@ -21,6 +21,7 @@ public class Flower { //These are their own classes as they may need unique func
     public GrowthHandling growth;
 
     private int count;
+    private boolean petalsOutside = false;
     private PetalStyle style;
 
     public Flower(Petal mainPetal, Head flowerHead, Stem flowerStem, int petalCount, PetalStyle petalArrangement, Point2D root) {
@@ -43,27 +44,51 @@ public class Flower { //These are their own classes as they may need unique func
         switch (arrangement) {
             case Touching:
                 PetalFlyweight thisFlyweight = petals.get(petalIndex);
-                float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 0.5f, head.radius);
                 Petal relevantPetal = thisFlyweight.petal;
                 relevantPetal.sprite.setOrigin(relevantPetal.sprite.getWidth() / 2, 0); //origin at bottom thingy
                 //relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
-                //relevantPetal.Scale(-relevantPetal.sprite.getHeight()/head.radius); //Sets top of petal to the middle of the head
-                float sagitta = (float)(head.radius - Math.sqrt(Math.pow(head.radius, 2)
-                        - Math.pow(0.5*relevantPetal.sprite.getWidth()*relevantPetal.sprite.getScaleX(), 2)));
-                //^That bit is the height of the arc. Yeah. Go maths. http://www.mathopenref.com/sagitta.html
-                thisFlyweight.ClearLocs();
-                for (float i = 0; i < sepAngle * count; i += sepAngle) {
-                    Point2D location = FlowerMaths.AddPoints(head.GetCenter()
-                            , FlowerMaths.GetPetalPos(head.radius - sagitta, i));
-                    thisFlyweight.AddPetal(location, i);
-                }
+
+                float ratio = relevantPetal.sprite.getHeight() / head.radius;
+                growth = new GrowthHandling(1f, 6f, 1 + ratio);
+
+                System.out.println("Original X scale: " + relevantPetal.sprite.getScaleX() +
+                                    " | Y: " + relevantPetal.sprite.getScaleY());
+
+                relevantPetal.Scale(-ratio); //Sets top of petal to the middle of the head
+
+                System.out.println("Second X scale: " + relevantPetal.sprite.getScaleX() +
+                        " | Y: " + relevantPetal.sprite.getScaleY());
+
+                SetPetalPositions(sepAngle, thisFlyweight);
                 break;
         }
     }
-    void ApplyGrowth() {
-        growth.CheckTime();
-        if(growth.Blooming) {
 
+    public void SetPetalPositions(float sepAngle, PetalFlyweight petalGroup) {
+        Petal relevantPetal = petalGroup.petal;
+        float sagitta = (float)(head.radius - Math.sqrt(Math.pow(head.radius, 2)
+                - Math.pow(0.5*relevantPetal.sprite.getWidth(), 2)));
+        //^That bit is the height of the arc. Yeah. Go maths. http://www.mathopenref.com/sagitta.html
+        petalGroup.ClearLocs();
+        for (float i = 0; i < sepAngle * count; i += sepAngle) {
+            Point2D location = FlowerMaths.AddPoints(head.GetCenter()
+                    , FlowerMaths.GetPetalPos(head.radius - sagitta, i));
+            petalGroup.AddPetal(location, i);
+        }
+    }
+
+    public void ApplyGrowth() {
+        float grown = growth.CheckTime();
+
+        //petals/blooming
+        float bloomAmount = growth.GetAmountLastBloomed();
+        if(bloomAmount > 0) {
+            for(PetalFlyweight fly : petals) {
+                fly.petal.sprite.setScale(fly.petal.sprite.getScaleX() - 1 + bloomAmount * fly.petal.bloomGrowthRate,
+                        fly.petal.sprite.getScaleY() - 1 + bloomAmount * fly.petal.bloomGrowthRate);
+                if(fly.petal.sprite.getScaleY() > 0) petalsOutside = true;
+                System.out.println("Grown X:" + fly.petal.sprite.getScaleX() + " | Y: " + fly.petal.sprite.getScaleY());
+            }
         }
     }
 
@@ -79,12 +104,17 @@ public class Flower { //These are their own classes as they may need unique func
         }
     }
     public void DrawSprites(SpriteBatch batch) {
-        /*for (Flower.PetalFlyweight petalType : petals) {
-            petalType.DrawCentered(batch);
-        }*/
-        head.sprite.draw(batch);
-        for (Flower.PetalFlyweight petalType : petals) {
-            petalType.DrawCentered(batch);
+        if(petalsOutside) {
+            for (Flower.PetalFlyweight petalType : petals) {
+                petalType.DrawCentered(batch);
+            }
+            head.sprite.draw(batch);
+        }
+        else {
+            head.sprite.draw(batch);
+            for (Flower.PetalFlyweight petalType : petals) {
+                petalType.DrawCentered(batch);
+            }
         }
     }
 

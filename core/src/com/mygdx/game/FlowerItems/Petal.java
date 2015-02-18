@@ -5,6 +5,7 @@ import com.mygdx.game.TintableElement;
 
 public class Petal extends TintableElement {
     float endScale = 2; //Scale of fully mature petal
+    float bloomGrowthRate = 1f; //amount it grows per growth while blooming
 
     /**
      * Constructor for a petal

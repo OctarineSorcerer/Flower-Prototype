@@ -12,7 +12,7 @@ import com.mygdx.game.FlowerPrototype;
 public class Ground {
     private Sprite sprite;
     private float groundStart = 0, progress = 0;
-    private int iterations, paddingSprites = 2; //Higher amount of padding sprites for more vicious scrollers
+    private int iterations, paddingLeft = 2, paddingRight = 3; //Higher amount of padding sprites for more vicious scrollers
 
     public Ground(Texture groundTexture) {
         sprite = new Sprite(groundTexture);
@@ -20,8 +20,8 @@ public class Ground {
         iterations = (int)(FlowerPrototype.WIDTH/sprite.getWidth()); //1 extra for each side of screen?
     }
     public void Draw(SpriteBatch batch) {
-        sprite.setX(groundStart - (paddingSprites * sprite.getWidth()));
-        for (int i = 0; i < iterations + paddingSprites*2; i++) {
+        sprite.setX(groundStart - (paddingLeft * sprite.getWidth()));
+        for (int i = 0; i < iterations + paddingRight*2; i++) {
             sprite.draw(batch);
             sprite.translateX(sprite.getWidth());
         }

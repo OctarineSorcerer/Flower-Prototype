@@ -88,8 +88,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         //Do with touchPos as you will
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            ground.IncrementStart(-hCameraSpeed * Gdx.graphics.getDeltaTime());
-            camera.SafeTranslate(-hCameraSpeed * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
+            Vector2 translated = camera.SafeTranslate(-hCameraSpeed * Gdx.graphics.getDeltaTime(), 0); //timespan between last and this frame in deltaseconds
+            ground.IncrementStart(translated.x);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             camera.translate(hCameraSpeed * Gdx.graphics.getDeltaTime(), 0);
@@ -102,6 +102,9 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         }
         if (Gdx.input.isKeyPressed(Keys.S)) {
             camera.SafeTranslate(0, -hCameraSpeed * Gdx.graphics.getDeltaTime()); //timespan between last and this frame in deltaseconds
+        }
+        if (Gdx.input.isKeyPressed(Keys.G)) {
+            testFlower.ApplyGrowth();
         }
     }
 

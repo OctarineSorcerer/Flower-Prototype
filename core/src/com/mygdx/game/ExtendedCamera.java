@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.sun.javafx.geom.Point2D;
 
 /**
  * Camera class to facilitate easier camera use
@@ -48,16 +49,29 @@ public class ExtendedCamera extends OrthographicCamera {
      * Translates the camera without going outside of bounds
      * @param x Amount to shift x of camera
      * @param y Amount to shift y of camera
+     * @return A vector indicating the amount translated
      */
-    public void SafeTranslate(float x, float y) {
-        translate(x, y);
+    public Vector2 SafeTranslate(float x, float y) {
+        Vector2 output = new Vector2(position.x, position.y); //store current position
+        translate(x, y); //Initial translate
 
-        if(maxX != null && position.x > maxX) position.x = maxX;
-        else if(minX != null && position.x < minX) position. x = minX;
+        if(maxX != null && position.x > maxX) {
+            position.x = maxX;
+        }
+        else if(minX != null && position.x < minX) {
+            position. x = minX; //limit on x axis
+        }
 
-        if(maxY != null && position.y > maxY) position.y = maxY;
-        else if(minY != null && position.y < minY) position.y = minY;
+        if(maxY != null && position.y > maxY) {
+            position.y = maxY;
+        }
+        else if(minY != null && position.y < minY) {
+            position.y = minY; //limit on y axis
+        }
 
         update();
+        output.x = position.x - output.x;
+        output.y = position.y - output.y;
+        return  output;
     }
 }
