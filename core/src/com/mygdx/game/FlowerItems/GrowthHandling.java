@@ -41,9 +41,10 @@ public class GrowthHandling {
 
         long lastMilli = lastCheck.getTimeInMillis();
         long thisMilli = thisCheck.getTimeInMillis();
-        long difference = TimeUnit.MILLISECONDS.toSeconds(thisMilli - lastMilli);
+        long difference = thisMilli - lastMilli;
+        float secondsDifference = (float) difference/1000f;
 
-        float toGrow = GrowthRate*difference;
+        float toGrow = GrowthRate*secondsDifference;
         Growth += toGrow;
 
         bloomInfo.Blooming =

@@ -1,17 +1,11 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
-import com.sun.javafx.geom.Point2D;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -22,11 +16,10 @@ public class BezierInstructions {
 
     public int tipX, tipY;
     private Vector2[] points; //Format should be E, p, p, E, p, p, E, p, p, E etc
-    private ArrayList<Bezier<Vector2>> curvesOnScreen;
+    private ArrayList<Bezier<Vector2>> curvesOnScreen; //for now, holds all the curves
 
     private Vector2 point0 = new Vector2(), point1 = new Vector2();
     private int segments;
-    private float t = 0;
 
     public BezierInstructions() {
         LoadPoints(GenerateCrazyPoints(new Random().nextLong(), 4, 200));
@@ -51,10 +44,42 @@ public class BezierInstructions {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.GREEN); //Yes. Green stem for now
 
+        float t;
         for(Bezier<Vector2> curve : curvesOnScreen) {
             curve.valueAt(point0, 0f);
             for(int i = 1; i <= segments; i++) {
                 t = i/(float)segments;
+                curve.valueAt(point1, t);
+                Vector2 firstDrawPoint = point0.cpy().add(rootOrigin);
+                Vector2 secondDrawPoint = point1.cpy().add(rootOrigin);
+                shapeRenderer.rectLine(firstDrawPoint, secondDrawPoint, 15); //default WIDTH OF 15
+                point0 = point1.cpy();
+            }
+        }
+        shapeRenderer.end();
+    }
+
+    /**
+     * Draws only he curves up to the maximum T specified
+     * @param shapeRenderer Shape renderer to render the curves
+     * @param rootOrigin Origin of the root of the stem
+     * @param maximumT The maximum t to render to. 1 per curve, where the decimal is the fraction of the curve to render, ie 0.5 for ~ a half
+     */
+    public void DrawSome(ShapeRenderer shapeRenderer, Vector2 rootOrigin, float maximumT) {
+        //Only currently works as curvesOnScreen holds all
+        float t;
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.GREEN); //Yes. Green stem for now
+        int floored = (int)Math.floor(maximumT);
+
+        for(int c = 0; c < maximumT && c < curvesOnScreen.size(); c++) {
+            Bezier<Vector2> curve = curvesOnScreen.get(c);
+            curve.valueAt(point0, 0f);
+            for(int i = 1; i <= segments; i++) {
+                t = i/(float)segments;
+                if(c == floored && t > maximumT - floored) {
+                    break; //If we've gone beyond the scope of what's already here
+                }
                 curve.valueAt(point1, t);
                 Vector2 firstDrawPoint = point0.cpy().add(rootOrigin);
                 Vector2 secondDrawPoint = point1.cpy().add(rootOrigin);

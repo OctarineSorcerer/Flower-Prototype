@@ -84,11 +84,14 @@ public class Flower { //These are their own classes as they may need unique func
         float bloomAmount = growth.GetAmountLastBloomed();
         if(bloomAmount > 0) {
             for(PetalFlyweight fly : petals) {
-                fly.petal.sprite.setScale(fly.petal.sprite.getScaleX() - 1 + bloomAmount * fly.petal.bloomGrowthRate,
-                        fly.petal.sprite.getScaleY() - 1 + bloomAmount * fly.petal.bloomGrowthRate);
+                float scaleByX = fly.petal.sprite.getScaleX() - 1 + bloomAmount * fly.petal.bloomGrowthRate;
+                float scaleByY = fly.petal.sprite.getScaleY() - 1 + bloomAmount * fly.petal.bloomGrowthRate;
+                fly.petal.sprite.setScale(scaleByX,
+                        scaleByY);
                 if(fly.petal.sprite.getScaleY() > 0) petalsOutside = true;
                 System.out.println("Grown X:" + fly.petal.sprite.getScaleX() + " | Y: " + fly.petal.sprite.getScaleY());
             }
+            System.out.println("Bloomed: " + bloomAmount);
         }
     }
 
@@ -103,6 +106,7 @@ public class Flower { //These are their own classes as they may need unique func
                     head.GetCenter().y - headCenterOld.y);
         }
     }
+
     public void DrawSprites(SpriteBatch batch) {
         if(petalsOutside) {
             for (Flower.PetalFlyweight petalType : petals) {
@@ -119,7 +123,7 @@ public class Flower { //These are their own classes as they may need unique func
     }
 
     public void DrawShapes(ShapeRenderer shapeRenderer) {
-        stem.curveInfo.DrawAll(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y));
+        stem.curveInfo.DrawSome(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y), growth.Growth);
     }
 
     public enum PetalStyle {
