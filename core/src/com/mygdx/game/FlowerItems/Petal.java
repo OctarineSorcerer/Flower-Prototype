@@ -13,8 +13,8 @@ public class Petal extends TintableElement {
      * @param monochromeIndex The index of the monochrome image in the textures/petals/monochrome folder
      * @param tintColour      The colour you wish to tint the petal
      */
-    public Petal(int monochromeIndex, Color tintColour) {
-        super("textures/petals/monochrome/", monochromeIndex, tintColour);
+    public Petal(String monochromeName, Color tintColour) {
+        super("textures/petals/monochrome/", monochromeName, tintColour);
         sprite.setOriginCenter();
         //sprite.translateX(sprite.getWidth()/2);
     }

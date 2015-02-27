@@ -15,6 +15,7 @@ import java.util.Random;
 public class BezierInstructions {
 
     public int tipX, tipY;
+    public Vector2 beginning;
     private Vector2[] points; //Format should be E, p, p, E, p, p, E, p, p, E etc
     private ArrayList<Bezier<Vector2>> curvesOnScreen; //for now, holds all the curves
 
@@ -23,6 +24,11 @@ public class BezierInstructions {
 
     public BezierInstructions() {
         LoadPoints(GenerateCrazyPoints(new Random().nextLong(), 4, 200));
+        beginning = new Vector2();
+    }
+    public BezierInstructions(Vector2 root) {
+        LoadPoints(GenerateCrazyPoints(new Random().nextLong(), 4, 200));
+        beginning = root;
     }
 
     /**
@@ -121,6 +127,26 @@ public class BezierInstructions {
             //}
         }
         segments = curvesOnScreen.size() * 40;
+    }
+
+    /***
+     *
+     * @param t Cumulative t format here (ie 1 per curve here, beyond decimal is progress)
+     * @param root Root of the curve
+     * @return A vector2 representing the position on the given curve at that time
+     */
+    public Vector2 GetPositionAtT(float t, Vector2 root) {
+        Vector2 output = new Vector2();
+        int curveNum = (int)Math.floor(t);
+        float progress = t - curveNum;
+        if(curveNum >= curvesOnScreen.size()) {
+            curveNum = curvesOnScreen.size() - 1;
+            progress = 1.0f;
+        }
+        Bezier<Vector2> curve = curvesOnScreen.get(curveNum);
+        curve.valueAt(output, progress);
+        output.add(root.x, root.y);
+        return output;
     }
 
     /***

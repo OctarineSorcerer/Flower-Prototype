@@ -16,20 +16,20 @@ import java.awt.*;
 public abstract class TintableElement {
     public Sprite sprite;
     public Color color;
-    int monoIndex;
+    String monochromeName;
     public float scale = 1;
     public float rotation;
     String monochromePath;
     /**
      * Constructor
      * @param textureFolder Folder containing the monochrome images (eg "textures/petals/monochrome/")
-     * @param monochromeIndex Index of the monochrome image
+     * @param monochromeName Index of the monochrome image
      * @param tintColour Colour you wish to tint the image
      */
-    public TintableElement(String textureFolder, int monochromeIndex, Color tintColour)
+    public TintableElement(String textureFolder, String monochromeName, Color tintColour)
     {
         this.monochromePath = textureFolder;
-        this.monoIndex = monochromeIndex;
+        this.monochromeName = monochromeName;
         Tint(tintColour);
     }
 
@@ -91,9 +91,7 @@ public abstract class TintableElement {
      * @return A monochrome texture specified in fields
      */
     Texture GetMonochromeImage() {
-        FileHandle[] files = Gdx.files.internal(monochromePath).list();
-        FileHandle target = files[monoIndex];
-        return new Texture(target);
+        return new Texture(Gdx.files.internal(monochromePath + monochromeName));
     }
     public Point2D GetCenter(){
         return new Point2D(sprite.getX() + (sprite.getWidth()/2), sprite.getY() + (sprite.getHeight()/2));

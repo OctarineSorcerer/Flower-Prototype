@@ -40,8 +40,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
         //any other creation stuff
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
-        Head testHead = new Head(0, Color.BLUE);
-        testPetal = new Petal(0, Color.RED);
+        Head testHead = new Head("TestFlowerHead2.png", Color.BLUE);
+        testPetal = new Petal("1.png", Color.RED);
         testFlower = new Flower(testPetal, testHead, new Stem(), 13, Flower.PetalStyle.Touching,
                 new Point2D(FlowerPrototype.WIDTH / 2, 20)); //20 for funsies
         Point2D headCenter = testFlower.head.GetCenter();

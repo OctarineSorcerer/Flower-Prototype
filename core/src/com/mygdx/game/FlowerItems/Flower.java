@@ -33,9 +33,8 @@ public class Flower { //These are their own classes as they may need unique func
         petals.add(new PetalFlyweight(mainPetal));
         count = petalCount;
         style = petalArrangement;
-        head.SetPosWithOrigin(
-                new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y),
-                new Point2D(head.sprite.getWidth()/2, head.sprite.getHeight()/2));
+        //head.SetCenter(new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y));
+        head.SetCenter(new Point2D(rootLoc.x, rootLoc.y));
         ArrangePetals(style, count, 0);
     }
 
@@ -49,15 +48,9 @@ public class Flower { //These are their own classes as they may need unique func
                 //relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
 
                 float ratio = relevantPetal.sprite.getHeight() / head.radius;
-                growth = new GrowthHandling(1f, 6f, 1 + ratio);
-
-                System.out.println("Original X scale: " + relevantPetal.sprite.getScaleX() +
-                                    " | Y: " + relevantPetal.sprite.getScaleY());
+                growth = new GrowthHandling(1f, 6f, ratio);
 
                 relevantPetal.Scale(-ratio); //Sets top of petal to the middle of the head
-
-                System.out.println("Second X scale: " + relevantPetal.sprite.getScaleX() +
-                        " | Y: " + relevantPetal.sprite.getScaleY());
 
                 SetPetalPositions(sepAngle, thisFlyweight);
                 break;
@@ -79,31 +72,31 @@ public class Flower { //These are their own classes as they may need unique func
 
     public void ApplyGrowth() {
         float grown = growth.CheckTime();
-
+        Vector2 newTip = stem.curveInfo.GetPositionAtT(growth.Growth, rootLoc);
+        stem.stemTip = new Point2D(newTip.x, newTip.y);
+        head.SetCenter(stem.stemTip);
+        for(PetalFlyweight fly : petals) {
+            SetPetalPositions(360f / (float) count, fly);
+        }
         //petals/blooming
         float bloomAmount = growth.GetAmountLastBloomed();
         if(bloomAmount > 0) {
             for(PetalFlyweight fly : petals) {
-                float scaleByX = fly.petal.sprite.getScaleX() - 1 + bloomAmount * fly.petal.bloomGrowthRate;
-                float scaleByY = fly.petal.sprite.getScaleY() - 1 + bloomAmount * fly.petal.bloomGrowthRate;
-                fly.petal.sprite.setScale(scaleByX,
-                        scaleByY);
+                float scaleY = fly.petal.sprite.getScaleY() + bloomAmount * fly.petal.bloomGrowthRate;
+                fly.petal.sprite.setScale(1,
+                        scaleY);
                 if(fly.petal.sprite.getScaleY() > 0) petalsOutside = true;
-                System.out.println("Grown X:" + fly.petal.sprite.getScaleX() + " | Y: " + fly.petal.sprite.getScaleY());
             }
-            System.out.println("Bloomed: " + bloomAmount);
         }
     }
 
     public void DebugChangeStem() {
         stem = new Stem();
         Point2D headCenterOld = head.GetCenter();
-        head.SetPosWithOrigin(
-                new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y),
-                new Point2D(head.sprite.getWidth() / 2, head.sprite.getHeight() / 2));
+        head.SetCenter(new Point2D(rootLoc.x, rootLoc.y));
+        head.SetCenter(stem.stemTip);
         for(PetalFlyweight fly : petals) {
-            fly.ShiftLocs(head.GetCenter().x - headCenterOld.x,
-                    head.GetCenter().y - headCenterOld.y);
+            SetPetalPositions(360f / (float) count, fly);
         }
     }
 

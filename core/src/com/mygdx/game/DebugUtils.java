@@ -32,7 +32,7 @@ public class DebugUtils {
             colors.add(color);
         }
         public void DrawCrosses(SpriteBatch batch) {
-            DebugCross template = new DebugCross(0, Color.PINK);
+            DebugCross template = new DebugCross("DebugCross.png", Color.PINK);
             for(int i = 0; i < locations.size(); i++)
             {
                 Point2D loc = locations.get(i);
@@ -54,8 +54,8 @@ public class DebugUtils {
     }
 
     static class DebugCross extends TintableElement {
-        DebugCross(int monochromeIndex, Color tintColour) {
-            super("textures/Debug", monochromeIndex, tintColour);
+        DebugCross(String monochromeName, Color tintColour) {
+            super("textures/Debug/", monochromeName, tintColour);
             //sprite.setOriginCenter();
             //sprite.setCenter(loc.x, loc.y);
         }
