@@ -18,16 +18,17 @@ public class BezierInstructions {
     public Vector2 beginning;
     private Vector2[] points; //Format should be E, p, p, E, p, p, E, p, p, E etc
     private ArrayList<Bezier<Vector2>> curvesOnScreen; //for now, holds all the curves
+    private long seed;
 
     private Vector2 point0 = new Vector2(), point1 = new Vector2();
     private int segments;
 
-    public BezierInstructions() {
-        LoadPoints(GenerateCrazyPoints(new Random().nextLong(), 4, 200));
+    public BezierInstructions(long seed) {
+        LoadPoints(GeneratePoints(seed, 4, 200));
         beginning = new Vector2();
     }
-    public BezierInstructions(Vector2 root) {
-        LoadPoints(GenerateCrazyPoints(new Random().nextLong(), 4, 200));
+    public BezierInstructions(long seed, Vector2 root) {
+        LoadPoints(GeneratePoints(seed, 4, 200));
         beginning = root;
     }
 
@@ -156,7 +157,7 @@ public class BezierInstructions {
      * @param width width of the stem's sprite
      * @return An array of vectors representing the points, in format (End, control, control, End, control, etc..)
      */
-    public static Vector2[] GenerateCrazyPoints(long seed, int cubicCount, int width) {
+    public Vector2[] GeneratePoints(long seed, int cubicCount, int width) {
         List<Vector2> points = new ArrayList<Vector2>();
         Vector2 lastEndPoint, lastHandle;
         Random rand = new Random(seed);
@@ -196,7 +197,7 @@ public class BezierInstructions {
                 }
             }
         }
-
+        this.seed = seed;
         return points.toArray(new Vector2[points.size()]);
     }
 }

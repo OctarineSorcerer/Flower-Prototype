@@ -3,7 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.sun.javafx.geom.Point2D;
+import com.badlogic.gdx.math.Vector2;
 
 import java.awt.*;
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.List;
 public class DebugUtils {
     public static class CrossManager
     {
-        List<Point2D> locations = new ArrayList<Point2D>();
+        List<Vector2> locations = new ArrayList<Vector2>();
         List<Color> colors = new ArrayList<Color>();
         List<String> labels = new ArrayList<String>();
         BitmapFont font = new BitmapFont();
@@ -26,7 +26,7 @@ public class DebugUtils {
             font.setColor(Color.WHITE);
         }
 
-        public void AddCross(Point2D center, String label, Color color) {
+        public void AddCross(Vector2 center, String label, Color color) {
             locations.add(center);
             labels.add(label);
             colors.add(color);
@@ -35,7 +35,7 @@ public class DebugUtils {
             DebugCross template = new DebugCross("DebugCross.png", Color.PINK);
             for(int i = 0; i < locations.size(); i++)
             {
-                Point2D loc = locations.get(i);
+                Vector2 loc = locations.get(i);
                 Color color = colors.get(i);
                 template.sprite.setCenter(loc.x, loc.y);
                 if(color != template.color) {
@@ -48,7 +48,7 @@ public class DebugUtils {
             }
         }
         public void ClearCrosses() {
-            locations = new ArrayList<Point2D>();
+            locations = new ArrayList<Vector2>();
             colors = new ArrayList<Color>();
         }
     }

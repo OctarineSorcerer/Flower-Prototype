@@ -10,16 +10,16 @@ import java.util.Random;
 public class Stem {
         int thickness = 20;
         int width = 200; //default 200, same as in BezierInstructions
-        Point2D stemTip = new Point2D();
+        Vector2 stemTip = new Vector2();
 
         public BezierInstructions curveInfo;
 
-        public Stem() {
-            CreateStemCurve();
+        public Stem(long seed) {
+            CreateStemCurve(seed);
         }
 
-        public void CreateStemCurve() {
-            BezierInstructions bez = new BezierInstructions();
+        public void CreateStemCurve(long seed) {
+            BezierInstructions bez = new BezierInstructions(seed);
             stemTip.x = bez.tipX; stemTip.y = bez.tipY;
             curveInfo = bez;
         }

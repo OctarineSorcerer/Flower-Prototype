@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.sun.javafx.geom.Point2D;
+import com.badlogic.gdx.math.Vector2;
 
 import java.awt.*;
 
@@ -59,19 +59,19 @@ public class FlowerMaths {
      * @param angle Angle around the circle that the petal will reside at
      * @return The point on the circumference at that angle relative to the center
      */
-    public static Point2D GetPetalPos(float radius, float angle)
+    public static Vector2 GetPetalPos(float radius, float angle)
     {
         if(angle == 360) angle = 0;
         float closestAxial = GetClosestQuarterAngle(angle);
         float sepFromAxial = Math.abs(angle - closestAxial);
         if(angle == 0)
-                return new Point2D(0, (int)radius);
+                return new Vector2(0, (int)radius);
         else if (angle == 90)
-                return new Point2D((int)radius, 0);
+                return new Vector2((int)radius, 0);
         else if (angle == 180)
-                return new Point2D(0, (int)(-radius));
+                return new Vector2(0, (int)(-radius));
         else if(angle == 270)
-                return new Point2D((int)(-radius), 0);
+                return new Vector2((int)(-radius), 0);
         else { //firstly operate under assumption of near horizontal - we can then switch if not
             float vertical = Math.abs(radius * (MathUtils.sinDeg(sepFromAxial)));
             float horizontal = Math.abs(radius * (MathUtils.sinDeg(90 - sepFromAxial)));
@@ -88,18 +88,7 @@ public class FlowerMaths {
             if(angle > 90 && angle < 270) { //downwards vertical (negative)
                 vertical = Math.abs(vertical) * -1;
             }
-            return new Point2D((int)horizontal, (int)vertical);
+            return new Vector2((int)horizontal, (int)vertical);
         }
-    }
-
-    /**
-     * Adds two points together (ie where you'd end up)
-     * @param initial Initial point
-     * @param relative Travel instructions? point
-     * @return The sum of the two points being added together
-     */
-    public static Point2D AddPoints(Point2D initial, Point2D relative)
-    {
-        return new Point2D(initial.x + relative.x, initial.y + relative.y);
     }
 }

@@ -26,7 +26,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     ExtendedCamera camera;
     int hCameraSpeed = 200, vCameraSpeed = 200;
     Ground ground;
-    Petal testPetal;
+    PetalGroup testPetalGroup;
     Flower testFlower;
     public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
 
@@ -41,21 +41,16 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         //any other creation stuff
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
         Head testHead = new Head("TestFlowerHead2.png", Color.BLUE);
-        testPetal = new Petal("1.png", Color.RED);
-        testFlower = new Flower(testPetal, testHead, new Stem(), 13, Flower.PetalStyle.Touching,
+        testPetalGroup = new PetalGroup("1.png", Color.RED);
+        testFlower = new Flower(testPetalGroup, testHead, new Stem(rand.nextLong()), 13, Flower.PetalStyle.Touching,
                 new Point2D(FlowerPrototype.WIDTH / 2, 20)); //20 for funsies
-        Point2D headCenter = testFlower.head.GetCenter();
+        Vector2 headCenter = testFlower.head.GetCenter();
         testFlower.stem.curveInfo.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2, testFlower.rootLoc);
 
         crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
         DecimalFormat dF = new DecimalFormat();
         dF.setMaximumFractionDigits(2);
         rand.nextLong();
-        for (Flower.PetalFlyweight petalType : testFlower.petals) {
-            for (int i = 0; i < petalType.locations.size(); i++) {
-                crossManager.AddCross(petalType.locations.get(i), dF.format(petalType.rotations.get(i)), Color.MAGENTA);
-            }
-        } //Crosses for debug purposes
         /*for(int i = 0; i < 5; i++){
         touches.put(i, new TouchInfo());
         }*/
@@ -71,6 +66,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
+        testFlower.ApplyGrowth();
         //Begin a batch and draw stuff
         testFlower.DrawShapes(shapeRenderer);
 

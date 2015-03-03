@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class SplashScreen implements Screen {
     private Skin skin = new Skin(Gdx.files.internal("skins/menuSkin.json"),
             new TextureAtlas(Gdx.files.internal("skins/menuSkin.pack")));
-    private Texture texture = new Texture(Gdx.files.internal("badlogic.jpg"));
     //private Image splashImage = new Image(texture);
     private Label splashLabel = new Label("Splash screen!", skin, "MotorStyle");
     private Stage stage = new Stage();
@@ -70,7 +69,6 @@ public class SplashScreen implements Screen {
 
     @Override
     public void dispose() {
-        texture.dispose();
         stage.dispose();
     }
 
