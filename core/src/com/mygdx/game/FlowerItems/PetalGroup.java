@@ -1,6 +1,9 @@
 package com.mygdx.game.FlowerItems;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.TintableElement;
@@ -9,8 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PetalGroup extends TintableElement {
-    float endScale = 2; //Scale of fully mature petal
-    float bloomGrowthRate = 1f; //amount it grows per growth while blooming
+    float bottomWidth = 110f;
+    float bloomGrowthRate = 1f; //amount it grows per unit while blooming
+    float xGrowthAfter = 0f;
 
     List<LocRotPair> places = new ArrayList<LocRotPair>();
 
@@ -23,6 +27,7 @@ public class PetalGroup extends TintableElement {
     public PetalGroup(String monochromeName, Color tintColour) {
         super("textures/petals/monochrome/", monochromeName, tintColour);
         sprite.setOrigin(sprite.getWidth()/2, 0);
+        bottomWidth = GetBottomRowWidth(new Pixmap(Gdx.files.internal(MonoPath())));
     }
     public void Add(Vector2 location, float rotation) {
         places.add(new LocRotPair(location, rotation));
@@ -38,6 +43,25 @@ public class PetalGroup extends TintableElement {
             sprite.setRotation(-(place.rotation));
             sprite.draw(batch);
         }
+    }
+
+    private int GetBottomRowWidth(Pixmap image) {
+        int minX = -1, maxX = -1;
+        int width = image.getWidth();
+        //sint aTestPix = image.getPixel(25, 55);
+        for (int x = 0; x < width; x++) {
+            int pixel = image.getPixel(x, image.getHeight() - 1);
+            if (pixel != -1) {
+                if (minX == -1) {
+                    minX = x;
+                } else {
+                    maxX = x;
+                }
+            }
+        }
+        image.dispose();
+        if(minX == -1 || maxX == -1) return width;
+        else return maxX - minX + 1;
     }
 
     /***

@@ -58,7 +58,7 @@ public class GrowthHandling {
 
     public class BloomInfo {
         private float bloomStart;
-        private float bloomLength;
+        public float bloomLength;
         private float bloomEnd;
 
         public boolean Blooming = false;

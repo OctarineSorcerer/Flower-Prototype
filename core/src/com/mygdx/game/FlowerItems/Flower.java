@@ -36,6 +36,7 @@ public class Flower { //These are their own classes as they may need unique func
         style = petalArrangement;
         //head.SetCenter(new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y));
         head.SetCenter(rootLoc);
+        growth = new GrowthHandling(1f, 6f, 4f);
         ArrangePetals(style, count, 0);
     }
 
@@ -44,11 +45,15 @@ public class Flower { //These are their own classes as they may need unique func
         switch (arrangement) {
             case Touching:
                 PetalGroup petalGroup = petals.get(petalIndex);
-                petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
-                //relevantPetal.Scale(petalWidth / relevantPetal.sprite.getWidth()); //scales petal
                 float ratio = petalGroup.sprite.getHeight() / head.radius;
-                growth = new GrowthHandling(1f, 6f, ratio);
-                petalGroup.Scale(-ratio); //Sets top of petal to the middle of the head
+                float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 1f, head.radius);
+                petalGroup.sprite.setScale((petalWidth/petalGroup.bottomWidth), petalGroup.sprite.getScaleY());
+                petalGroup.xGrowthAfter = Math.abs((petalWidth-petalGroup.bottomWidth)/growth.bloomInfo.bloomLength);
+                petalGroup.bloomGrowthRate = ratio/growth.bloomInfo.bloomLength;
+                petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
+                petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
+
+
                 SetPetalPositions(sepAngle, petalGroup);
                 break;
         }
@@ -76,10 +81,14 @@ public class Flower { //These are their own classes as they may need unique func
         float bloomAmount = growth.GetAmountLastBloomed();
         if(bloomAmount > 0) {
             for(PetalGroup petalGroup : petals) {
+                float xScale = 1f;
+                if(petalGroup.sprite.getScaleY() > 0) {
+                    petalsOutside = true;
+                    xScale = petalGroup.sprite.getScaleX() + bloomAmount * petalGroup.xGrowthAfter;
+                }
                 float scaleY = petalGroup.sprite.getScaleY() + bloomAmount * petalGroup.bloomGrowthRate;
-                petalGroup.sprite.setScale(1,
+                petalGroup.sprite.setScale(xScale,
                         scaleY);
-                if(petalGroup.sprite.getScaleY() > 0) petalsOutside = true;
             }
         }
     }
