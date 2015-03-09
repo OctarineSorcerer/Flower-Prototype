@@ -56,6 +56,12 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show()
     {
+        PlayExitOptions();
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    private void PlayExitOptions() {
+        stage.clear();
         buttonPlay.addListener(new ClickListener()
         {
             @Override
@@ -81,9 +87,12 @@ public class MainMenuScreen implements Screen {
 
         table.setFillParent(true);
         stage.addActor(table);
-
-        Gdx.input.setInputProcessor(stage);
     }
+
+    private void NewFlowerCreation() {
+
+    }
+
     @Override
     public void hide()
     {

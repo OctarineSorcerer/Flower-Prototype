@@ -44,12 +44,15 @@ public class Flower { //These are their own classes as they may need unique func
         float sepAngle = 360f / (float) count;
         switch (arrangement) {
             case Touching:
+                //BIG issue on width with numbers that aren't 8?!
                 PetalGroup petalGroup = petals.get(petalIndex);
                 float ratio = petalGroup.sprite.getHeight() / head.radius;
                 float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 1f, head.radius);
+                System.out.println("Target petal width: " + petalWidth + "| Original width: " + petalGroup.bottomWidth);
                 petalGroup.sprite.setScale((petalWidth/petalGroup.bottomWidth), petalGroup.sprite.getScaleY());
                 petalGroup.xGrowthAfter = Math.abs((petalWidth-petalGroup.bottomWidth)/growth.bloomInfo.bloomLength);
-                petalGroup.bloomGrowthRate = ratio/growth.bloomInfo.bloomLength;
+                petalGroup.bloomGrowthRate = (ratio + (petalWidth/petalGroup.bottomWidth))
+                        /growth.bloomInfo.bloomLength; //To original (with no x scale)
                 petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
                 petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
 
@@ -74,11 +77,11 @@ public class Flower { //These are their own classes as they may need unique func
         float grown = growth.CheckTime();
         stem.stemTip = stem.curveInfo.GetPositionAtT(growth.Growth, rootLoc);
         head.SetCenter(stem.stemTip);
+        //petals/blooming
+        float bloomAmount = growth.GetAmountLastBloomed();
         for(PetalGroup petalGroup : petals) {
             SetPetalPositions(360f / (float) count, petalGroup);
         }
-        //petals/blooming
-        float bloomAmount = growth.GetAmountLastBloomed();
         if(bloomAmount > 0) {
             for(PetalGroup petalGroup : petals) {
                 float xScale = 1f;
