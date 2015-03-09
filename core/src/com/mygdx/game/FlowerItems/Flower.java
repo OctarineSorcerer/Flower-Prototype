@@ -45,15 +45,15 @@ public class Flower { //These are their own classes as they may need unique func
         switch (arrangement) {
             case Touching:
                 PetalGroup petalGroup = petals.get(petalIndex);
-                float ratio = petalGroup.sprite.getHeight() / head.radius;
                 float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 1f, head.radius);
-                petalGroup.sprite.setScale((petalWidth/petalGroup.bottomWidth), petalGroup.sprite.getScaleY());
-                petalGroup.xGrowthAfter = Math.abs((petalWidth-petalGroup.bottomWidth)/growth.bloomInfo.bloomLength);
-                petalGroup.bloomGrowthRate = ratio/growth.bloomInfo.bloomLength;
+                petalGroup.xGrowthAfter = Math.abs((petalWidth/petalGroup.bottomWidth)
+                        /growth.bloomInfo.bloomLength);
+                float ratio = petalGroup.sprite.getHeight() / head.radius;
+                petalGroup.bloomGrowthRate = (ratio+petalGroup.sprite.getScaleX())/growth.bloomInfo.bloomLength;
                 petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
                 petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
-
-
+                petalGroup.sprite.setScale((petalWidth / petalGroup.bottomWidth), petalGroup.sprite.getScaleY());
+                System.out.println("Original x: " + (petalWidth/petalGroup.bottomWidth));
                 SetPetalPositions(sepAngle, petalGroup);
                 break;
         }
@@ -89,6 +89,7 @@ public class Flower { //These are their own classes as they may need unique func
                 float scaleY = petalGroup.sprite.getScaleY() + bloomAmount * petalGroup.bloomGrowthRate;
                 petalGroup.sprite.setScale(xScale,
                         scaleY);
+                System.out.println("X: " + petalGroup.sprite.getScaleX());
             }
         }
     }
