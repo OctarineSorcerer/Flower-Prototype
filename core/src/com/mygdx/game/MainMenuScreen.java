@@ -6,12 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MainMenuScreen implements Screen {
@@ -56,6 +54,12 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show()
     {
+        PlayExitOptions();
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    private void PlayExitOptions() {
+        stage.clear();
         buttonPlay.addListener(new ClickListener()
         {
             @Override
@@ -81,9 +85,12 @@ public class MainMenuScreen implements Screen {
 
         table.setFillParent(true);
         stage.addActor(table);
-
-        Gdx.input.setInputProcessor(stage);
     }
+
+    private void NewFlowerCreation() {
+        Image actor = new Image();
+    }
+
     @Override
     public void hide()
     {

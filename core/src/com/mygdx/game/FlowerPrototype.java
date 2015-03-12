@@ -8,12 +8,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.Random;
+
 //Dan-learning: Game provides implementation of ApplicationListener. Plus screen stuff
 public class FlowerPrototype extends Game {
 	SpriteBatch batch;
 	Texture img;
 
     public BitmapFont font;
+    public static Random rand = new Random();
 
     public static final int WIDTH=480,HEIGHT=600;
 

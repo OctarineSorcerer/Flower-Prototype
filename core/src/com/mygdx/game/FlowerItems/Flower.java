@@ -34,6 +34,7 @@ public class Flower { //These are their own classes as they may need unique func
         this.petals = petals;
         this.petalIndices = petalIndices;
         count = petalIndices.size();
+
         style = petalArrangement;
 
         head.SetCenter(rootLoc);
@@ -48,13 +49,13 @@ public class Flower { //These are their own classes as they may need unique func
                 //Set each petalGroup's sprite stuff
                 for(PetalGroup petalGroup : petals) {
                     float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 1f, head.radius);
-                    petalGroup.xGrowthAfter = Math.abs((petalWidth / petalGroup.bottomWidth)
+                    petalGroup.xGrowthAfter = Math.abs((petalWidth / petalGroup.sprite.getWidth())
                             / growth.bloomInfo.bloomLength);
                     float ratio = petalGroup.sprite.getHeight() / head.radius;
                     petalGroup.bloomGrowthRate = (ratio + petalGroup.sprite.getScaleX()) / growth.bloomInfo.bloomLength;
                     petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
                     petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
-                    petalGroup.sprite.setScale((petalWidth / petalGroup.bottomWidth), petalGroup.sprite.getScaleY());
+                    petalGroup.sprite.setScale(1f /*(petalWidth / petalGroup.sprite.getWidth())*/, petalGroup.sprite.getScaleY());
                 }
 
                 SetPetalPositions();
@@ -62,7 +63,7 @@ public class Flower { //These are their own classes as they may need unique func
         }
     }
 
-    public void SetPetalPositions() {
+    private void SetPetalPositions() {
         float sepAngle = 360f / petalIndices.size();
         for(PetalGroup petalGroup : petals) {
             petalGroup.Clear();
@@ -72,12 +73,19 @@ public class Flower { //These are their own classes as they may need unique func
             AddPetalPosition(i*sepAngle, petals.get(petalIndex));
         }
     }
-    public void AddPetalPosition(float angle, PetalGroup petalGroup) {
+    private void AddPetalPosition(float angle, PetalGroup petalGroup) {
         float sagitta = (float)(head.radius - Math.sqrt(Math.pow(head.radius, 2)
                 - Math.pow(0.5* petalGroup.sprite.getWidth(), 2)));
         //^That bit is the height of the arc. Yeah. Go maths. http://www.mathopenref.com/sagitta.html
         Vector2 location = head.GetCenter().add(FlowerMaths.GetPetalPos(head.radius - sagitta, angle));
         petalGroup.Add(location, angle);
+    }
+    public static List<Integer> GetIndexMix (int maxNumber, int amount) {
+        List<Integer> output = new ArrayList<Integer>();
+        for(int i = 0; i < amount; i++) {
+            output.add(FlowerPrototype.rand.nextInt(maxNumber + 1));
+        }
+        return output;
     }
 
     public void ApplyGrowth() {
@@ -89,7 +97,7 @@ public class Flower { //These are their own classes as they may need unique func
         float bloomAmount = growth.GetAmountLastBloomed();
         if(bloomAmount > 0) {
             for(PetalGroup petalGroup : petals) {
-                float xScale = 1f;
+                float xScale = petalGroup.sprite.getScaleX(); //was 1f
                 if(petalGroup.sprite.getScaleY() > 0) {
                     petalsOutside = true;
                     xScale = petalGroup.sprite.getScaleX() + bloomAmount * petalGroup.xGrowthAfter;
@@ -97,7 +105,7 @@ public class Flower { //These are their own classes as they may need unique func
                 float scaleY = petalGroup.sprite.getScaleY() + bloomAmount * petalGroup.bloomGrowthRate;
                 petalGroup.sprite.setScale(xScale,
                         scaleY);
-                System.out.println("X: " + petalGroup.sprite.getScaleX());
+                //System.out.println("Width: " + petalGroup.sprite.getWidth() + "| Height: " + petalGroup.sprite.getY());
             }
         }
     }

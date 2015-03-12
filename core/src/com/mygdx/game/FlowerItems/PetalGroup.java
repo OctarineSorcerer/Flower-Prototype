@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PetalGroup extends TintableElement {
-    float bottomWidth = 110f;
+    //float bottomWidth = 110f;
     float bloomGrowthRate = 1f; //amount it grows per unit while blooming
     float xGrowthAfter = 0f;
 
@@ -27,7 +27,7 @@ public class PetalGroup extends TintableElement {
     public PetalGroup(String monochromeName, Color tintColour) {
         super("textures/petals/monochrome/", monochromeName, tintColour);
         sprite.setOrigin(sprite.getWidth()/2, 0);
-        bottomWidth = GetBottomRowWidth(new Pixmap(Gdx.files.internal(MonoPath())));
+        //bottomWidth = GetBottomRowWidth(new Pixmap(Gdx.files.internal(MonoPath())));
     }
     public void Add(Vector2 location, float rotation) {
         places.add(new LocRotPair(location, rotation));
@@ -51,7 +51,7 @@ public class PetalGroup extends TintableElement {
         //sint aTestPix = image.getPixel(25, 55);
         for (int x = 0; x < width; x++) {
             int pixel = image.getPixel(x, image.getHeight() - 1);
-            if (pixel != -1) {
+            if ((pixel & 0x000000ff) != 0) {
                 if (minX == -1) {
                     minX = x;
                 } else {

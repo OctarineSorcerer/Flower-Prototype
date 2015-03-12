@@ -45,8 +45,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
         Head testHead = new Head("TestFlowerHead2.png", Color.BLUE);
         testPetalGroup = new PetalGroup("1.png", Color.RED);
-        List<PetalGroup> petalList = Arrays.asList(testPetalGroup, new PetalGroup(""))
-        testFlower = new Flower(petalList, Arrays.asList(0,0,0,0,0,0,0,0,0,0,0,0,0), testHead, new Stem(rand.nextLong()), Flower.PetalStyle.Touching,
+        List<PetalGroup> petalList = Arrays.asList(testPetalGroup, new PetalGroup("OtherPetal.png", Color.ORANGE));
+        testFlower = new Flower(petalList, Flower.GetIndexMix(1, 13), testHead, new Stem(rand.nextLong()), Flower.PetalStyle.Touching,
                 new Point2D(FlowerPrototype.WIDTH / 2, 20)); //20 for funsies
         Vector2 headCenter = testFlower.head.GetCenter();
         testFlower.stem.curveInfo.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2, testFlower.rootLoc);
@@ -55,9 +55,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         DecimalFormat dF = new DecimalFormat();
         dF.setMaximumFractionDigits(2);
         rand.nextLong();
-        /*for(int i = 0; i < 5; i++){
-        touches.put(i, new TouchInfo());
-        }*/
     }
 
     @Override
