@@ -29,12 +29,11 @@ public class Flower { //These are their own classes as they may need unique func
         rootLoc = new Vector2(root.x, root.y);
         head = flowerHead;
         stem = flowerStem;
-
         petals = new ArrayList<PetalGroup>();
         petals.add(mainPetalGroup);
         count = petalCount;
         style = petalArrangement;
-        //head.SetCenter(new Point2D(stem.stemTip.x + rootLoc.x, stem.stemTip.y + rootLoc.y));
+
         head.SetCenter(rootLoc);
         growth = new GrowthHandling(1f, 6f, 4f);
         ArrangePetals(style, count, 0);
@@ -44,19 +43,15 @@ public class Flower { //These are their own classes as they may need unique func
         float sepAngle = 360f / (float) count;
         switch (arrangement) {
             case Touching:
-                //BIG issue on width with numbers that aren't 8?!
                 PetalGroup petalGroup = petals.get(petalIndex);
-                float ratio = petalGroup.sprite.getHeight() / head.radius;
                 float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 1f, head.radius);
-                System.out.println("Target petal width: " + petalWidth + "| Original width: " + petalGroup.bottomWidth);
-                petalGroup.sprite.setScale((petalWidth/petalGroup.bottomWidth), petalGroup.sprite.getScaleY());
-                petalGroup.xGrowthAfter = Math.abs((petalWidth-petalGroup.bottomWidth)/growth.bloomInfo.bloomLength);
-                petalGroup.bloomGrowthRate = (ratio + (petalWidth/petalGroup.bottomWidth))
-                        /growth.bloomInfo.bloomLength; //To original (with no x scale)
+                petalGroup.xGrowthAfter = Math.abs((petalWidth/petalGroup.sprite.getWidth())
+                        /growth.bloomInfo.bloomLength);
+                float ratio = petalGroup.sprite.getHeight() / head.radius;
+                petalGroup.bloomGrowthRate = (ratio+petalGroup.sprite.getScaleX()) / growth.bloomInfo.bloomLength;
                 petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
                 petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
-
-
+                petalGroup.sprite.setScale((petalWidth / petalGroup.sprite.getWidth()), petalGroup.sprite.getScaleY());
                 SetPetalPositions(sepAngle, petalGroup);
                 break;
         }
@@ -92,6 +87,7 @@ public class Flower { //These are their own classes as they may need unique func
                 float scaleY = petalGroup.sprite.getScaleY() + bloomAmount * petalGroup.bloomGrowthRate;
                 petalGroup.sprite.setScale(xScale,
                         scaleY);
+                //System.out.println("Width: " + petalGroup.sprite.getWidth() + "| Height: " + petalGroup.sprite.getY());
             }
         }
     }

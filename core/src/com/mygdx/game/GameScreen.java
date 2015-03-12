@@ -42,7 +42,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
         Head testHead = new Head("TestFlowerHead2.png", Color.BLUE);
         testPetalGroup = new PetalGroup("1.png", Color.RED);
-        testFlower = new Flower(testPetalGroup, testHead, new Stem(rand.nextLong()), 8, Flower.PetalStyle.Touching,
+        testFlower = new Flower(testPetalGroup, testHead, new Stem(rand.nextLong()), 17, Flower.PetalStyle.Touching,
                 new Point2D(FlowerPrototype.WIDTH / 2, 20)); //20 for funsies
         Vector2 headCenter = testFlower.head.GetCenter();
         testFlower.stem.curveInfo.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2, testFlower.rootLoc);
