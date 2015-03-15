@@ -45,6 +45,13 @@ public class MainMenuScreen implements Screen {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
             }
         });
+        buttonFlower.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                NewFlowerCreation();
+            }
+        });
         buttonExit.addListener(new ClickListener()
         {
             @Override
@@ -58,21 +65,25 @@ public class MainMenuScreen implements Screen {
         camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //Ah, orthographic views. All hail 2d.
     }
 
-    private ArrayList<Texture> GetMonochromes(String path) {
-        ArrayList<Texture> output = new ArrayList<Texture>();
+    private ArrayList<FileHandle> GetMonochromes(String path) {
+        ArrayList<FileHandle> output = new ArrayList<FileHandle>();
         FileHandle dirHandle;
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            dirHandle = Gdx.files.internal(path);
-        } else {
-            // ApplicationType.Desktop ..
-            dirHandle = Gdx.files.internal("./bin/" + path);
-        }
+        dirHandle = Gdx.files.internal(path);
         for (FileHandle entry: dirHandle.list()) {
             if (entry.name().endsWith(".png")) {
-                output.add(new Texture(entry));
+                output.add(entry);
             }
         }
         return output;
+    }
+    private void AddPicsToTable(String path) {
+        ArrayList<FileHandle> files = GetMonochromes(path);
+        for(FileHandle entry : files) {
+            Image image = new Image(new Texture(entry));
+            image.setName(entry.path());
+            table.add(image).pad(5).padBottom(15);
+        }
+        table.row();
     }
 
     @Override
@@ -107,6 +118,7 @@ public class MainMenuScreen implements Screen {
         //The first appear on top, the last at the bottom.
         table.add(titleLabel).padBottom(40).row();
         table.add(buttonPlay).size(150, 60).padBottom(20).row();
+        table.add(buttonFlower).size(150,60).padBottom(20).row();
         table.add(buttonExit).size(150, 60).padBottom(20).row();
 
         table.setFillParent(true);
@@ -117,11 +129,11 @@ public class MainMenuScreen implements Screen {
         stage.clear();
         table.clear();
 
-        ArrayList<Texture> petals = GetMonochromes("textures/petals/monochrome");
-        for(Texture petalTex : petals) {
-            Image petalImage = new Image(petalTex);
-            table.row();
-        }
+        AddPicsToTable("textures/petals/monochrome");
+        AddPicsToTable("textures/heads/monochrome");
+
+        table.setFillParent(true);
+        stage.addActor(table);
     }
 
     @Override
