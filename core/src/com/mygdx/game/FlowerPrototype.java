@@ -13,6 +13,7 @@ import java.util.Random;
 //Dan-learning: Game provides implementation of ApplicationListener. Plus screen stuff
 public class FlowerPrototype extends Game {
 	SpriteBatch batch;
+    SaveInfo info;
 	Texture img;
 
     public BitmapFont font;

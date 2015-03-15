@@ -13,10 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class SplashScreen implements Screen {
-    private Skin skin = new Skin(Gdx.files.internal("skins/menuSkin.json"),
-            new TextureAtlas(Gdx.files.internal("skins/menuSkin.pack")));
+    private Skin skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
     //private Image splashImage = new Image(texture);
-    private Label splashLabel = new Label("Splash screen!", skin, "MotorStyle");
+    private Label splashLabel = new Label("Splash screen!", skin);
     private Stage stage = new Stage();
 
 
@@ -29,7 +28,7 @@ public class SplashScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.1059f, 0.1059f, 0.1059f, 1); //kinda a dark grey color
+        Gdx.gl.glClearColor(0, 0.6f, 1f, 1f); //blue
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();

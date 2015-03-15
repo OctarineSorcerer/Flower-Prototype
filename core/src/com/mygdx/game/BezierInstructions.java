@@ -31,6 +31,9 @@ public class BezierInstructions {
         LoadPoints(GeneratePoints(seed, 4, 200));
         beginning = root;
     }
+    public long GetSeed() {
+        return seed;
+    }
 
     /**
      *
@@ -72,11 +75,11 @@ public class BezierInstructions {
      * @param rootOrigin Origin of the root of the stem
      * @param maximumT The maximum t to render to. 1 per curve, where the decimal is the fraction of the curve to render, ie 0.5 for ~ a half
      */
-    public void DrawSome(ShapeRenderer shapeRenderer, Vector2 rootOrigin, float maximumT) {
+    public void DrawSome(ShapeRenderer shapeRenderer, Vector2 rootOrigin, Color colour , float maximumT, float width) {
         //Only currently works as curvesOnScreen holds all
         float t;
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.GREEN); //Yes. Green stem for now
+        shapeRenderer.setColor(colour); //Yes. Green stem for now
         int floored = (int)Math.floor(maximumT);
 
         for(int c = 0; c < maximumT && c < curvesOnScreen.size(); c++) {
@@ -90,7 +93,7 @@ public class BezierInstructions {
                 curve.valueAt(point1, t);
                 Vector2 firstDrawPoint = point0.cpy().add(rootOrigin);
                 Vector2 secondDrawPoint = point1.cpy().add(rootOrigin);
-                shapeRenderer.rectLine(firstDrawPoint, secondDrawPoint, 15); //default WIDTH OF 15
+                shapeRenderer.rectLine(firstDrawPoint, secondDrawPoint, width); //default WIDTH OF 15
                 point0 = point1.cpy();
             }
         }

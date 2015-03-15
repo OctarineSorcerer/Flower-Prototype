@@ -29,7 +29,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     ExtendedCamera camera;
     int hCameraSpeed = 200, vCameraSpeed = 200;
     Ground ground;
-    PetalGroup testPetalGroup;
     Flower testFlower;
     public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
 
@@ -39,19 +38,15 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         //Load images
         //Load sounds
         //Camera and spritebatch
-        camera = new ExtendedCamera(FlowerPrototype.WIDTH/2, FlowerPrototype.HEIGHT/2, null, null);
+        camera = new ExtendedCamera(0, FlowerPrototype.HEIGHT/2, null, null);
         camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
         //any other creation stuff
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
-        Head testHead = new Head("TestFlowerHead2.png", Color.BLUE);
-        testPetalGroup = new PetalGroup("1.png", Color.RED);
-        List<PetalGroup> petalList = Arrays.asList(testPetalGroup, new PetalGroup("OtherPetal.png", Color.ORANGE));
-        testFlower = new Flower(petalList, Flower.GetIndexMix(1, 13), testHead, new Stem(rand.nextLong()), Flower.PetalStyle.Touching,
-                new Point2D(FlowerPrototype.WIDTH / 2, 20)); //20 for funsies
-        Vector2 headCenter = testFlower.head.GetCenter();
+
+        testFlower = game.info.ConstructFlower();
         testFlower.stem.curveInfo.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2, testFlower.rootLoc);
 
-        crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
+        //crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
         DecimalFormat dF = new DecimalFormat();
         dF.setMaximumFractionDigits(2);
         rand.nextLong();

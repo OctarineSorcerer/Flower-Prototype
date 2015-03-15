@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PetalGroup extends TintableElement {
-    //float bottomWidth = 110f;
     float bloomGrowthRate = 1f; //amount it grows per unit while blooming
     float xGrowthAfter = 0f;
 
@@ -43,6 +42,16 @@ public class PetalGroup extends TintableElement {
             sprite.setRotation(-(place.rotation));
             sprite.draw(batch);
         }
+    }
+
+    public float GetBloomGrowthRate() {
+        return bloomGrowthRate;
+    }
+    public float GetXGrowthAfter() {return xGrowthAfter; }
+
+    public void SetBlooms(float bloomGrowthRate, float xGrowthAfter) {
+        this.bloomGrowthRate = bloomGrowthRate;
+        this.xGrowthAfter = xGrowthAfter;
     }
 
     private int GetBottomRowWidth(Pixmap image) {

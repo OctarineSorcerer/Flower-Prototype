@@ -14,8 +14,8 @@ import java.util.Random;
  * Not an interface - the flower should be procedural
  */
 public class Flower { //These are their own classes as they may need unique functionality later
-    public List<PetalGroup> petals;
-    public List<Integer> petalIndices;
+    public ArrayList<PetalGroup> petals;
+    public ArrayList<Integer> petalIndices;
     public Head head;
     public Stem stem;
     public Vector2 rootLoc;
@@ -24,9 +24,9 @@ public class Flower { //These are their own classes as they may need unique func
 
     private int count;
     private boolean petalsOutside = false;
-    private PetalStyle style;
+    public PetalStyle style;
 
-    public Flower(List<PetalGroup> petals, List<Integer> petalIndices, Head flowerHead, Stem flowerStem, PetalStyle petalArrangement, Point2D root) {
+    public Flower(ArrayList<PetalGroup> petals, ArrayList<Integer> petalIndices, Head flowerHead, Stem flowerStem, PetalStyle petalArrangement, Point2D root) {
         rootLoc = new Vector2(root.x, root.y);
         head = flowerHead;
         stem = flowerStem;
@@ -80,8 +80,8 @@ public class Flower { //These are their own classes as they may need unique func
         Vector2 location = head.GetCenter().add(FlowerMaths.GetPetalPos(head.radius - sagitta, angle));
         petalGroup.Add(location, angle);
     }
-    public static List<Integer> GetIndexMix (int maxNumber, int amount) {
-        List<Integer> output = new ArrayList<Integer>();
+    public static ArrayList<Integer> GetIndexMix (int maxNumber, int amount) {
+        ArrayList<Integer> output = new ArrayList<Integer>();
         for(int i = 0; i < amount; i++) {
             output.add(FlowerPrototype.rand.nextInt(maxNumber + 1));
         }
@@ -105,7 +105,6 @@ public class Flower { //These are their own classes as they may need unique func
                 float scaleY = petalGroup.sprite.getScaleY() + bloomAmount * petalGroup.bloomGrowthRate;
                 petalGroup.sprite.setScale(xScale,
                         scaleY);
-                //System.out.println("Width: " + petalGroup.sprite.getWidth() + "| Height: " + petalGroup.sprite.getY());
             }
         }
     }
@@ -133,7 +132,7 @@ public class Flower { //These are their own classes as they may need unique func
     }
 
     public void DrawShapes(ShapeRenderer shapeRenderer) {
-        stem.curveInfo.DrawSome(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y), growth.Growth);
+        stem.curveInfo.DrawSome(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y), stem.colour, growth.Growth, stem.thickness);
     }
 
     public enum PetalStyle {
