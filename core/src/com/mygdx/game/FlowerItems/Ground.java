@@ -17,7 +17,10 @@ public class Ground {
     public Ground(Texture groundTexture) {
         sprite = new Sprite(groundTexture);
         sprite.setPosition(0, 0);
-        iterations = (int)(FlowerPrototype.WIDTH/sprite.getWidth()); //1 extra for each side of screen?
+        CalculateIterations();
+    }
+    public void CalculateIterations() {
+        iterations = (int)(FlowerPrototype.WIDTH/sprite.getWidth());
     }
     public void Draw(SpriteBatch batch) {
         sprite.setX(groundStart - (paddingLeft * sprite.getWidth()));

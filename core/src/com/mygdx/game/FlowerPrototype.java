@@ -19,7 +19,7 @@ public class FlowerPrototype extends Game {
     public BitmapFont font;
     public static Random rand = new Random();
 
-    public static final int WIDTH=480,HEIGHT=600;
+    public static int WIDTH=480,HEIGHT=600;
 
 	@Override
 	public void create () {

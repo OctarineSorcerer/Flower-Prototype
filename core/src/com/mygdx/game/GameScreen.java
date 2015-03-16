@@ -123,6 +123,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     public void resize(int width, int height) {
         camera.viewportWidth = width;
         camera.viewportHeight = height;
+
+        FlowerPrototype.WIDTH = width;
+        FlowerPrototype.HEIGHT = height;
+        ground.CalculateIterations();
     }
 
     @Override
