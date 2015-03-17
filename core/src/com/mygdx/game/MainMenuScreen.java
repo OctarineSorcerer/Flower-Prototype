@@ -11,8 +11,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.game.SaveItems.*;
 import com.sun.javafx.geom.Point2D;
+import javafx.application.Application;
 
+import java.io.File;
 import java.util.*;
 
 public class MainMenuScreen implements Screen {
@@ -25,7 +28,7 @@ public class MainMenuScreen implements Screen {
 
     private Skin skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
 
-    private TextButton buttonFlower = new TextButton("Flower", skin),
+    private TextButton buttonFlower = new TextButton("Flowers", skin),
             buttonExit = new TextButton("Exit", skin);
     private Slider slider = new Slider(3, 20, 1, false, skin);
     private Label titleLabel = new Label("Flower Prototype!", skin);
@@ -52,7 +55,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                ChoosePetalColours();
+                ChooseProfiles();
             }
         });
         buttonExit.addListener(new ClickListener()
@@ -68,6 +71,16 @@ public class MainMenuScreen implements Screen {
         camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //Ah, orthographic views. All hail 2d.
     }
 
+    private ArrayList<String> GetSaves() {
+        ArrayList<String> output = new ArrayList<String>();
+        FileHandle saveDir = Gdx.files.local("bin/");
+        for (FileHandle entry: saveDir.list()) {
+            if (entry.name().endsWith(".json")) {
+                output.add(entry.name());
+            }
+        }
+        return output;
+    }
     private ArrayList<FileHandle> GetMonochromes(String path) {
         ArrayList<FileHandle> output = new ArrayList<FileHandle>();
         FileHandle dirHandle;
@@ -111,7 +124,6 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show()
     {
-        /*petalColours.add(Color.RED);*/
         PlayExitOptions();
         Gdx.input.setInputProcessor(stage);
     }
@@ -125,6 +137,39 @@ public class MainMenuScreen implements Screen {
         table.add(titleLabel).padBottom(40).row();
         table.add(buttonFlower).size(150,60).padBottom(20).row();
         table.add(buttonExit).size(150, 60).padBottom(20).row();
+
+        table.setFillParent(true);
+        stage.addActor(table);
+    }
+
+    public void ChooseProfiles() {
+        stage.clear();
+        table.clear();
+        Table subTable = new Table();
+        for(final String fileName : GetSaves()) {
+            TextButton saveButton = new TextButton(fileName.substring(0, fileName.length() - 6), skin);
+            saveButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y)
+                {
+                    game.info = SaveInfo.LoadSave(fileName);
+                    game.info.WriteSave("blargh.json");
+                    ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
+                }
+            });
+            subTable.add(saveButton).pad(10).fillX().center().row();
+        }
+        TextButton createButton = new TextButton("Create new flower", skin);
+        createButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                ChoosePetalColours();
+            }
+        });
+        subTable.add(createButton).fillX().center().row();
+        ScrollPane scrollPane = new ScrollPane(subTable);
+        table.add(scrollPane);
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -240,21 +285,20 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y)
             {
                 Random rand = new Random();
-                SaveInfo info = new SaveInfo();
-                SaveInfo.HeadSave head = info.new HeadSave(headColour, headImage.getName());
-                SaveInfo.StemSave stem = info.new StemSave(new Random().nextLong(), Color.GREEN, 20,
+                HeadSave head = new HeadSave(headColour, headImage.getName());
+                StemSave stem = new StemSave(new Random().nextLong(), Color.GREEN, 20,
                 new Point2D(FlowerPrototype.WIDTH/2, 20));
-                SaveInfo.GrowthInfo growthInfo = info.new GrowthInfo(0, 6, 4);
-                ArrayList<SaveInfo.PetalGroupSave> petalGroups = new ArrayList<SaveInfo.PetalGroupSave>();
+                GrowthInfo growthInfo = new GrowthInfo(0, 6, 4);
+                ArrayList<PetalGroupSave> petalGroups = new ArrayList<PetalGroupSave>();
 
                 for (String key : petals.keySet())
                 {
                     ArrayList<Color> colours = petals.get(key);
                     for(Color colour : colours) {
-                        petalGroups.add(info.new PetalGroupSave(colour, key, 1, 0));
+                        petalGroups.add(new PetalGroupSave(colour, key, 1, 0));
                     }
                 }
-                info = new SaveInfo(head, stem, growthInfo, petalGroups);
+                SaveInfo info = new SaveInfo(head, stem, growthInfo, petalGroups);
                 info.petalIndices.clear();
                 for(int i = 0; i < slider.getValue(); i++) {
                     info.petalIndices.add(0);
