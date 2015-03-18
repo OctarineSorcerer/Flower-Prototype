@@ -44,16 +44,17 @@ public class SaveInfo {
         stemDetails = stemSave;
         growthDetails = growthInfo;
         petalDetails = petalGroupSaves;
+        WriteSave("save.json");
     }
 
     public void WriteSave(String saveFileName) {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
         String saveText = json.prettyPrint(this);
-        FileHandle file = Gdx.files.local("bin/" + saveFileName);
-        file.writeString(saveText, false);
-
         System.out.println(saveText);
+        FileHandle file = Gdx.files.local("bin/" + saveFileName);
+		System.out.println(saveText);
+        file.writeString(saveText, false);
     }
     public static SaveInfo LoadSave(String saveFileName) {
         Json json = new Json();
