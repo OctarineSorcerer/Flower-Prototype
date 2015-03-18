@@ -51,7 +51,6 @@ public class SaveInfo {
         json.setOutputType(JsonWriter.OutputType.json);
         String saveText = json.prettyPrint(this);
         FileHandle file = Gdx.files.local("bin/" + saveFileName);
-        file.mkdirs();
         file.writeString(saveText, false);
 
         System.out.println(saveText);
