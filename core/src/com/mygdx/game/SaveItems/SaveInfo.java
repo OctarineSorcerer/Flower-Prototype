@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Created by Dan on 27/02/2015.
  */
 public class SaveInfo {
-    String thisName;
+    public String thisName = "Default Save.json";
 
     HeadSave headDetails;
     StemSave stemDetails;
@@ -26,6 +26,7 @@ public class SaveInfo {
     public ArrayList<Integer> petalIndices = new ArrayList<Integer>();
     Flower.PetalStyle petalStyle = Flower.PetalStyle.Touching;
 
+    public SaveInfo() { }
     public SaveInfo(Flower flower) {
         headDetails = new HeadSave(flower.head.color, flower.head.MonoPath());
         stemDetails = new StemSave(flower.stem.curveInfo.GetSeed(), flower.stem.colour, flower.stem.thickness,
@@ -39,20 +40,21 @@ public class SaveInfo {
         petalIndices = flower.petalIndices;
         petalStyle = flower.style;
     }
-    public SaveInfo(HeadSave headSave, StemSave stemSave, GrowthInfo growthInfo, ArrayList<PetalGroupSave> petalGroupSaves) {
+    public SaveInfo(HeadSave headSave, StemSave stemSave, GrowthInfo growthInfo, ArrayList<PetalGroupSave> petalGroupSaves,
+                    ArrayList<Integer> indices) {
         headDetails = headSave;
         stemDetails = stemSave;
         growthDetails = growthInfo;
         petalDetails = petalGroupSaves;
-        WriteSave("save.json");
+        petalIndices = indices;
+        WriteSave();
     }
 
-    public void WriteSave(String saveFileName) {
+    public void WriteSave() {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
         String saveText = json.prettyPrint(this);
-        System.out.println(saveText);
-        FileHandle file = Gdx.files.local("bin/" + saveFileName);
+        FileHandle file = Gdx.files.local("bin/" + thisName);
         System.out.println(saveText);
         file.writeString(saveText, false);
     }
@@ -73,7 +75,6 @@ public class SaveInfo {
             petal.SetBlooms(petalSave.bloomGrowthRate, petalSave.xGrowthAfter);
             petals.add(petal);
         }
-        petalIndices = Flower.GetIndexMix(petals.size() - 1, petalIndices.size());
         Flower flower = new Flower(petals, petalIndices, flowerHead, stem, petalStyle,
                 stemDetails.root);
         return flower;
