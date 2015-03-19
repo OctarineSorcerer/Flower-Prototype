@@ -52,7 +52,7 @@ public class Flower { //These are their own classes as they may need unique func
                     petalGroup.xGrowthAfter = Math.abs((petalWidth / petalGroup.sprite.getWidth())
                             / growth.bloomInfo.bloomLength);
                     float ratio = petalGroup.sprite.getHeight() / head.radius;
-                    petalGroup.bloomGrowthRate = (ratio + petalGroup.sprite.getScaleX()) / growth.bloomInfo.bloomLength;
+                    petalGroup.bloomGrowthRate = (ratio + petalGroup.sprite.getScaleY()) / growth.bloomInfo.bloomLength;
                     petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
                     petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
                     petalGroup.sprite.setScale(1f /*(petalWidth / petalGroup.sprite.getWidth())*/, petalGroup.sprite.getScaleY());
