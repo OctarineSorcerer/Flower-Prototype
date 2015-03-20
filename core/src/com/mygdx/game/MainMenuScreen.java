@@ -291,9 +291,9 @@ public class MainMenuScreen implements Screen {
                         petalGroups.add(new PetalGroupSave(colour, key, 1, 0));
                     }
                 }
-                int petalCount = ((int) slider.getValue());
-                SaveInfo info = new SaveInfo(head, stem, growthInfo, petalGroups,
-                        Flower.GetIndexMix(petalGroups.size() - 1, petalCount));
+                int petalCount = (int)(slider.getValue());
+                ArrayList<Integer> indices = Flower.GetIndexMix(petalGroups.size() - 1, petalCount);
+                SaveInfo info = new SaveInfo(head, stem, growthInfo, petalGroups, indices);
                 info.Name = "Test Save";
                 game.info = info;
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));

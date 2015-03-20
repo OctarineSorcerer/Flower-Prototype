@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Created by Dan on 27/02/2015.
  */
 public class SaveInfo {
-    public String Name;
+    public String Name = "Default Save.json";
 
     HeadSave headDetails;
     StemSave stemDetails;
@@ -48,17 +48,15 @@ public class SaveInfo {
         growthDetails = growthInfo;
         petalDetails = petalGroupSaves;
         petalIndices = indices;
-
-        WriteSave(Name + ".json");
+        WriteSave();
     }
 
-    public void WriteSave(String saveFileName) {
+    public void WriteSave() {
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
         String saveText = json.prettyPrint(this);
-        System.out.println(saveText);
-        FileHandle file = Gdx.files.local("bin/" + saveFileName);
-		System.out.println(saveText);
+        FileHandle file = Gdx.files.local("bin/" + Name);
+        //System.out.println(saveText);
         file.writeString(saveText, false);
     }
     public static SaveInfo LoadSave(String saveFileName) {
@@ -79,7 +77,6 @@ public class SaveInfo {
             petal.SetBlooms(petalSave.bloomGrowthRate, petalSave.xGrowthAfter);
             petals.add(petal);
         }
-        petalIndices = Flower.GetIndexMix(petals.size() - 1, petalIndices.size());
         Flower flower = new Flower(petals, petalIndices, flowerHead, stem, petalStyle,
                 stemDetails.root);
         return flower;

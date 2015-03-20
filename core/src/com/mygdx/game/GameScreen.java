@@ -104,7 +104,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     }
 
     public void dispose() { //dispose of all textures and such here
-        game.info.WriteSave(game.info.Name + ".json");
+        game.info.WriteSave();
     }
 
     @Override
@@ -135,8 +135,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        testFlower.DebugChangeStem();
-        testFlower.stem.curveInfo.GetCurvesOnScreen((int)camera.position.y, (int)camera.position.x, testFlower.rootLoc);
+        /*testFlower.DebugChangeStem();
+        testFlower.stem.curveInfo.GetCurvesOnScreen((int)camera.position.y, (int)camera.position.x, testFlower.rootLoc);*/
         return false;
     }
 
