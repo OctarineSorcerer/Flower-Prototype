@@ -10,13 +10,13 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.FlowerItems.Flower;
-import com.sun.javafx.geom.Point2D;
 import com.mygdx.game.FlowerItems.*;
 
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -25,6 +25,9 @@ import java.util.Random;
 public class GameScreen implements Screen, GestureDetector.GestureListener {
     final FlowerPrototype game;
     ShapeRenderer shapeRenderer = new ShapeRenderer();
+    HorizontalGroup buttonGroup = new HorizontalGroup();
+
+
     Random rand = new Random();
     ExtendedCamera camera;
     int hCameraSpeed = 200, vCameraSpeed = 200;
@@ -101,6 +104,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     }
 
     public void dispose() { //dispose of all textures and such here
+        game.info.WriteSave(game.info.Name + ".json");
     }
 
     @Override

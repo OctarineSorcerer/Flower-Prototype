@@ -11,18 +11,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.game.FlowerItems.Flower;
 import com.mygdx.game.SaveItems.*;
 import com.sun.javafx.geom.Point2D;
-import javafx.application.Application;
 
-import java.io.File;
 import java.util.*;
 
 public class MainMenuScreen implements Screen {
-    class PathAndTints {
-        public String path;
-        public ArrayList<Color> tints = new ArrayList<Color>();
-    }
     private Stage stage = new Stage();
     private Table table = new Table();
 
@@ -147,13 +142,12 @@ public class MainMenuScreen implements Screen {
         table.clear();
         Table subTable = new Table();
         for(final String fileName : GetSaves()) {
-            TextButton saveButton = new TextButton(fileName.substring(0, fileName.length() - 6), skin);
+            TextButton saveButton = new TextButton(fileName.substring(0, fileName.length() - 5), skin);
             saveButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y)
                 {
                     game.info = SaveInfo.LoadSave(fileName);
-                    game.info.WriteSave("blargh.json");
                     ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
                 }
             });
@@ -284,7 +278,6 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                Random rand = new Random();
                 HeadSave head = new HeadSave(headColour, headImage.getName());
                 StemSave stem = new StemSave(new Random().nextLong(), Color.GREEN, 20,
                 new Point2D(FlowerPrototype.WIDTH/2, 20));
@@ -298,11 +291,10 @@ public class MainMenuScreen implements Screen {
                         petalGroups.add(new PetalGroupSave(colour, key, 1, 0));
                     }
                 }
-                SaveInfo info = new SaveInfo(head, stem, growthInfo, petalGroups);
-                info.petalIndices.clear();
-                for(int i = 0; i < slider.getValue(); i++) {
-                    info.petalIndices.add(0);
-                }
+                int petalCount = ((int) slider.getValue());
+                SaveInfo info = new SaveInfo(head, stem, growthInfo, petalGroups,
+                        Flower.GetIndexMix(petalGroups.size() - 1, petalCount));
+                info.Name = "Test Save";
                 game.info = info;
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
             }
