@@ -22,47 +22,33 @@ public class Flower { //These are their own classes as they may need unique func
 
     public GrowthHandling growth;
 
-    private int count;
     private boolean petalsOutside = false;
-    public PetalStyle style;
 
-    public Flower(ArrayList<PetalGroup> petals, ArrayList<Integer> petalIndices, Head flowerHead, Stem flowerStem, PetalStyle petalArrangement, Point2D root) {
+    public Flower(ArrayList<PetalGroup> petals, ArrayList<Integer> petalIndices, Head flowerHead, Stem flowerStem, Point2D root) {
         rootLoc = new Vector2(root.x, root.y);
         head = flowerHead;
         stem = flowerStem;
 
         this.petals = petals;
         this.petalIndices = petalIndices;
-        count = petalIndices.size();
-
-        style = petalArrangement;
 
         head.SetCenter(rootLoc);
         growth = new GrowthHandling(1f, 6f, 2.5f);
-        ArrangePetals(style);
+        ArrangePetals();
     }
 
-    void ArrangePetals(PetalStyle arrangement) {
-        float sepAngle = 360f / petalIndices.size();
-        switch (arrangement) {
-            case Touching:
-                //Set each petalGroup's sprite stuff
-                for(PetalGroup petalGroup : petals) {
-                    float petalWidth = FlowerMaths.GetPetalWidth(sepAngle, 1f, head.radius);
-                    /*petalGroup.xGrowthAfter = Math.abs((petalWidth / petalGroup.sprite.getWidth())
-                            / growth.bloomInfo.bloomLength);*/
-                    float ratio = petalGroup.sprite.getHeight() / head.radius;
-                    System.out.println("Original: " + petalGroup.sprite.getScaleX() + ", " + petalGroup.sprite.getScaleY());
-                    petalGroup.xGrowthAfter = petalGroup.sprite.getScaleY()/growth.bloomInfo.bloomLength;
-                    petalGroup.bloomGrowthRate = ratio / growth.bloomInfo.bloomLength;
-                    petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
-                    petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
-                    petalGroup.sprite.setScale(1f, petalGroup.sprite.getScaleY());
-                }
-
-                SetPetalPositions();
-                break;
+    void ArrangePetals() {
+        for(PetalGroup petalGroup : petals) {
+            float ratio = petalGroup.sprite.getHeight() / head.radius;
+            System.out.println("Original: " + petalGroup.sprite.getScaleX() + ", " + petalGroup.sprite.getScaleY());
+            petalGroup.xGrowthAfter = petalGroup.sprite.getScaleY()/growth.bloomInfo.bloomLength;
+            petalGroup.bloomGrowthRate = ratio / growth.bloomInfo.bloomLength;
+            petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
+            petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
+            petalGroup.sprite.setScale(1f, petalGroup.sprite.getScaleY());
         }
+
+        SetPetalPositions();
     }
 
     private void SetPetalPositions() {
@@ -91,7 +77,7 @@ public class Flower { //These are their own classes as they may need unique func
     }
 
     public void ApplyGrowth() {
-        float grown = growth.CheckTime();
+        growth.CheckTime();
         stem.stemTip = stem.curveInfo.GetPositionAtT(growth.Growth, rootLoc);
         head.SetCenter(stem.stemTip);
         SetPetalPositions();
@@ -102,12 +88,10 @@ public class Flower { //These are their own classes as they may need unique func
                 float xScale = petalGroup.sprite.getScaleX(); //was 1f
                 if(petalGroup.sprite.getScaleY() > 0) {
                     petalsOutside = true;
-                    //xScale = petalGroup.sprite.getScaleX() + bloomAmount * petalGroup.xGrowthAfter;
                 }
                 float scaleY = petalGroup.sprite.getScaleY() + bloomAmount * petalGroup.bloomGrowthRate;
                 petalGroup.sprite.setScale(xScale,
                         scaleY);
-                System.out.println("Altered: " + petalGroup.sprite.getScaleX() + ", " + petalGroup.sprite.getScaleY());
             }
         }
     }

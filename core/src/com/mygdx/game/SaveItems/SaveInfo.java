@@ -25,7 +25,6 @@ public class SaveInfo {
     GrowthInfo growthDetails;
     ArrayList<PetalGroupSave> petalDetails = new ArrayList<PetalGroupSave>();
     ArrayList<Integer> petalIndices = new ArrayList<Integer>();
-    Flower.PetalStyle petalStyle = Flower.PetalStyle.Touching;
 
     private SaveInfo() {}
     public SaveInfo(Flower flower) {
@@ -39,7 +38,6 @@ public class SaveInfo {
             petalDetails.add(save);
         }
         petalIndices = flower.petalIndices;
-        petalStyle = flower.style;
     }
     public SaveInfo(HeadSave headSave, StemSave stemSave, GrowthInfo growthInfo, ArrayList<PetalGroupSave> petalGroupSaves,
                     ArrayList<Integer> indices) {
@@ -56,7 +54,6 @@ public class SaveInfo {
         json.setOutputType(JsonWriter.OutputType.json);
         String saveText = json.prettyPrint(this);
         FileHandle file = Gdx.files.local("bin/" + Name);
-        //System.out.println(saveText);
         file.writeString(saveText, false);
     }
     public static SaveInfo LoadSave(String saveFileName) {
@@ -77,8 +74,7 @@ public class SaveInfo {
             petal.SetBlooms(petalSave.bloomGrowthRate, petalSave.xGrowthAfter);
             petals.add(petal);
         }
-        Flower flower = new Flower(petals, petalIndices, flowerHead, stem, petalStyle,
-                stemDetails.root);
+        Flower flower = new Flower(petals, petalIndices, flowerHead, stem, stemDetails.root);
         return flower;
     }
 
