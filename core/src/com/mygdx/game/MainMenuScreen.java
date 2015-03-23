@@ -76,27 +76,6 @@ public class MainMenuScreen implements Screen {
         }
         return output;
     }
-    private ArrayList<FileHandle> GetMonochromes(String path) {
-        ArrayList<FileHandle> output = new ArrayList<FileHandle>();
-        FileHandle dirHandle;
-        dirHandle = Gdx.files.internal(path);
-        for (FileHandle entry: dirHandle.list()) {
-            if (entry.name().endsWith(".png")) {
-                output.add(entry);
-            }
-        }
-        return output;
-    }
-    private ArrayList<Image> GetImages(String path) {
-        ArrayList<FileHandle> files = GetMonochromes(path);
-        ArrayList<Image> images = new ArrayList<Image>();
-        for(FileHandle entry : files) {
-            final Image image = new Image(new Texture(entry));
-            image.setName(entry.name());
-            images.add(image);
-        }
-        return images;
-    }
 
     @Override
     public void render(float delta) {
@@ -175,11 +154,11 @@ public class MainMenuScreen implements Screen {
         table.add(new Label("Pick your petals and colours!", skin)).pad(10).fillX().center().row();
         Table subTable = new Table();
 
-        ArrayList<Image> images = GetImages("textures/petals/monochrome");
+        ArrayList<Image> images = DebugUtils.GetImages("textures/petals/monochrome");
         for(final Image image : images) {
             petals.put(image.getName(), new ArrayList<Color>());
             Table colourTable = new Table();
-            colourTable.add(image).pad(10).center().fillX();
+            subTable.add(image).size(image.getWidth(), image.getHeight()).pad(10).center();
             for(Color colour : permittedColours) {
                 final Image colourImage = new Image(new Texture("textures/ColourSquare.png"));
                 colourImage.setColor(colour.r, colour.g, colour.b, 0.5f);
@@ -207,6 +186,7 @@ public class MainMenuScreen implements Screen {
                 colourTable.add(colourImage).padRight(10);
             }
             ScrollPane colourScroll = new ScrollPane(colourTable);
+            colourScroll.setScrollingDisabled(false, true);
             subTable.add(colourScroll).padBottom(5).row();
         }
         TextButton chooseHead = new TextButton("Next!", skin);
@@ -241,7 +221,7 @@ public class MainMenuScreen implements Screen {
         table.clear();
         table.add(new Label("Pick the middle of your flower!", skin)).pad(10).fillX().center().row();
 
-        ArrayList<Image> headImages = GetImages("textures/heads/monochrome");
+        ArrayList<Image> headImages = DebugUtils.GetImages("textures/heads/monochrome");
         Table headTable = new Table();
         Table colourTable = new Table();
         for(final Image image : headImages) {

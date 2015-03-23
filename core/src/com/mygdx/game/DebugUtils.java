@@ -1,11 +1,16 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import java.awt.*;
+import java.awt.Image;
 import java.util.*;
 import java.util.List;
 
@@ -59,5 +64,27 @@ public class DebugUtils {
             //sprite.setOriginCenter();
             //sprite.setCenter(loc.x, loc.y);
         }
+    }
+
+    public static ArrayList<FileHandle> GetMonochromes(String path) {
+        ArrayList<FileHandle> output = new ArrayList<FileHandle>();
+        FileHandle dirHandle;
+        dirHandle = Gdx.files.internal(path);
+        for (FileHandle entry: dirHandle.list()) {
+            if (entry.name().endsWith(".png")) {
+                output.add(entry);
+            }
+        }
+        return output;
+    }
+    public static ArrayList<com.badlogic.gdx.scenes.scene2d.ui.Image> GetImages(String path) {
+        ArrayList<FileHandle> files = GetMonochromes(path);
+        ArrayList<com.badlogic.gdx.scenes.scene2d.ui.Image> images = new ArrayList<com.badlogic.gdx.scenes.scene2d.ui.Image>();
+        for(FileHandle entry : files) {
+            final com.badlogic.gdx.scenes.scene2d.ui.Image image = new com.badlogic.gdx.scenes.scene2d.ui.Image(new Texture(entry));
+            image.setName(entry.name());
+            images.add(image);
+        }
+        return images;
     }
 }

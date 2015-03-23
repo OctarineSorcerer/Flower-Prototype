@@ -9,14 +9,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.FlowerItems.Flower;
 import com.mygdx.game.FlowerItems.*;
 
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -25,8 +30,11 @@ import java.util.Random;
 public class GameScreen implements Screen, GestureDetector.GestureListener {
     final FlowerPrototype game;
     ShapeRenderer shapeRenderer = new ShapeRenderer();
-    HorizontalGroup buttonGroup = new HorizontalGroup();
 
+    private Stage stage = new Stage();
+    private Table table = new Table();
+    private VerticalGroup buttonGroup = new VerticalGroup();
+    private Skin skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
 
     Random rand = new Random();
     ExtendedCamera camera;
@@ -39,6 +47,16 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         this.game = gam; //This is for rendering, right?
         Gdx.input.setInputProcessor(new GestureDetector(this));
         //Load images
+        ArrayList<Image> toolImages = DebugUtils.GetImages("textures/tools");
+        /*for(Image toolImage : toolImages) {
+            ImageButton button = new ImageButton(skin);
+            ImageButtonStyle style = button.getStyle();
+            style.imageUp = toolImage.getDrawable();
+            style.imageDown = toolImage.getDrawable();
+            button.setStyle(style);
+            buttonGroup.addActor(button);
+        }*/
+        table.add(buttonGroup).left();
         //Load sounds
         //Camera and spritebatch
         camera = new ExtendedCamera(0, FlowerPrototype.HEIGHT/2, null, null);
@@ -74,6 +92,9 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         testFlower.DrawSprites(game.batch);
         //crossManager.DrawCrosses(game.batch);
         game.batch.end();
+
+        stage.act();
+        stage.draw();
 
         //Process user input
         if (Gdx.input.isTouched()) {
