@@ -39,13 +39,17 @@ public class SaveInfo {
         }
         petalIndices = flower.petalIndices;
     }
-    public SaveInfo(HeadSave headSave, StemSave stemSave, GrowthInfo growthInfo, ArrayList<PetalGroupSave> petalGroupSaves,
+    public SaveInfo(String name, HeadSave headSave, StemSave stemSave, GrowthInfo growthInfo, ArrayList<PetalGroupSave> petalGroupSaves,
                     ArrayList<Integer> indices) {
         headDetails = headSave;
         stemDetails = stemSave;
         growthDetails = growthInfo;
         petalDetails = petalGroupSaves;
         petalIndices = indices;
+        if(!name.endsWith(".json")) {
+            name += ".json";
+        }
+        Name = name;
         WriteSave();
     }
 

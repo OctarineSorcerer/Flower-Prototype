@@ -40,7 +40,6 @@ public class Flower { //These are their own classes as they may need unique func
     void ArrangePetals() {
         for(PetalGroup petalGroup : petals) {
             float ratio = petalGroup.sprite.getHeight() / head.radius;
-            System.out.println("Original: " + petalGroup.sprite.getScaleX() + ", " + petalGroup.sprite.getScaleY());
             petalGroup.xGrowthAfter = petalGroup.sprite.getScaleY()/growth.bloomInfo.bloomLength;
             petalGroup.bloomGrowthRate = ratio / growth.bloomInfo.bloomLength;
             petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy

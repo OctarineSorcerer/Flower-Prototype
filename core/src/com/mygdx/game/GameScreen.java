@@ -3,12 +3,14 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.FlowerItems.Flower;
@@ -33,7 +35,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     private Stage stage = new Stage();
     private Table table = new Table();
-    private VerticalGroup buttonGroup = new VerticalGroup();
+    private ButtonGroup buttonGroup = new ButtonGroup();
     private Skin skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
 
     Random rand = new Random();
@@ -45,18 +47,43 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     public GameScreen(final FlowerPrototype gam) {
         this.game = gam; //This is for rendering, right?
-        Gdx.input.setInputProcessor(new GestureDetector(this));
+        InputMultiplexer im = new InputMultiplexer();
+        im.addProcessor(new GestureDetector(this));
+        im.addProcessor(stage);
+        Gdx.input.setInputProcessor(im);
         //Load images
         ArrayList<Image> toolImages = DebugUtils.GetImages("textures/tools");
-        /*for(Image toolImage : toolImages) {
-            ImageButton button = new ImageButton(skin);
-            ImageButtonStyle style = button.getStyle();
+        buttonGroup.setMinCheckCount(0);
+        buttonGroup.setMaxCheckCount(1);
+        for(Image toolImage : toolImages) {
+            final ImageButton imageButton = new ImageButton(skin);
+            ImageButtonStyle style = new ImageButtonStyle(imageButton.getStyle());
             style.imageUp = toolImage.getDrawable();
             style.imageDown = toolImage.getDrawable();
-            button.setStyle(style);
-            buttonGroup.addActor(button);
-        }*/
-        table.add(buttonGroup).left();
+            style.checked = skin.getDrawable("default-round-down");
+            //imageButton.dis
+            imageButton.setStyle(style);
+            /*imageButton.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    if(imageButton.isChecked()){
+                        imageButton.setChecked(false);
+                        System.out.println("Was checked on touchUp");
+                        //System.out.println("unchecked");
+                    } else {
+                        imageButton.setChecked(true);
+                        System.out.println("Was NOT checked on touchUp");
+                        //System.out.println("checked");
+                    }
+                    return true;
+                }
+            });*/
+            buttonGroup.add(imageButton);
+            table.add(imageButton);
+        }
+        table.left().bottom();
+        table.setFillParent(true);
+        stage.addActor(table);
         //Load sounds
         //Camera and spritebatch
         camera = new ExtendedCamera(0, FlowerPrototype.HEIGHT/2, null, null);

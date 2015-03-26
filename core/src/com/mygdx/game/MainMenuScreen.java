@@ -27,6 +27,7 @@ public class MainMenuScreen implements Screen {
             buttonExit = new TextButton("Exit", skin);
     private Slider slider = new Slider(3, 20, 1, false, skin);
     private Label titleLabel = new Label("Flower Prototype!", skin);
+    private TextField saveNameBox = new TextField("My Flower Name", skin);
 
     Color[] permittedColours = new Color[] {
             Color.BLACK, Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.MAROON,
@@ -130,7 +131,7 @@ public class MainMenuScreen implements Screen {
                     ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
                 }
             });
-            subTable.add(saveButton).pad(10).fillX().center().row();
+            subTable.add(saveButton).fillX().center().pad(5).row();
         }
         TextButton createButton = new TextButton("Create new flower", skin);
         createButton.addListener(new ClickListener() {
@@ -140,7 +141,7 @@ public class MainMenuScreen implements Screen {
                 ChoosePetalColours();
             }
         });
-        subTable.add(createButton).fillX().center().row();
+        subTable.add(createButton).fillX().center().pad(10).row();
         ScrollPane scrollPane = new ScrollPane(subTable);
         table.add(scrollPane);
 
@@ -151,7 +152,6 @@ public class MainMenuScreen implements Screen {
     public void ChoosePetalColours() {
         stage.clear();
         table.clear();
-        table.add(new Label("Pick your petals and colours!", skin)).pad(10).fillX().center().row();
         Table subTable = new Table();
 
         ArrayList<Image> images = DebugUtils.GetImages("textures/petals/monochrome");
@@ -209,6 +209,9 @@ public class MainMenuScreen implements Screen {
         wholePane.setScrollingDisabled(true, false);
         wholePane.setCancelTouchFocus(false); //THIS combination of two lines was almost demonic to find
 
+        table.add(new Label("What's your flower name?", skin)).center().row();
+        table.add(new Label("Pick your petals and colours!", skin)).pad(10).fillX().center().row();
+        table.add(saveNameBox).center().row();
         table.add(wholePane).row();
         table.add(slider).colspan(2).fillX().pad(5);
         table.add(progressLabel).left().padRight(10).row();
@@ -280,8 +283,8 @@ public class MainMenuScreen implements Screen {
                 }
                 int petalCount = (int)(slider.getValue());
                 ArrayList<Integer> indices = Flower.GetIndexMix(petalGroups.size() - 1, petalCount);
-                SaveInfo info = new SaveInfo(head, stem, growthInfo, petalGroups, indices);
-                info.Name = "Test Save";
+                String name = saveNameBox.getText();
+                SaveInfo info = new SaveInfo(name, head, stem, growthInfo, petalGroups, indices);
                 game.info = info;
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
             }
