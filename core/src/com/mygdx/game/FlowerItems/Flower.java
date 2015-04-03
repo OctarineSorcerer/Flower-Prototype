@@ -19,6 +19,7 @@ public class Flower { //These are their own classes as they may need unique func
     public Head head;
     public Stem stem;
     public Vector2 rootLoc;
+    public Hole hole; //Every flower has to have a hole dug, pretty much
 
     public GrowthHandling growth;
 
@@ -26,6 +27,7 @@ public class Flower { //These are their own classes as they may need unique func
 
     public Flower(ArrayList<PetalGroup> petals, ArrayList<Integer> petalIndices, Head flowerHead, Stem flowerStem, Point2D root) {
         rootLoc = new Vector2(root.x, root.y);
+        hole = new Hole(rootLoc.x, rootLoc.y);
         head = flowerHead;
         stem = flowerStem;
 
@@ -115,14 +117,12 @@ public class Flower { //These are their own classes as they may need unique func
                 petalGroup.Draw(batch);
             }
         }
+        if(hole.beingDug) {
+
+        }
     }
 
     public void DrawShapes(ShapeRenderer shapeRenderer) {
         stem.curveInfo.DrawSome(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y), stem.colour, growth.Growth, stem.thickness);
-    }
-
-    public enum PetalStyle {
-        Overlapping,
-        Touching,
     }
 }

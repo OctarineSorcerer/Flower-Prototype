@@ -5,7 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
@@ -21,6 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.game.Tools.ITool;
+import com.mygdx.game.Tools.Shovel;
+import com.mygdx.game.Tools.WateringCan;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,12 +42,14 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private Table table = new Table();
     private ButtonGroup buttonGroup = new ButtonGroup();
     private Skin skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
+    ArrayList<ITool> tools = new ArrayList<ITool>();
+    private ITool currentTool;
 
     Random rand = new Random();
     ExtendedCamera camera;
     int hCameraSpeed = 200, vCameraSpeed = 200;
     Ground ground;
-    Flower testFlower;
+    public static Flower testFlower; //needs to be accessed elsewhere
     public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
 
     public GameScreen(final FlowerPrototype gam) {
@@ -53,31 +60,32 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         Gdx.input.setInputProcessor(im);
         //Load images
         ArrayList<Image> toolImages = DebugUtils.GetImages("textures/tools");
+
+        tools.add(new Shovel());
+        tools.add(new WateringCan());
+        currentTool = tools.get(0);
+
         buttonGroup.setMinCheckCount(0);
         buttonGroup.setMaxCheckCount(1);
-        for(Image toolImage : toolImages) {
+        for(int i = 0; i < toolImages.size(); i++) {
+            Image toolImage = toolImages.get(i);
             final ImageButton imageButton = new ImageButton(skin);
             ImageButtonStyle style = new ImageButtonStyle(imageButton.getStyle());
             style.imageUp = toolImage.getDrawable();
             style.imageDown = toolImage.getDrawable();
             style.checked = skin.getDrawable("default-round-down");
-            //imageButton.dis
             imageButton.setStyle(style);
-            /*imageButton.addListener(new InputListener() {
+            if(i ==0) imageButton.setChecked(true);
+
+            final int index = i;
+            imageButton.addListener(new InputListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    if(imageButton.isChecked()){
-                        imageButton.setChecked(false);
-                        System.out.println("Was checked on touchUp");
-                        //System.out.println("unchecked");
-                    } else {
-                        imageButton.setChecked(true);
-                        System.out.println("Was NOT checked on touchUp");
-                        //System.out.println("checked");
-                    }
-                    return true;
+                public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                    currentTool = tools.get(index);
+                    return false;
                 }
-            });*/
+            });
+
             buttonGroup.add(imageButton);
             table.add(imageButton);
         }
@@ -117,17 +125,13 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         game.batch.begin();
         ground.Draw(game.batch);
         testFlower.DrawSprites(game.batch);
-        //crossManager.DrawCrosses(game.batch);
-        game.batch.end();
-
-        stage.act();
-        stage.draw();
 
         //Process user input
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos); //Translates from screen co-ord to world co-ord
+            currentTool.draw(game.batch, touchPos.x, touchPos.y, delta);
         //Do with touchPos as you will
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -149,6 +153,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         if (Gdx.input.isKeyPressed(Keys.G)) {
             testFlower.ApplyGrowth();
         }
+
+        game.batch.end();
+
+        stage.act();
+        stage.draw();
     }
 
     public void dispose() { //dispose of all textures and such here
@@ -183,6 +192,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
+        currentTool.apply(x, y);
         /*testFlower.DebugChangeStem();
         testFlower.stem.curveInfo.GetCurvesOnScreen((int)camera.position.y, (int)camera.position.x, testFlower.rootLoc);*/
         return false;

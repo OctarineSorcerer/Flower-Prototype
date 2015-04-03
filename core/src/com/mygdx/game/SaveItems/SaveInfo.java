@@ -3,7 +3,6 @@ package com.mygdx.game.SaveItems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.mygdx.game.FlowerItems.Flower;
 import com.mygdx.game.FlowerItems.Head;
@@ -15,7 +14,7 @@ import com.sun.javafx.geom.Point2D;
 import java.util.ArrayList;
 
 /**
- * Created by Dan on 27/02/2015.
+ * Class for managing saving of flowers
  */
 public class SaveInfo {
     public String Name = "Default Save.json";
@@ -26,7 +25,7 @@ public class SaveInfo {
     ArrayList<PetalGroupSave> petalDetails = new ArrayList<PetalGroupSave>();
     ArrayList<Integer> petalIndices = new ArrayList<Integer>();
 
-    private SaveInfo() {}
+    public SaveInfo() {} //This constructor's required so I can just throw the serializer at it
     public SaveInfo(Flower flower) {
         headDetails = new HeadSave(flower.head.color, flower.head.MonoPath());
         stemDetails = new StemSave(flower.stem.curveInfo.GetSeed(), flower.stem.colour, flower.stem.thickness,
@@ -65,8 +64,7 @@ public class SaveInfo {
         FileHandle file = Gdx.files.local("bin/" + saveFileName);
         String fileText = file.readString();
 
-        SaveInfo info = json.fromJson(SaveInfo.class, fileText);
-        return info;
+        return json.fromJson(SaveInfo.class, fileText);
     }
     public Flower ConstructFlower() {
         ArrayList<PetalGroup> petals = new ArrayList<PetalGroup>();
@@ -78,8 +76,7 @@ public class SaveInfo {
             petal.SetBlooms(petalSave.bloomGrowthRate, petalSave.xGrowthAfter);
             petals.add(petal);
         }
-        Flower flower = new Flower(petals, petalIndices, flowerHead, stem, stemDetails.root);
-        return flower;
+        return new Flower(petals, petalIndices, flowerHead, stem, stemDetails.root);
     }
 
 }

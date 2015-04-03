@@ -1,7 +1,7 @@
 package com.mygdx.game.SaveItems;
 
 /**
-* Created by Dan on 16/03/2015.
+* Just holds a few pieces of information about growth in one place
 */
 public class GrowthInfo {
     float latestGrowth;
@@ -11,5 +11,5 @@ public class GrowthInfo {
         this.bloomStart = bloomStart;
         this.bloomLength = bloomLength;
     }
-    public GrowthInfo() {}
+    public GrowthInfo() {} //No-arg constructor for the JSON serializer
 }
