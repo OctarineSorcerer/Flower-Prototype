@@ -1,9 +1,7 @@
 package com.mygdx.game.FlowerItems;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.TintableElement;
@@ -26,7 +24,7 @@ public class PetalGroup extends TintableElement {
     public PetalGroup(String monochromeName, Color tintColour) {
         super("textures/petals/monochrome/", monochromeName, tintColour);
         sprite.setOrigin(sprite.getWidth()/2, 0);
-        //bottomWidth = GetBottomRowWidth(new Pixmap(Gdx.files.internal(MonoPath())));
+        //bottomWidth = GetBottomRowWidth(new Pixmap(Gdx.files.internal(FullMonoPath())));
     }
     public void Add(Vector2 location, float rotation) {
         places.add(new LocRotPair(location, rotation));

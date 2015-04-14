@@ -41,9 +41,13 @@ public abstract class TintableElement {
      */
     public TintableElement() {}
 
-    public String MonoPath() {
+    public String FullMonoPath() {
         if(!monochromePath.endsWith("/")) monochromePath += "/";
         return monochromePath + monochromeName;
+    }
+
+    public String GetMonoName() {
+        return monochromeName;
     }
 
     public void Tint(Color tintColour)

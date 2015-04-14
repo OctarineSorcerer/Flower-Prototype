@@ -1,11 +1,9 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.game.SaveItems.SaveInfo;
 import com.mygdx.game.Tools.ITool;
 import com.mygdx.game.Tools.Shovel;
 import com.mygdx.game.Tools.WateringCan;
@@ -58,13 +57,29 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         im.addProcessor(new GestureDetector(this));
         im.addProcessor(stage);
         Gdx.input.setInputProcessor(im);
-        //Load images
-        ArrayList<Image> toolImages = DebugUtils.GetImages("textures/tools");
 
+        AddUI();
         tools.add(new Shovel());
         tools.add(new WateringCan());
         currentTool = tools.get(0);
 
+        //Camera and spritebatch
+        camera = new ExtendedCamera(0, FlowerPrototype.HEIGHT/2, null, null);
+        camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
+        //any other creation stuff
+        ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
+
+        testFlower = game.info.ConstructFlower();
+        testFlower.stem.curveInfo.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2, testFlower.rootLoc);
+
+        //crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
+        DecimalFormat dF = new DecimalFormat();
+        dF.setMaximumFractionDigits(2);
+        rand.nextLong();
+    }
+
+    public void AddUI() {
+        ArrayList<Image> toolImages = DebugUtils.GetImages("textures/tools");
         buttonGroup.setMinCheckCount(0);
         buttonGroup.setMaxCheckCount(1);
         for(int i = 0; i < toolImages.size(); i++) {
@@ -75,7 +90,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             style.imageDown = toolImage.getDrawable();
             style.checked = skin.getDrawable("default-round-down");
             imageButton.setStyle(style);
-            if(i ==0) imageButton.setChecked(true);
+            if(i==0) imageButton.setChecked(true);
 
             final int index = i;
             imageButton.addListener(new InputListener() {
@@ -92,20 +107,28 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         table.left().bottom();
         table.setFillParent(true);
         stage.addActor(table);
-        //Load sounds
-        //Camera and spritebatch
-        camera = new ExtendedCamera(0, FlowerPrototype.HEIGHT/2, null, null);
-        camera.setToOrtho(false, FlowerPrototype.WIDTH, FlowerPrototype.HEIGHT); //width*height of the camera
-        //any other creation stuff
-        ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
 
-        testFlower = game.info.ConstructFlower();
-        testFlower.stem.curveInfo.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2, testFlower.rootLoc);
-
-        //crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
-        DecimalFormat dF = new DecimalFormat();
-        dF.setMaximumFractionDigits(2);
-        rand.nextLong();
+        Table otherSide = new Table().right().bottom();
+        Image exitImage = new Image(new Texture(Gdx.files.internal("textures/Exit.png")));
+        ImageButton exitButton = new ImageButton(skin);
+        ImageButtonStyle style = new ImageButtonStyle(exitButton.getStyle());
+        style.imageUp = exitImage.getDrawable();
+        style.imageDown = style.imageUp;
+        style.checked = skin.getDrawable("default-round-down");
+        exitButton.setStyle(style);
+        exitButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.info.LoadFromFlower(testFlower);
+                game.info.WriteSave();
+                dispose();
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
+                return false;
+            }
+        });
+        otherSide.add(exitButton);
+        otherSide.setFillParent(true);
+        stage.addActor(otherSide);
     }
 
     @Override
@@ -119,12 +142,14 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         game.batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
         testFlower.ApplyGrowth();
+
         //Begin a batch and draw stuff
         testFlower.DrawShapes(shapeRenderer);
 
         game.batch.begin();
-        ground.Draw(game.batch);
         testFlower.DrawSprites(game.batch);
+        ground.Draw(game.batch);
+        testFlower.DrawHole(game.batch, delta);
 
         //Process user input
         if (Gdx.input.isTouched()) {
@@ -161,7 +186,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     }
 
     public void dispose() { //dispose of all textures and such here
-        game.info.WriteSave();
+
     }
 
     @Override
@@ -216,11 +241,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        /*if(deltaX <= 0) {
-            ground.IncrementStart(deltaX);
-        } else ground.DecrementStart(Math.abs(deltaX));*/
         ground.IncrementStart(-deltaX);
-        camera.translate(-deltaX, deltaY);
+        camera.SafeTranslate(-deltaX, deltaY);
         camera.update();
         return false;
     }

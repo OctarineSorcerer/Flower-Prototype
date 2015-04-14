@@ -1,10 +1,12 @@
 package com.mygdx.game.Tools;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.Superclasses.AnimationManager;
 
 /**
@@ -25,6 +27,8 @@ public class WateringCan extends AnimationManager implements ITool {
 
     @Override
     public void apply(float x, float y) {
-
+        if(GameScreen.testFlower.hole.dug) {
+            GameScreen.testFlower.growth.GrowthRate = 1f;
+        }
     }
 }

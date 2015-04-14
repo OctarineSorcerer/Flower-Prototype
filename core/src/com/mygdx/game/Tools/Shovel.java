@@ -3,9 +3,10 @@ package com.mygdx.game.Tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.FlowerPrototype;
 import com.mygdx.game.GameScreen;
 import com.mygdx.game.Superclasses.AnimationManager;
 
@@ -34,6 +35,12 @@ public class Shovel extends AnimationManager implements ITool {
 
     @Override
     public void apply(float x, float y) {
-        GameScreen.testFlower.hole.beingDug = true;
+        Vector2 applyPoint = new Vector2(x, y);
+        Vector2 rootPoint = new Vector2(GameScreen.testFlower.rootLoc.x,
+                FlowerPrototype.HEIGHT - GameScreen.testFlower.rootLoc.y); //translate into the OTHER kind of y
+        float distance = rootPoint.dst(applyPoint);
+        if (distance < 30) {
+            GameScreen.testFlower.hole.beingDug = true;
+        }
     }
 }

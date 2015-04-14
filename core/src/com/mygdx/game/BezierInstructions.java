@@ -43,6 +43,7 @@ public class BezierInstructions {
         this.points = points;
         tipX = (int)(points[points.length - 1].x);
         tipY = (int)(points[points.length - 1].y);
+        GetAllCurves();
     }
 
     /**
@@ -129,6 +130,26 @@ public class BezierInstructions {
                 curvesOnScreen.add(new Bezier<Vector2>(tempCurve.toArray(new Vector2[tempCurve.size()])));
                 i += 3 - (i % 3); //jump to next curve I think
             //}
+        }
+        segments = curvesOnScreen.size() * 40;
+    }
+
+    public void GetAllCurves() {
+        curvesOnScreen = new ArrayList<Bezier<Vector2>>();
+        int curve = 0;
+        for(int i = 0; i < points.length; i++) {
+            if(i != points.length - 1) curve = i/3; //save it from going above hopefully?
+            ArrayList<Vector2> tempCurve = new ArrayList<Vector2>();
+            for(int i2 = curve * 3; i2 <= curve*3 + 3; i2++) { //go through that curve's points
+                if(i2 < points.length) {
+                    tempCurve.add(points[i2]);
+                }
+                else {
+                    System.out.println("A thing, a thing is breaking!");
+                }
+            }
+            curvesOnScreen.add(new Bezier<Vector2>(tempCurve.toArray(new Vector2[tempCurve.size()])));
+            i += 3 - (i % 3); //jump to next curve I think
         }
         segments = curvesOnScreen.size() * 40;
     }

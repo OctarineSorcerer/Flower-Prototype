@@ -2,7 +2,6 @@ package com.mygdx.game.Superclasses;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -23,6 +22,11 @@ public class AnimationManager {
             }
         } //Fill the 1D array
         animation = new Animation((sheetCols/sheetRows),frames);
+        //sheet.dispose();
+    }
+
+    public float getStateTime() {
+        return stateTime;
     }
 
     /**

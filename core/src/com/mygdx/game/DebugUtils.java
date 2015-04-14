@@ -7,10 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-import java.awt.*;
-import java.awt.Image;
 import java.util.*;
 import java.util.List;
 
@@ -79,9 +77,9 @@ public class DebugUtils {
     }
     public static ArrayList<com.badlogic.gdx.scenes.scene2d.ui.Image> GetImages(String path) {
         ArrayList<FileHandle> files = GetMonochromes(path);
-        ArrayList<com.badlogic.gdx.scenes.scene2d.ui.Image> images = new ArrayList<com.badlogic.gdx.scenes.scene2d.ui.Image>();
+        ArrayList<Image> images = new ArrayList<Image>();
         for(FileHandle entry : files) {
-            final com.badlogic.gdx.scenes.scene2d.ui.Image image = new com.badlogic.gdx.scenes.scene2d.ui.Image(new Texture(entry));
+            final Image image = new Image(new Texture(entry));
             image.setName(entry.name());
             images.add(image);
         }

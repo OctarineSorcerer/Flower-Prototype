@@ -110,7 +110,7 @@ public class MainMenuScreen implements Screen {
         //For table: The elements are displayed in the order added.
         //The first appear on top, the last at the bottom.
         table.add(titleLabel).padBottom(40).row();
-        table.add(buttonFlower).size(150,60).padBottom(20).row();
+        table.add(buttonFlower).size(150, 60).padBottom(20).row();
         table.add(buttonExit).size(150, 60).padBottom(20).row();
 
         table.setFillParent(true);
@@ -120,18 +120,44 @@ public class MainMenuScreen implements Screen {
     public void ChooseProfiles() {
         stage.clear();
         table.clear();
-        Table subTable = new Table();
+        final Table subTable = new Table();
         for(final String fileName : GetSaves()) {
-            TextButton saveButton = new TextButton(fileName.substring(0, fileName.length() - 5), skin);
+            final TextButton saveButton = new TextButton(fileName.substring(0, fileName.length() - 5), skin);
             saveButton.addListener(new ClickListener() {
                 @Override
-                public void clicked(InputEvent event, float x, float y)
-                {
+                public void clicked(InputEvent event, float x, float y) {
                     game.info = SaveInfo.LoadSave(fileName);
-                    ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
                 }
             });
-            subTable.add(saveButton).fillX().center().pad(5).row();
+
+            Image cross = new Image(new Texture("textures/Cross.png"));
+            final ImageButton deleteButton = new ImageButton(skin);
+            ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle(deleteButton.getStyle());
+            style.imageUp = cross.getDrawable();
+            style.imageDown = cross.getDrawable();
+            deleteButton.setStyle(style);
+            deleteButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Dialog deleteBox = new Dialog("Are you sure?", skin) {
+                        protected void result(Object object) {
+                            if (Boolean.parseBoolean(object.toString())) { //ie yes
+                                Gdx.files.local("/bin/" + fileName).delete();
+                                subTable.removeActor(saveButton);
+                                subTable.removeActor(deleteButton);
+                            }
+                        }
+                    }
+                    .text("Are you sure you'd like to delete "
+                            + fileName.substring(0, fileName.length() - 5) + "?")
+                    .button("Yes", true)
+                    .button("No", false);
+                    deleteBox.show(stage);
+                }
+            });
+            subTable.add(saveButton).fillX().center().pad(5);
+            subTable.add(deleteButton).center().pad(5).row();
         }
         TextButton createButton = new TextButton("Create new flower", skin);
         createButton.addListener(new ClickListener() {
@@ -194,7 +220,19 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                ChooseHead();
+                int totalColours = 0;
+                for(ArrayList<Color> colours : petals.values()) {
+                    totalColours += colours.size();
+                }
+                if(totalColours != 0) {
+                    ChooseHead();
+                }
+                else {
+                    Dialog rejectionDialog = new Dialog("No petals selected", skin);
+                    rejectionDialog.text("Please select some petal colours");
+                    rejectionDialog.button("OK");
+                    rejectionDialog.show(stage);
+                }
             }
         });
         slider.setValue(10);
@@ -268,25 +306,32 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                HeadSave head = new HeadSave(headColour, headImage.getName());
-                StemSave stem = new StemSave(new Random().nextLong(), Color.GREEN, 20,
-                        new Point2D(FlowerPrototype.WIDTH/2, 20));
-                GrowthInfo growthInfo = new GrowthInfo(0, 6, 4);
-                ArrayList<PetalGroupSave> petalGroups = new ArrayList<PetalGroupSave>();
+                if(headColour != null && (headImage != null && headImage.getName() != null)) {
+                    HeadSave head = new HeadSave(headColour, headImage.getName());
+                    StemSave stem = new StemSave(new Random().nextLong(), Color.GREEN, 20,
+                            new Point2D(FlowerPrototype.WIDTH / 2, 20));
+                    GrowthInfo growthInfo = new GrowthInfo(0, 0, 6, 4);
+                    ArrayList<PetalGroupSave> petalGroups = new ArrayList<PetalGroupSave>();
 
-                for (String key : petals.keySet())
-                {
-                    ArrayList<Color> colours = petals.get(key);
-                    for(Color colour : colours) {
-                        petalGroups.add(new PetalGroupSave(colour, key, 1, 0));
+                    for (String key : petals.keySet()) {
+                        ArrayList<Color> colours = petals.get(key);
+                        for (Color colour : colours) {
+                            petalGroups.add(new PetalGroupSave(colour, key, 1, 0));
+                        }
                     }
+                    int petalCount = (int) (slider.getValue());
+                    ArrayList<Integer> indices = Flower.GetIndexMix(petalGroups.size() - 1, petalCount);
+                    String name = saveNameBox.getText();
+                    SaveInfo info = new SaveInfo(name, head, stem, growthInfo, petalGroups, indices);
+                    game.info = info;
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
                 }
-                int petalCount = (int)(slider.getValue());
-                ArrayList<Integer> indices = Flower.GetIndexMix(petalGroups.size() - 1, petalCount);
-                String name = saveNameBox.getText();
-                SaveInfo info = new SaveInfo(name, head, stem, growthInfo, petalGroups, indices);
-                game.info = info;
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
+                else {
+                    Dialog rejectionDialog = new Dialog("No head selected", skin);
+                    rejectionDialog.text("Please select a head and colour");
+                    rejectionDialog.button("OK");
+                    rejectionDialog.show(stage);
+                }
             }
         });
         table.add(buttonGo).center();

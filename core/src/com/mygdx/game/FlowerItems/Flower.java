@@ -35,7 +35,7 @@ public class Flower { //These are their own classes as they may need unique func
         this.petalIndices = petalIndices;
 
         head.SetCenter(rootLoc);
-        growth = new GrowthHandling(1f, 6f, 2.5f);
+        growth = new GrowthHandling(0f, 6f, 2.5f); //0, so it won't grow
         ArrangePetals();
     }
 
@@ -87,6 +87,26 @@ public class Flower { //These are their own classes as they may need unique func
         if(bloomAmount > 0) {
             for(PetalGroup petalGroup : petals) {
                 float xScale = petalGroup.sprite.getScaleX(); //was 1f
+                //float origYScale = petalGroup.sprite.getScaleY();
+                float scaleY = petalGroup.sprite.getScaleY() + bloomAmount * petalGroup.bloomGrowthRate;
+                petalGroup.sprite.setScale(xScale,
+                        scaleY);
+                if(petalGroup.sprite.getScaleY() > 0) {
+                    petalsOutside = true;
+                }
+            }
+        }
+    }
+    public void ApplyLoadGrowth() {
+        growth.CheckTime();
+        stem.stemTip = stem.curveInfo.GetPositionAtT(growth.Growth, rootLoc); //this will always occur correctly
+        head.SetCenter(stem.stemTip);
+        SetPetalPositions();
+        //petals/blooming
+        float bloomAmount = growth.bloomInfo.BloomBetweenGrowths(0, growth.Growth); //do all the bloom scaling
+        if(bloomAmount > 0) {
+            for(PetalGroup petalGroup : petals) {
+                float xScale = petalGroup.sprite.getScaleX(); //was 1f
                 if(petalGroup.sprite.getScaleY() > 0) {
                     petalsOutside = true;
                 }
@@ -117,12 +137,21 @@ public class Flower { //These are their own classes as they may need unique func
                 petalGroup.Draw(batch);
             }
         }
-        if(hole.beingDug) {
+    }
 
+    public void DrawHole(SpriteBatch batch, float delta) {
+        if(hole.beingDug) {
+            hole.draw(batch, delta);
         }
     }
 
     public void DrawShapes(ShapeRenderer shapeRenderer) {
         stem.curveInfo.DrawSome(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y), stem.colour, growth.Growth, stem.thickness);
+    }
+
+    public void Dispose() {
+        for(PetalGroup petal : petals) {
+
+        }
     }
 }

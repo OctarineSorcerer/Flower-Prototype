@@ -1,8 +1,8 @@
 package com.mygdx.game.FlowerItems;
 
+import com.mygdx.game.SaveItems.GrowthInfo;
+
 import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Class to handle times and growing of things, stores in Growth
@@ -16,7 +16,7 @@ public class GrowthHandling {
 
     public float GrowthRate; //growth per irl day
 
-    private Calendar thisCheck = Calendar.getInstance();
+    private Calendar lastChecked = Calendar.getInstance();
 
     /**
      * Class for handling growth over time
@@ -28,6 +28,15 @@ public class GrowthHandling {
         GrowthRate = growthRate;
         bloomInfo = new BloomInfo(bloomStart, bloomLength);
     }
+    public GrowthHandling(GrowthInfo info) {
+        GrowthRate = info.growthRate;
+        Growth = info.latestGrowth;
+        previousGrowth = info.previousGrowth;
+        lastChecked = Calendar.getInstance();
+        lastChecked.setTimeInMillis(info.lastMilliCheck);
+
+        bloomInfo = new BloomInfo(info.bloomStart, info.bloomLength);
+    }
 
     /**
      * Checks the current time and applies the appropriate growth
@@ -36,11 +45,11 @@ public class GrowthHandling {
     public float CheckTime() {
         previousGrowth = Growth;
         Calendar calendar = Calendar.getInstance();
-        Calendar lastCheck = thisCheck;
-        thisCheck = calendar;
+        Calendar lastCheck = lastChecked;
+        lastChecked = calendar;
 
         long lastMilli = lastCheck.getTimeInMillis();
-        long thisMilli = thisCheck.getTimeInMillis();
+        long thisMilli = lastChecked.getTimeInMillis();
         long difference = thisMilli - lastMilli;
         float secondsDifference = (float) difference/1000f;
 
@@ -50,6 +59,14 @@ public class GrowthHandling {
         bloomInfo.Blooming =
                 (Growth >= bloomInfo.bloomStart && Growth <= bloomInfo.bloomStart + bloomInfo.bloomLength); //Ascertains whether it is blooming
         return toGrow;
+    }
+
+    public float GetPreviousGrowth() {
+        return previousGrowth;
+    }
+
+    public long GetLastMilliCheck() {
+        return lastChecked.getTimeInMillis();
     }
 
     public float GetAmountLastBloomed() {
