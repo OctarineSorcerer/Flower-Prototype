@@ -12,18 +12,18 @@ public class GrowthInfo {
     public float bloomStart, bloomLength;
     public long lastMilliCheck;
 
-    public GrowthInfo(float currentGrowth,float previousGrowth ,float bloomStart, float bloomLength) {
+    public GrowthInfo(float currentGrowth,float previousGrowth ,float bloomStart, float bloomLength, float growthRate) {
         this.latestGrowth = currentGrowth;
         this.previousGrowth = previousGrowth;
         this.bloomStart = bloomStart;
         this.bloomLength = bloomLength;
-        this.growthRate = 0f;
+        this.growthRate = growthRate;
         lastMilliCheck = Calendar.getInstance().getTimeInMillis();
     }
     public GrowthInfo(GrowthHandling growth) {
         this.latestGrowth = growth.Growth;
-        this.bloomStart = growth.bloomInfo.bloomStart;
-        this.bloomLength = growth.bloomInfo.bloomLength;
+        this.bloomStart = growth.bloomInfo.GetBloomStart();
+        this.bloomLength = growth.bloomInfo.GetBloomLength();
         this.growthRate = growth.GrowthRate;
         this.lastMilliCheck = growth.GetLastMilliCheck();
     }

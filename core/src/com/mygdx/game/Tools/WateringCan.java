@@ -28,7 +28,7 @@ public class WateringCan extends AnimationManager implements ITool {
     @Override
     public void apply(float x, float y) {
         if(GameScreen.testFlower.hole.dug) {
-            GameScreen.testFlower.growth.GrowthRate = 1f;
+            GameScreen.testFlower.growth.GrowthRate = 0.25f;
         }
     }
 }

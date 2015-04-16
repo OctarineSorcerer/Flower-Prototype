@@ -25,7 +25,8 @@ public class Flower { //These are their own classes as they may need unique func
 
     private boolean petalsOutside = false;
 
-    public Flower(ArrayList<PetalGroup> petals, ArrayList<Integer> petalIndices, Head flowerHead, Stem flowerStem, Point2D root) {
+    public Flower(ArrayList<PetalGroup> petals, ArrayList<Integer> petalIndices, Head flowerHead, Stem flowerStem,
+                  Point2D root, GrowthHandling growth) {
         rootLoc = new Vector2(root.x, root.y);
         hole = new Hole(rootLoc.x, rootLoc.y);
         head = flowerHead;
@@ -35,15 +36,15 @@ public class Flower { //These are their own classes as they may need unique func
         this.petalIndices = petalIndices;
 
         head.SetCenter(rootLoc);
-        growth = new GrowthHandling(0f, 6f, 2.5f); //0, so it won't grow
+        this.growth = growth; //0, so it won't grow
         ArrangePetals();
     }
 
     void ArrangePetals() {
         for(PetalGroup petalGroup : petals) {
             float ratio = petalGroup.sprite.getHeight() / head.radius;
-            petalGroup.xGrowthAfter = petalGroup.sprite.getScaleY()/growth.bloomInfo.bloomLength;
-            petalGroup.bloomGrowthRate = ratio / growth.bloomInfo.bloomLength;
+            petalGroup.xGrowthAfter = petalGroup.sprite.getScaleY()/growth.bloomInfo.GetBloomLength();
+            petalGroup.bloomGrowthRate = ratio / growth.bloomInfo.GetBloomLength(); //Bloomlength not right (It's 2.5 instead of 4)
             petalGroup.sprite.setOrigin(petalGroup.sprite.getWidth() / 2, 0); //origin at bottom thingy
             petalGroup.sprite.scale(-ratio); //Sets top of petal to the middle of the head
             petalGroup.sprite.setScale(1f, petalGroup.sprite.getScaleY());
@@ -125,16 +126,17 @@ public class Flower { //These are their own classes as they may need unique func
     }
 
     public void DrawSprites(SpriteBatch batch) {
-        if(petalsOutside) {
-            for (PetalGroup petalGroup : petals) {
-                petalGroup.Draw(batch);
-            }
-            head.sprite.draw(batch);
-        }
-        else {
-            head.sprite.draw(batch);
-            for (PetalGroup petalGroup : petals) {
-                petalGroup.Draw(batch);
+        if(hole.dug) {
+            if (petalsOutside) {
+                for (PetalGroup petalGroup : petals) {
+                    petalGroup.Draw(batch);
+                }
+                head.sprite.draw(batch);
+            } else {
+                head.sprite.draw(batch);
+                for (PetalGroup petalGroup : petals) {
+                    petalGroup.Draw(batch);
+                }
             }
         }
     }

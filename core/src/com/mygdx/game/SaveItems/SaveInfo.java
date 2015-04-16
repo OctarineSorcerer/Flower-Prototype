@@ -21,6 +21,7 @@ public class SaveInfo {
     GrowthInfo growthDetails;
     ArrayList<PetalGroupSave> petalDetails = new ArrayList<PetalGroupSave>();
     ArrayList<Integer> petalIndices = new ArrayList<Integer>();
+    boolean beingDug, dug;
 
     public SaveInfo() {} //This constructor's required so I can just throw the serializer at it
     public SaveInfo(String name, HeadSave headSave, StemSave stemSave, GrowthInfo growthInfo, ArrayList<PetalGroupSave> petalGroupSaves,
@@ -49,13 +50,16 @@ public class SaveInfo {
         stemDetails = new StemSave(flower.stem.curveInfo.GetSeed(), flower.stem.colour, flower.stem.thickness,
                 new Point2D(FlowerPrototype.WIDTH / 2, 20));
         growthDetails = new GrowthInfo(flower.growth.Growth,flower.growth.GetPreviousGrowth(),
-                flower.growth.bloomInfo.bloomStart, flower.growth.bloomInfo.bloomLength);
+                flower.growth.bloomInfo.GetBloomStart(), flower.growth.bloomInfo.GetBloomLength(),
+                flower.growth.GrowthRate);
         petalDetails = new ArrayList<PetalGroupSave>();
         for(PetalGroup petalGroup : flower.petals) {
             PetalGroupSave save = new PetalGroupSave(petalGroup.color, petalGroup.GetMonoName(), petalGroup.GetBloomGrowthRate(), petalGroup.GetXGrowthAfter());
             petalDetails.add(save);
         }
         petalIndices = flower.petalIndices;
+        beingDug = flower.hole.beingDug;
+        dug = flower.hole.dug;
     }
     public static SaveInfo LoadSave(String saveFileName) {
         Json json = new Json();
@@ -75,9 +79,10 @@ public class SaveInfo {
             petal.SetBlooms(petalSave.bloomGrowthRate, petalSave.xGrowthAfter);
             petals.add(petal);
         }
-        Flower flower = new Flower(petals, petalIndices, flowerHead, stem, stemDetails.root);
         GrowthHandling growth = new GrowthHandling(growthDetails);
-        flower.growth = growth;
+        Flower flower = new Flower(petals, petalIndices, flowerHead, stem, stemDetails.root, growth);
+        flower.hole.dug = dug;
+        flower.hole.beingDug = beingDug;
         flower.ApplyLoadGrowth();
         return flower;
     }

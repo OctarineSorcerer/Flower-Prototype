@@ -12,7 +12,6 @@ import java.util.Random;
 public class FlowerPrototype extends Game {
 	SpriteBatch batch;
     SaveInfo info;
-	Texture img;
 
     public BitmapFont font;
     public static Random rand = new Random();

@@ -310,7 +310,7 @@ public class MainMenuScreen implements Screen {
                     HeadSave head = new HeadSave(headColour, headImage.getName());
                     StemSave stem = new StemSave(new Random().nextLong(), Color.GREEN, 20,
                             new Point2D(FlowerPrototype.WIDTH / 2, 20));
-                    GrowthInfo growthInfo = new GrowthInfo(0, 0, 6, 4);
+                    GrowthInfo growthInfo = new GrowthInfo(0, 0, 6, 2f, 0f);
                     ArrayList<PetalGroupSave> petalGroups = new ArrayList<PetalGroupSave>();
 
                     for (String key : petals.keySet()) {

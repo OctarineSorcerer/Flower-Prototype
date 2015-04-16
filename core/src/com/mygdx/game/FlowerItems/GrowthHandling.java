@@ -74,8 +74,8 @@ public class GrowthHandling {
     }
 
     public class BloomInfo {
-        public float bloomStart;
-        public float bloomLength;
+        private float bloomStart;
+        private float bloomLength;
         private float bloomEnd;
 
         public boolean Blooming = false;
@@ -125,6 +125,12 @@ public class GrowthHandling {
                 }
             }
             else return 0f;
+        }
+        public float GetBloomStart() {
+            return bloomStart;
+        }
+        public float GetBloomLength() {
+            return bloomLength;
         }
     }
 }
