@@ -141,7 +141,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
-        testFlower.ApplyGrowth();
+        //testFlower.ApplyGrowth();
 
         //Begin a batch and draw stuff
         testFlower.DrawShapes(shapeRenderer);

@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.BezierInstructions;
+import com.mygdx.game.FlowerItems.Stem;
 import com.mygdx.game.GameScreen;
 import com.mygdx.game.Superclasses.AnimationManager;
 
@@ -30,5 +32,7 @@ public class WateringCan extends AnimationManager implements ITool {
         if(GameScreen.testFlower.hole.dug) {
             GameScreen.testFlower.growth.GrowthRate = 0.25f;
         }
+        /*BezierInstructions flowerCurves = GameScreen.testFlower.stem.curveInfo;
+        flowerCurves.AddCurve();*/
     }
 }

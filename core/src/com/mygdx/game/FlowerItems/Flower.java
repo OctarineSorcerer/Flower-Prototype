@@ -88,7 +88,6 @@ public class Flower { //These are their own classes as they may need unique func
         if(bloomAmount > 0) {
             for(PetalGroup petalGroup : petals) {
                 float xScale = petalGroup.sprite.getScaleX(); //was 1f
-                //float origYScale = petalGroup.sprite.getScaleY();
                 float scaleY = petalGroup.sprite.getScaleY() + bloomAmount * petalGroup.bloomGrowthRate;
                 petalGroup.sprite.setScale(xScale,
                         scaleY);
@@ -149,11 +148,5 @@ public class Flower { //These are their own classes as they may need unique func
 
     public void DrawShapes(ShapeRenderer shapeRenderer) {
         stem.curveInfo.DrawSome(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y), stem.colour, growth.Growth, stem.thickness);
-    }
-
-    public void Dispose() {
-        for(PetalGroup petal : petals) {
-
-        }
     }
 }

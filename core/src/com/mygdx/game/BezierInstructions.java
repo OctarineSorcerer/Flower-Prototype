@@ -22,13 +22,14 @@ public class BezierInstructions {
 
     private Vector2 point0 = new Vector2(), point1 = new Vector2();
     private int segments;
+    private Random rand = null;
 
     public BezierInstructions(long seed) {
-        LoadPoints(GeneratePoints(seed, 4, 200));
+        LoadPoints(GeneratePoints(seed, 4));
         beginning = new Vector2();
     }
     public BezierInstructions(long seed, Vector2 root) {
-        LoadPoints(GeneratePoints(seed, 4, 200));
+        LoadPoints(GeneratePoints(seed, 4));
         beginning = root;
     }
     public long GetSeed() {
@@ -178,15 +179,14 @@ public class BezierInstructions {
      * Generates a bunch of points to create a pretty ridiculous bezier path
      * @param seed just some random seed thing
      * @param cubicCount amount of cubic curves to generate as a path
-     * @param width width of the stem's sprite
      * @return An array of vectors representing the points, in format (End, control, control, End, control, etc..)
      */
-    public Vector2[] GeneratePoints(long seed, int cubicCount, int width) {
+    public Vector2[] GeneratePoints(long seed, int cubicCount) {
         List<Vector2> points = new ArrayList<Vector2>();
         Vector2 lastEndPoint, lastHandle;
-        Random rand = new Random(seed);
+        rand = new Random(seed);
         double yLast = 0;
-        int yRangeMin = 60, yRangeMax = 100;
+        int yRangeMin = 60, yRangeMax = 100, width = 200;
         for(int i = 0; i < cubicCount; i++)
         {
             for(int i2 = 0; i2 <= 3; i2++) {
@@ -223,5 +223,11 @@ public class BezierInstructions {
         }
         this.seed = seed;
         return points.toArray(new Vector2[points.size()]);
+    }
+
+    public void AddCurve() {
+        GetAllCurves();
+        int currentCurveCount = curvesOnScreen.size();
+        LoadPoints(GeneratePoints(seed, currentCurveCount + 1));
     }
 }
