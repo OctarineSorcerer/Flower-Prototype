@@ -99,18 +99,18 @@ public class GrowthHandling {
                 return Math.abs(after - before);
             }
 
-            if(afterWithinBloom && !beforeWithinBloom) {
+            if(afterWithinBloom) { //Simplified boolean here
                 //Only the end within bloom area
                 if(afterMoreThanBefore) return after - bloomStart;
                 else return bloomEnd - after;
             }
 
-            if(beforeWithinBloom && !afterWithinBloom) {
+            if(beforeWithinBloom) {
                 if(afterMoreThanBefore) return bloomEnd - before;
                 else return before - bloomStart;
             }
 
-            if(!beforeWithinBloom && !afterWithinBloom) { //both outside
+            else { //both outside
                 if(afterMoreThanBefore) {
                     if(after > bloomEnd && before < bloomStart) {
                         return bloomLength;
@@ -124,7 +124,6 @@ public class GrowthHandling {
                     else return 0f;
                 }
             }
-            else return 0f;
         }
         public float GetBloomStart() {
             return bloomStart;

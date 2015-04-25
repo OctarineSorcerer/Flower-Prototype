@@ -10,11 +10,13 @@ public class StemSave {
     long seed;
     Point2D root;
     Color colour;
-    int thickness;
-    public StemSave(long seed, Color colour, int thickness, Point2D root) {
+    int thickness, curves;
+
+    public StemSave(long seed, Color colour, int thickness,int curves , Point2D root) {
         this.seed = seed;
         this.colour = colour;
         this.thickness = thickness;
+        this.curves = curves;
         this.root = root;
     }
     public StemSave() {}

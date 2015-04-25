@@ -32,7 +32,8 @@ public class WateringCan extends AnimationManager implements ITool {
         if(GameScreen.testFlower.hole.dug) {
             GameScreen.testFlower.growth.GrowthRate = 0.25f;
         }
-        /*BezierInstructions flowerCurves = GameScreen.testFlower.stem.curveInfo;
-        flowerCurves.AddCurve();*/
+        //if(GameScreen.testFlower.growth.bloomInfo.Blooming) {
+            GameScreen.testFlower.LengthenStem();
+        //}
     }
 }

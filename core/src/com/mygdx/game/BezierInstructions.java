@@ -24,17 +24,14 @@ public class BezierInstructions {
     private int segments;
     private Random rand = null;
 
-    public BezierInstructions(long seed) {
-        LoadPoints(GeneratePoints(seed, 4));
+    public BezierInstructions(long seed, int curves) {
+        LoadPoints(GeneratePoints(seed, curves));
         beginning = new Vector2();
-    }
-    public BezierInstructions(long seed, Vector2 root) {
-        LoadPoints(GeneratePoints(seed, 4));
-        beginning = root;
     }
     public long GetSeed() {
         return seed;
     }
+    public int GetCurveCount() { return curvesOnScreen.size(); }
 
     /**
      *

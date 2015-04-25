@@ -48,7 +48,7 @@ public class SaveInfo {
     public void LoadFromFlower(Flower flower) {
         headDetails = new HeadSave(flower.head.color, flower.head.GetMonoName());
         stemDetails = new StemSave(flower.stem.curveInfo.GetSeed(), flower.stem.colour, flower.stem.thickness,
-                new Point2D(FlowerPrototype.WIDTH / 2, 20));
+                flower.stem.curves, new Point2D(FlowerPrototype.WIDTH / 2, 20));
         growthDetails = new GrowthInfo(flower.growth.Growth,flower.growth.GetPreviousGrowth(),
                 flower.growth.bloomInfo.GetBloomStart(), flower.growth.bloomInfo.GetBloomLength(),
                 flower.growth.GrowthRate);
@@ -72,7 +72,7 @@ public class SaveInfo {
     public Flower ConstructFlower() {
         ArrayList<PetalGroup> petals = new ArrayList<PetalGroup>();
         Head flowerHead = new Head(headDetails.monochromePath, headDetails.tintColour);
-        Stem stem = new Stem(stemDetails.seed);
+        Stem stem = new Stem(stemDetails.seed, stemDetails.curves);
         stem.colour = stemDetails.colour; stem.thickness = stemDetails.thickness;
         for(PetalGroupSave petalSave : petalDetails) {
             PetalGroup petal = new PetalGroup(petalSave.monochromePath, petalSave.tintColour);
