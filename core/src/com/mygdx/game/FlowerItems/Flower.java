@@ -7,8 +7,6 @@ import com.mygdx.game.*;
 import com.sun.javafx.geom.Point2D;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Not an interface - the flower should be procedural
@@ -52,7 +50,7 @@ public class Flower {
     /**
      * Initial arrangement of petals, sets their scaling for later in their lives
      */
-    void ArrangePetals() {
+    private void ArrangePetals() {
         for(PetalGroup petalGroup : petals) {
             float ratio = petalGroup.sprite.getHeight() / head.radius;
             petalGroup.xGrowthAfter = petalGroup.sprite.getScaleY()/growth.bloomInfo.GetBloomLength();
@@ -158,11 +156,11 @@ public class Flower {
      * Grows the stem by one curve
      */
     public void LengthenStem() {
-        //If this occurred while blooming, as things are I'd have to choose between curves possibly instantly growing,
+        //If this occurred while blooming, as things are I'd have to choose between curveNumber possibly instantly growing,
         //or the petals growing extremely out of proportion
         if(!growth.bloomInfo.Blooming) {
             stem.curveInfo.AddCurve();
-            stem.curves = stem.curveInfo.GetCurveCount();
+            stem.curveNumber = stem.curveInfo.GetCurveCount();
             if (growth.Growth > stem.curveInfo.GetCurveCount()) {
                 growth.Growth = stem.curveInfo.GetCurveCount();
                 //Stop the new curve from instantly appearing if enough time has already elapsed.

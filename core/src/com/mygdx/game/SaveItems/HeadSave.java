@@ -3,7 +3,7 @@ package com.mygdx.game.SaveItems;
 import com.badlogic.gdx.graphics.Color;
 
 /**
-* Created by Dan on 16/03/2015.
+* Save information about the flower's head
 */
 public class HeadSave {
     String monochromePath;
@@ -12,5 +12,5 @@ public class HeadSave {
         this.tintColour = tintColour;
         this.monochromePath = monochromePath;
     }
-    public HeadSave() {}
+    public HeadSave() {} //No-arg constructor for the JSON serializer
 }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.sun.javafx.geom.Point2D;
 
 /**
-* Created by Dan on 16/03/2015.
+* Class representing stem details
 */
 public class StemSave {
     long seed;
@@ -19,5 +19,5 @@ public class StemSave {
         this.curves = curves;
         this.root = root;
     }
-    public StemSave() {}
+    public StemSave() {} //No argument constructor for serializer
 }

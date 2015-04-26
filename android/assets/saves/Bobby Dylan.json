@@ -1,0 +1,65 @@
+{
+"headDetails": {
+	"monochromePath": "TestFlowerHead2.png",
+	"tintColour": {
+		"a": 1,
+		"g": 0.78,
+		"r": 1
+	}
+},
+"Name": "Bobby Dylan.json",
+"dug": true,
+"beingDug": true,
+"petalDetails": [
+	{
+		"monochromePath": "Charles.png",
+		"tintColour": {
+			"a": 1,
+			"b": 1
+		},
+		"bloomGrowthRate": 0.78125,
+		"xGrowthAfter": 0.5
+	},
+	{
+		"monochromePath": "Charles.png",
+		"tintColour": {
+			"a": 1,
+			"g": 1
+		},
+		"bloomGrowthRate": 0.78125,
+		"xGrowthAfter": 0.5
+	},
+	{
+		"monochromePath": "Charles.png",
+		"tintColour": {
+			"a": 1,
+			"b": 1,
+			"r": 1
+		},
+		"bloomGrowthRate": 0.78125,
+		"xGrowthAfter": 0.5
+	}
+],
+"stemDetails": {
+	"root": {
+		"x": 240,
+		"y": 20
+	},
+	"curves": 6,
+	"colour": {
+		"a": 1,
+		"g": 1
+	},
+	"seed": -6777312643860893625,
+	"thickness": 20
+},
+"growthDetails": {
+	"growthRate": 0.25,
+	"bloomLength": 2,
+	"latestGrowth": 1.0167495,
+	"lastMilliCheck": 1430089887881,
+	"previousGrowth": 1.0127496,
+	"bloomStart": 6
+},
+"petalIndices": [ 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 2, 2, 1, 1, 2, 1, 0, 2, 1, 1, 0, 2, 2, 2 ]
+}

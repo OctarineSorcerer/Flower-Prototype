@@ -3,7 +3,7 @@ package com.mygdx.game.Tools;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- * Tool interface! At the moment they only really use apply, but that may change and it's still some nice functionality
+ * Tool interface! All tools must draw and have an effect when they are applied
  */
 public interface ITool {
     void draw(SpriteBatch batch, float x, float y, float delta);

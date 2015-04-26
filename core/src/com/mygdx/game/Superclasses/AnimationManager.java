@@ -5,27 +5,34 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * Class to handle any animation given
+ * Class to create an animation from a given texture
  */
 public class AnimationManager {
-    public Animation animation;
-    float stateTime;
+    protected Animation animation; //Internal animation class
+    private float stateTime;
 
-    public AnimationManager(Texture sheet, int sheetRows, int sheetCols) {;
+    /**
+     * Animation constructor
+     * @param sheet Texture/animationsheet. Contains all frames of animation
+     * @param sheetRows Rows in the animation sheet
+     * @param sheetCols Columns in the animation sheet
+     */
+    protected AnimationManager(Texture sheet, int sheetRows, int sheetCols) {
         TextureRegion[][] temp = TextureRegion.split(sheet, sheet.getWidth()/sheetCols, sheet.getHeight()/sheetRows);
+        //Get each cell of the animation matrix
 
-        TextureRegion[] frames = new TextureRegion[sheetRows*sheetCols];
+        TextureRegion[] frames = new TextureRegion[sheetRows*sheetCols]; //All cells flattened into an array
         int index = 0;
-        for (int i = 0; i < sheetRows; i++) {
+        for (int i = 0; i < sheetRows; i++) { //Fill the 1D array
             for (int j = 0; j < sheetCols; j++) {
                 frames[index++] = temp[i][j];
             }
-        } //Fill the 1D array
-        animation = new Animation((sheetCols/sheetRows),frames);
+        }
+        animation = new Animation((sheetCols/sheetRows),frames); //Create an animation from this
         //sheet.dispose();
     }
 
-    public float getStateTime() {
+    protected float getStateTime() {
         return stateTime;
     }
 
@@ -34,7 +41,7 @@ public class AnimationManager {
      * @param deltaTime Change in time since this was last called
      * @return A textureRegion corresponding to the current time
      */
-    public TextureRegion GetFrame(float deltaTime) {
+    protected TextureRegion GetFrame(float deltaTime) {
         stateTime += deltaTime;
         return animation.getKeyFrame(stateTime, true);
     }

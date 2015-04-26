@@ -2,66 +2,56 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.assets.loaders.AssetLoader;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.FlowerItems.Flower;
 import com.mygdx.game.FlowerItems.*;
 
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mygdx.game.SaveItems.SaveInfo;
+
 import com.mygdx.game.Tools.ITool;
 import com.mygdx.game.Tools.Shovel;
 import com.mygdx.game.Tools.WateringCan;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Yay, game screen! Where it all goes DOWN
+ * Yay, game screen! Where all the things happen
  */
 public class GameScreen implements Screen, GestureDetector.GestureListener {
-    final FlowerPrototype game;
-    ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private final FlowerPrototype game;
+    private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     private Stage stage = new Stage();
     private Table table = new Table();
     private ButtonGroup buttonGroup = new ButtonGroup();
     private Skin skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
-    ArrayList<ITool> tools = new ArrayList<ITool>();
+    private ArrayList<ITool> tools = new ArrayList<ITool>();
     private ITool currentTool;
 
-    Random rand = new Random();
-    ExtendedCamera camera;
-    int hCameraSpeed = 200, vCameraSpeed = 200;
-    Ground ground;
+    private Random rand = new Random();
+    private ExtendedCamera camera;
+    private int hCameraSpeed = 200; //Horizontal camera speed
+    private Ground ground;
     public static Flower testFlower; //needs to be accessed elsewhere
-    public static DebugUtils.CrossManager crossManager = new DebugUtils.CrossManager(true);
 
     public GameScreen(final FlowerPrototype gam) {
-        this.game = gam; //This is for rendering, right?
-        InputMultiplexer im = new InputMultiplexer();
-        im.addProcessor(new GestureDetector(this));
-        im.addProcessor(stage);
-        Gdx.input.setInputProcessor(im);
+        this.game = gam;
+        InputMultiplexer im = new InputMultiplexer(); //Be able to take multiple types of input
+        im.addProcessor(new GestureDetector(this)); //Regular input on the screen
+        im.addProcessor(stage); //Input to the UI
+        Gdx.input.setInputProcessor(im); //Set the input to be whatever the multiplexer gets
 
-        AddUI();
+        AddUI(); //Add the UI to the screen
         tools.add(new Shovel());
         tools.add(new WateringCan());
-        currentTool = tools.get(0);
+        currentTool = tools.get(0); //Adding those tools
 
         //Camera and spritebatch
         camera = new ExtendedCamera(0, FlowerPrototype.HEIGHT/2, null, null);
@@ -69,34 +59,31 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         //any other creation stuff
         ground = new Ground(new Texture(Gdx.files.internal("textures/Ground.png")));
 
-        testFlower = game.info.ConstructFlower();
-        testFlower.stem.curveInfo.GetCurvesOnScreen(0, FlowerPrototype.HEIGHT/2, testFlower.rootLoc);
+        testFlower = game.info.ConstructFlower(); //Load the flower from the save info
+        testFlower.stem.curveInfo.GetAllCurves(); //Load initial cirves
 
-        //crossManager.AddCross(headCenter, Float.toString(headCenter.x) + ", " + Float.toString(headCenter.y), Color.ORANGE);
-        DecimalFormat dF = new DecimalFormat();
-        dF.setMaximumFractionDigits(2);
         rand.nextLong();
     }
 
-    public void AddUI() {
+    private void AddUI() {
         ArrayList<Image> toolImages = DebugUtils.GetImages("textures/tools");
         buttonGroup.setMinCheckCount(0);
-        buttonGroup.setMaxCheckCount(1);
+        buttonGroup.setMaxCheckCount(1); //Only one tool may be checked at any given time
         for(int i = 0; i < toolImages.size(); i++) {
             Image toolImage = toolImages.get(i);
             final ImageButton imageButton = new ImageButton(skin);
             ImageButtonStyle style = new ImageButtonStyle(imageButton.getStyle());
             style.imageUp = toolImage.getDrawable();
             style.imageDown = toolImage.getDrawable();
-            style.checked = skin.getDrawable("default-round-down");
-            imageButton.setStyle(style);
-            if(i==0) imageButton.setChecked(true);
+            style.checked = skin.getDrawable("default-round-down"); //Set the various states of the button style
+            imageButton.setStyle(style); //Actually give the button the style
+            if(i==0) imageButton.setChecked(true); //Check the first button
 
             final int index = i;
             imageButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                    currentTool = tools.get(index);
+                    currentTool = tools.get(index); //Set current tool when clicked
                     return false;
                 }
             });
@@ -106,8 +93,9 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         }
         table.left().bottom();
         table.setFillParent(true);
-        stage.addActor(table);
+        stage.addActor(table); //Put all the tool images on the bottom left
 
+        //Make an exit button on the bottom right
         Table otherSide = new Table().right().bottom();
         Image exitImage = new Image(new Texture(Gdx.files.internal("textures/Exit.png")));
         ImageButton exitButton = new ImageButton(skin);
@@ -115,20 +103,20 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         style.imageUp = exitImage.getDrawable();
         style.imageDown = style.imageUp;
         style.checked = skin.getDrawable("default-round-down");
-        exitButton.setStyle(style);
+        exitButton.setStyle(style); //Set the images of the exit button
         exitButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 game.info.LoadFromFlower(testFlower);
-                game.info.WriteSave();
-                dispose();
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
+                game.info.WriteSave(); //Save the flower
+                dispose(); //Dispose of resources
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game)); //Go back to main menu
                 return false;
             }
         });
         otherSide.add(exitButton);
         otherSide.setFillParent(true);
-        stage.addActor(otherSide);
+        stage.addActor(otherSide); //Add the exit button to the stage
     }
 
     @Override
@@ -141,17 +129,17 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
-        testFlower.ApplyGrowth();
+        testFlower.ApplyGrowth(); //Grow that flower. Possibly could be set on a timer, but that flower should grow as smoothly as possible
 
-        //Begin a batch and draw stuff
+        //Begin a batch and draw everything
         testFlower.DrawShapes(shapeRenderer);
 
         game.batch.begin();
-        testFlower.DrawSprites(game.batch);
-        ground.Draw(game.batch);
-        testFlower.DrawHole(game.batch, delta);
+        testFlower.DrawSprites(game.batch); //Draw the flower sprites
+        ground.Draw(game.batch); //Draw the ground
+        testFlower.DrawHole(game.batch, delta); //Draw the hole after the ground and flower
 
-        //Process user input
+        //Process user input - do things about it
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -206,7 +194,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width, int height) { //This likely isn't going to happen much, but worth resizing a couple things
         camera.viewportWidth = width;
         camera.viewportHeight = height;
 
@@ -218,8 +206,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         currentTool.apply(x, y);
-        /*testFlower.DebugChangeStem();
-        testFlower.stem.curveInfo.GetCurvesOnScreen((int)camera.position.y, (int)camera.position.x, testFlower.rootLoc);*/
         return false;
     }
 
@@ -240,7 +226,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     }
 
     @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
+    public boolean pan(float x, float y, float deltaX, float deltaY) { //Move the camera about
         ground.IncrementStart(-deltaX);
         camera.SafeTranslate(-deltaX, deltaY);
         camera.update();

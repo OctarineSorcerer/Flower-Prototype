@@ -2,23 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.sun.javafx.geom.Point2D;
 
 /**
  * Camera class to facilitate easier camera use
  */
-public class ExtendedCamera extends OrthographicCamera {
+class ExtendedCamera extends OrthographicCamera {
     private Integer minX, minY, maxX, maxY; //bounds which the camera can remain in
-
-    /**
-     * Construct the camera without bounds - ie no movement restrictions
-     */
-    public ExtendedCamera() {
-        minX = null;
-        maxX = null;
-        minY = null;
-        maxY = null;
-    }
 
     /**
      * Construct camera with bounds - ie the co-ordinates it cannot travel outside of
@@ -38,7 +27,7 @@ public class ExtendedCamera extends OrthographicCamera {
      * @param maxX Maximum X boundary
      * @param maxY Maximum Y boundary
      */
-    public void SetBounds(Integer minX, Integer minY, Integer maxX, Integer maxY) {
+    private void SetBounds(Integer minX, Integer minY, Integer maxX, Integer maxY) {
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;

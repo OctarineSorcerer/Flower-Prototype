@@ -14,6 +14,9 @@ import com.mygdx.game.Superclasses.AnimationManager;
  *
  */
 public class Shovel extends AnimationManager implements ITool {
+    /**
+     * Rigid as the shovel remains the same
+     */
     public Shovel() {
         super(new Texture(Gdx.files.internal("textures/tools/anims/SpadeAnim.png")), 1, 8);
         animation.setFrameDuration(0.5f / 8f);
@@ -22,7 +25,7 @@ public class Shovel extends AnimationManager implements ITool {
 
     /**
      * Will draw the current frame of shovel. Centered too. Make sure the spritebatch has started
-     * @param batch Spritebatch
+     * @param batch Spritebatch that has been started
      * @param x X position of where to draw the frame
      * @param y Y position of where to draw the frame
      * @param delta Change in time since last drawn
@@ -33,14 +36,19 @@ public class Shovel extends AnimationManager implements ITool {
         batch.draw(region, x - (region.getRegionWidth()/2), y/* - (region.getRegionHeight()/2)*/);
     }
 
+    /**
+     * Apply the shovel!
+     * @param x X position of the tool
+     * @param y Y position of the tool
+     */
     @Override
     public void apply(float x, float y) {
         Vector2 applyPoint = new Vector2(x, y);
         Vector2 rootPoint = new Vector2(GameScreen.testFlower.rootLoc.x,
                 FlowerPrototype.HEIGHT - GameScreen.testFlower.rootLoc.y); //translate into the OTHER kind of y
         float distance = rootPoint.dst(applyPoint);
-        if (distance < 30) {
-            GameScreen.testFlower.hole.beingDug = true;
+        if (distance < 30) { //distance within 30 of the root location of the flower
+            GameScreen.testFlower.hole.beingDug = true; //Starts the process of the hole being dug
         }
     }
 }

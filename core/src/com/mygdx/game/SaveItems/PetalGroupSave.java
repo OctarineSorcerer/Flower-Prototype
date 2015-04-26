@@ -3,7 +3,7 @@ package com.mygdx.game.SaveItems;
 import com.badlogic.gdx.graphics.Color;
 
 /**
-* Created by Dan on 16/03/2015.
+* Save information about a petalgroup
 */
 public class PetalGroupSave {
     public float bloomGrowthRate;
@@ -16,5 +16,5 @@ public class PetalGroupSave {
         this.bloomGrowthRate = bloomGrowth;
         this.xGrowthAfter = xGrowth;
     }
-    public PetalGroupSave() {}
+    public PetalGroupSave() {} //No-argument constructor for the JSON serializer
 }

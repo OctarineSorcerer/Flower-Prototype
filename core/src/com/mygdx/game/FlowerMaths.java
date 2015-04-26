@@ -3,8 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import java.awt.*;
-
 /**
  * My gods, so much maths. This stuff is to do with the flower - ie for finding petal positions, etc.
  */
@@ -15,7 +13,7 @@ public class FlowerMaths {
      * @param angle A positive angle. Does not have to be below 360
      * @return Either 0, 90, 180, 270, 360)
      */
-    public static int GetClosestQuarterAngle(float angle) {
+    private static int GetClosestQuarterAngle(float angle) {
         if(angle > 360) //Reduces angle to its equivalent, below-360 form
         {
             angle = angle - (int)(angle/360);
@@ -40,27 +38,12 @@ public class FlowerMaths {
     }
 
     /**
-     * Returns the width a petal should have, given a radius and the separation between petals
-     * @param petalSepAngle Degrees a petal is separated from another by
-     * @param sectorPortion The amount per sector a petal should take up
-     * @param radius Radius of the flowerhead/circle
-     * @return The width a petal should be in this situation
-     */
-    public static float GetPetalWidth(float petalSepAngle, float sectorPortion, float radius) {
-        float theta = petalSepAngle * MathUtils.degreesToRadians;
-        float arcLength = radius * theta;
-        float chordLength = 2f*radius*(MathUtils.sin(arcLength/(2f*radius)));
-        return Math.abs(chordLength*sectorPortion);
-    }
-
-    /**
      * Get the position a petal should be at a given angle on a circle of given radius
      * @param radius Radius of the flower head/circle
      * @param angle Angle around the circle that the petal will reside at
      * @return The point on the circumference at that angle relative to the center
      */
-    public static Vector2 GetPetalPos(float radius, float angle)
-    {
+    public static Vector2 GetPetalPos(float radius, float angle) {
         if(angle == 360) angle = 0;
         float closestAxial = GetClosestQuarterAngle(angle);
         float sepFromAxial = Math.abs(angle - closestAxial);
@@ -72,9 +55,10 @@ public class FlowerMaths {
                 return new Vector2(0, (int)(-radius));
         else if(angle == 270)
                 return new Vector2((int)(-radius), 0);
-        else { //firstly operate under assumption of near horizontal - we can then switch if not
-            float vertical = Math.abs(radius * (MathUtils.sinDeg(sepFromAxial)));
-            float horizontal = Math.abs(radius * (MathUtils.sinDeg(90 - sepFromAxial)));
+        else { //Basically if it doesn't lie in a cardinal direction
+            // Firstly operate under assumption of near horizontal - we can then switch if not
+            float vertical = Math.abs(radius * (MathUtils.sinDeg(sepFromAxial))); //Vertical distance from center
+            float horizontal = Math.abs(radius * (MathUtils.sinDeg(90 - sepFromAxial))); //Horizontal distance from center
 
             if(closestAxial == 0 || closestAxial == 180) { //closest to a vertical axis. Switch vertical and horizontal
                 float vBuffer = vertical;
