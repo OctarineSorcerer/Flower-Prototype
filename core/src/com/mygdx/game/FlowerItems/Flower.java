@@ -18,6 +18,7 @@ public class Flower {
     public Stem stem;
     public Vector2 rootLoc; //Location of the root(the bottom of the stem)
     public Hole hole; //Every flower has to have a hole, right?
+    //The above fields alow the flower to be PROCEDURAL
 
     public GrowthHandling growth; //Class to handle how much the flower has grown
 
@@ -110,7 +111,7 @@ public class Flower {
      */
     public void ApplyGrowth() {
         growth.CheckTime();
-        stem.stemTip = stem.curveInfo.GetPositionAtT(growth.Growth, rootLoc); //Grow the stem
+        stem.stemTip = stem.curveInfo.GetPositionAtT(growth.Growth(), rootLoc); //Grow the stem
         head.SetCenter(stem.stemTip); //Place head after stem growth
         SetPetalPositions();
         //petals/blooming
@@ -134,11 +135,11 @@ public class Flower {
      */
     public void ApplyLoadGrowth() {
         growth.CheckTime();
-        stem.stemTip = stem.curveInfo.GetPositionAtT(growth.Growth, rootLoc);
+        stem.stemTip = stem.curveInfo.GetPositionAtT(growth.Growth(), rootLoc);
         head.SetCenter(stem.stemTip);
         SetPetalPositions();
         //petals/blooming
-        float bloomAmount = growth.bloomInfo.BloomBetweenGrowths(0, growth.Growth);
+        float bloomAmount = growth.bloomInfo.BloomBetweenGrowths(0, growth.BloomGrowth());
         if(bloomAmount > 0) {
             for(PetalGroup petalGroup : petals) {
                 float xScale = petalGroup.sprite.getScaleX();
@@ -161,8 +162,8 @@ public class Flower {
         if(!growth.bloomInfo.Blooming) {
             stem.curveInfo.AddCurve();
             stem.curveNumber = stem.curveInfo.GetCurveCount();
-            if (growth.Growth > stem.curveInfo.GetCurveCount()) {
-                growth.Growth = stem.curveInfo.GetCurveCount();
+            if (growth.Growth() > stem.curveInfo.GetCurveCount() - 1) {
+                growth.SetGrowth(stem.curveInfo.GetCurveCount() - 1);
                 //Stop the new curve from instantly appearing if enough time has already elapsed.
             }
         }
@@ -195,6 +196,6 @@ public class Flower {
     }
 
     public void DrawShapes(ShapeRenderer shapeRenderer) {
-        stem.curveInfo.DrawSome(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y), stem.colour, growth.Growth, stem.thickness);
+        stem.curveInfo.DrawSome(shapeRenderer, new Vector2(rootLoc.x, rootLoc.y), stem.colour, growth.Growth(), stem.thickness);
     }
 }

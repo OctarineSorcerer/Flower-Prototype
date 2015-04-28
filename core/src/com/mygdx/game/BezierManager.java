@@ -11,6 +11,7 @@ import java.util.Random;
 
 /**
  * Represents a series of CUBIC bezier curves, contains methods to use and manipulate them
+ * This site used for learning concepts: http://devmag.org.za/2011/04/05/bzier-curves-a-tutorial/
  */
 public class BezierManager {
 

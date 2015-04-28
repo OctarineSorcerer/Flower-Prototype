@@ -57,9 +57,7 @@ public class SaveInfo {
         headDetails = new HeadSave(flower.head.color, flower.head.GetMonoName());
         stemDetails = new StemSave(flower.stem.curveInfo.GetSeed(), flower.stem.colour, flower.stem.thickness,
                 flower.stem.curveNumber, new Point2D(FlowerPrototype.WIDTH / 2, 20));
-        growthDetails = new GrowthSave(flower.growth.Growth,flower.growth.GetPreviousGrowth(),
-                flower.growth.bloomInfo.GetBloomStart(), flower.growth.bloomInfo.GetBloomLength(),
-                flower.growth.GrowthRate);
+        growthDetails = new GrowthSave(flower.growth);
         petalDetails = new ArrayList<PetalGroupSave>();
         for(PetalGroup petalGroup : flower.petals) { //Create save for each petalGroup
             PetalGroupSave save = new PetalGroupSave(petalGroup.color, petalGroup.GetMonoName(), petalGroup.GetBloomGrowthRate(), petalGroup.GetXGrowthAfter());

@@ -9,8 +9,8 @@ import java.util.Calendar;
  */
 public class GrowthHandling {
 
-    public float Growth = 0f; //How much the item has grown so far
-    private float previousGrowth = 0f; //The last growth it was at
+    private float stemGrowth, bloomGrowth;
+    private float previousStem, previousBloom;
 
     public BloomInfo bloomInfo; //Info on the bloom times
 
@@ -24,12 +24,33 @@ public class GrowthHandling {
      */
     public GrowthHandling(GrowthSave info) {
         GrowthRate = info.growthRate;
-        Growth = info.latestGrowth;
-        previousGrowth = info.previousGrowth;
+        previousStem = info.previousStemGrowth;
+        stemGrowth = info.latestStemGrowth;
+
+        previousBloom = info.previousBloomGrowth;
+        bloomGrowth = info.latestBloomGrowth;
+
         lastChecked = Calendar.getInstance();
         lastChecked.setTimeInMillis(info.lastMilliCheck);
 
         bloomInfo = new BloomInfo(info.bloomStart, info.bloomLength);
+    }
+
+    public float Growth() {
+        return stemGrowth;
+    }
+    public void SetGrowth(float growth) {
+        stemGrowth = growth;
+    }
+
+    public float PreviousGrowth() {
+        return previousStem;
+    }
+    public float BloomGrowth() {
+        return bloomGrowth;
+    }
+    public float PreviousBloom() {
+        return previousBloom;
     }
 
     /**
@@ -37,7 +58,8 @@ public class GrowthHandling {
      * @return The amount that has been grown
      */
     public float CheckTime() {
-        previousGrowth = Growth;
+        previousStem = stemGrowth;
+        previousBloom = bloomGrowth;
         Calendar calendar = Calendar.getInstance(); //Get now
         Calendar lastCheck = lastChecked; //Get then (when last checked)
         lastChecked = calendar; //Set last checked to now for next time
@@ -48,15 +70,12 @@ public class GrowthHandling {
         float secondsDifference = (float) difference/1000f; //Seconds difference between the two values
 
         float toGrow = GrowthRate*secondsDifference; //Grows y appropriate amount
-        Growth += toGrow;
+        stemGrowth += toGrow;
+        bloomGrowth += toGrow;
 
         bloomInfo.Blooming =
-                (Growth >= bloomInfo.bloomStart && Growth <= bloomInfo.bloomStart + bloomInfo.bloomLength); //Ascertains whether it is blooming
+                (bloomGrowth >= bloomInfo.bloomStart && bloomGrowth <= bloomInfo.bloomStart + bloomInfo.bloomLength); //Ascertains whether it is blooming
         return toGrow;
-    }
-
-    public float GetPreviousGrowth() {
-        return previousGrowth;
     }
 
     /**
@@ -64,7 +83,7 @@ public class GrowthHandling {
      * @return The amount that was bloomed in the last growth
      */
     public float GetAmountLastBloomed() {
-        return bloomInfo.BloomBetweenGrowths(previousGrowth, Growth);
+        return bloomInfo.BloomBetweenGrowths(previousBloom, bloomGrowth);
     }
 
     /**

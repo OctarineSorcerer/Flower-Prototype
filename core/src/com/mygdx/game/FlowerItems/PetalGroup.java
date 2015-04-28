@@ -12,8 +12,8 @@ import java.util.List;
  * Class containing a sprite and a list of locations/rotations for it to go
  */
 public class PetalGroup extends TintableElement {
-    float bloomGrowthRate = 1f; //Y amount it grows per time unit while blooming
-    float xGrowthAfter = 0f; //X amount it grows per time unit while blooming
+    float bloomGrowthRate = 1f; //Y amount the petal grows per time unit while blooming
+    float xGrowthAfter = 0f; //X amount the petal grows per time unit while blooming
 
     private List<LocRotPair> places = new ArrayList<LocRotPair>(); //Location/rotation pairs
 

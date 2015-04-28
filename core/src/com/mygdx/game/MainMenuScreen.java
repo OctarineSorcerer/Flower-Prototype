@@ -333,7 +333,7 @@ class MainMenuScreen implements Screen {
                     HeadSave head = new HeadSave(headColour, headImage.getName());
                     StemSave stem = new StemSave(new Random().nextLong(), Color.GREEN, 20,
                             4, new Point2D(FlowerPrototype.WIDTH / 2, 20));
-                    GrowthSave growthSave = new GrowthSave(0, 0, 6, 2f, 0f);
+                    GrowthSave growthSave = new GrowthSave(0, 0, 0, 0, 6, 2f, 0f);
                     ArrayList<PetalGroupSave> petalGroups = new ArrayList<PetalGroupSave>();
 
                     for (String key : petals.keySet()) {
