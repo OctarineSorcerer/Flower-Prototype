@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.FlowerItems.Flower;
 import com.mygdx.game.SaveItems.*;
-import com.sun.javafx.geom.Point2D;
 
 import java.util.*;
 
@@ -332,7 +332,7 @@ class MainMenuScreen implements Screen {
                 if(headColour != null && (headImage != null && headImage.getName() != null)) {
                     HeadSave head = new HeadSave(headColour, headImage.getName());
                     StemSave stem = new StemSave(new Random().nextLong(), Color.GREEN, 20,
-                            4, new Point2D(FlowerPrototype.WIDTH / 2, 20));
+                            4, new Vector2(FlowerPrototype.WIDTH / 2, 20));
                     GrowthSave growthSave = new GrowthSave(0, 0, 0, 0, 6, 2f, 0f);
                     ArrayList<PetalGroupSave> petalGroups = new ArrayList<PetalGroupSave>();
 

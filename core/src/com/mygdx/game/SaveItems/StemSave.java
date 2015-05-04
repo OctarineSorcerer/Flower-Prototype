@@ -1,18 +1,18 @@
 package com.mygdx.game.SaveItems;
 
 import com.badlogic.gdx.graphics.Color;
-import com.sun.javafx.geom.Point2D;
+import com.badlogic.gdx.math.Vector2;
 
 /**
 * Class representing stem details
 */
 public class StemSave {
     long seed;
-    Point2D root;
+    Vector2 root;
     Color colour;
     int thickness, curves;
 
-    public StemSave(long seed, Color colour, int thickness,int curves , Point2D root) {
+    public StemSave(long seed, Color colour, int thickness,int curves , Vector2 root) {
         this.seed = seed;
         this.colour = colour;
         this.thickness = thickness;

@@ -2,11 +2,11 @@ package com.mygdx.game.SaveItems;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.mygdx.game.FlowerItems.*;
 import com.mygdx.game.FlowerPrototype;
-import com.sun.javafx.geom.Point2D;
 
 import java.util.ArrayList;
 
@@ -56,7 +56,7 @@ public class SaveInfo {
     public void LoadFromFlower(Flower flower) {
         headDetails = new HeadSave(flower.head.color, flower.head.GetMonoName());
         stemDetails = new StemSave(flower.stem.curveInfo.GetSeed(), flower.stem.colour, flower.stem.thickness,
-                flower.stem.curveNumber, new Point2D(FlowerPrototype.WIDTH / 2, 20));
+                flower.stem.curveNumber, new Vector2(FlowerPrototype.WIDTH / 2, 20));
         growthDetails = new GrowthSave(flower.growth);
         petalDetails = new ArrayList<PetalGroupSave>();
         for(PetalGroup petalGroup : flower.petals) { //Create save for each petalGroup

@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.*;
-import com.sun.javafx.geom.Point2D;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,7 @@ public class Flower {
      * @param growth Details of this flower's growth
      */
     public Flower(ArrayList<PetalGroup> petals, ArrayList<Integer> petalIndices, Head flowerHead, Stem flowerStem,
-                  Point2D root, GrowthHandling growth) {
+                  Vector2 root, GrowthHandling growth) {
         rootLoc = new Vector2(root.x, root.y);
         hole = new Hole(rootLoc.x, rootLoc.y);
         head = flowerHead;

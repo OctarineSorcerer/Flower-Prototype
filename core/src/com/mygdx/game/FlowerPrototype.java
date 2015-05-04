@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.SaveItems.SaveInfo;
 
@@ -14,10 +14,12 @@ public class FlowerPrototype extends Game {
 
     public static Random rand = new Random();
 
-    public static int WIDTH=480,HEIGHT=600;
+    public static int WIDTH, HEIGHT;
 
 	@Override
 	public void create () {
+		WIDTH = Gdx.graphics.getWidth();
+		HEIGHT = Gdx.graphics.getHeight();
 		batch = new SpriteBatch();
         this.setScreen(new SplashScreen(this));
 	}
